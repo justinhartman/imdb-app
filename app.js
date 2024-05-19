@@ -4,6 +4,7 @@ const axios = require('axios');
 const app = express();
 const path = require('path');
 
+/** Add these configurations to a file called `.env` in the root of the project */
 const OMDB_API_KEY = process.env.OMDB_API_KEY;
 const PORT = process.env.PORT || 3000;
 
@@ -21,6 +22,8 @@ app.use(express.static('public'));
 app.get('/', async (req, res) => {
     let newMovies = [];
     let newTVShows = [];
+    const query = req.query.q || '';
+    const type = req.query.type || 'movie';
 
     try {
         // Fetch new movies from VidSrc
@@ -57,7 +60,7 @@ app.get('/', async (req, res) => {
         console.error('Error fetching top movies and TV shows:', error);
     }
 
-    res.render('index', { newMovies, newTVShows, query: '', type: '', results: [] });
+    res.render('index', { newMovies, newTVShows, query, type, results: [] });
 });
 
 /**
