@@ -4,6 +4,16 @@ This project is a web application that allows users to search for movies and TV 
 application is built using Node.js, Express.js, Axios, and EJS. It provides a user-friendly interface for searching and 
 browsing movies and TV shows, along with a feature to watch the videos directly in the app.
 
+## Features
+
+The application provides the following features:
+
+1. Search for movies and TV shows using the OMDb API. 
+2. Display search results on the screen. 
+3. Watch videos directly on the webpage using the VidSrc video API. 
+4. Display movie and TV show posters on the screen.
+5. Configuration files to set up Nginx and systemd for running as a webapp under a domain name.
+
 ## Project Structure
 
 The project's structure is as follows:
@@ -28,14 +38,14 @@ To install and set up the project, follow these steps:
          _The server will listen on port 3000 by default without this setting._
 5. Start the application by running `yarn start`.
 
-## Features
+## Nginx and Systemd Server Setup
 
-The application provides the following features:
+Included in the `/system` folder are two configuration files:
 
-1. Search for movies and TV shows using the OMDb API. 
-2. Display search results on the screen. 
-3. Watch videos directly on the webpage using the VidSrc video API. 
-4. Display movie and TV show posters on the screen.
+1. `/system/nginx/hart.tv.conf`: this is an Nginx config file for running the app using Nginx
+2. `/system/systemd/harttv.service`: this is an Ubuntu/Debian systemd config file for booting up the Node.js server
+
+Modify these to suite your environment to get the app running.
 
 ## Known Issues
 
