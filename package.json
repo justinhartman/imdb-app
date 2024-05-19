@@ -1,8 +1,19 @@
 {
-  "name": "harttv",
+  "name": "tv.justhart.com",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Web application that provides a user-friendly interface for searching and watching movies and TV shows.",
   "license": "MIT",
+  "copyright": "Copyright (c) 2024 Justin Hartman. All rights reserved.",
+  "author": "Justin Hartman <code@justhart.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justinhartman/imdb-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/justinhartman/imdb-app/issues"
+  },
+  "homepage": "https://tv.justhart.com",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },
