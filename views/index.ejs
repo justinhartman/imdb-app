@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HartTV Movies & TV Search Engine</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HartTV Watch Free Movies & TV Series</title>
+    <meta name="description" content="Free app for searching, browsing and watching movies and TV shows.">
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
@@ -15,30 +16,34 @@
 </head>
 <body class="bg-dark bg-gradient">
     <div class="container">
+        <!-- Header Search -->
         <div class="row">
             <form action="/search" method="get" name="search">
                 <div class="input-group my-3 text-center">
-                    <a href="/" class="display-5 text-info text-decoration-none col-sm-12 col-md-3" for="q"><i class="bi-collection-play-fill px-1"></i> HartTV</a>
-                    <div class="col-sm-12 col-md-9 my-md-2">
-                        <div class="row my-2 my-md-0">
-                            <div class="col-sm-12 col-md-7 pe-0">
-                                <input type="text" class="form-control" name="q" id="q"
-                                       aria-label="Search for your next binge..." placeholder="Search for your next binge..."
-                                       value="<%= query %>" required>
-                            </div>
-                            <div class="col-sm-12 col-md-5 my-md-0 my-3">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="type" id="movie" value="movie" <%= type === 'movie' ? 'checked' : '' %>>
-                                    <label class="form-check-label text-info" for="movie">Movie</label>
+                        <a href="/" class="display-5 text-info text-decoration-none col-sm-12 col-md-3" for="q">
+                            <i class="bi-collection-play-fill px-1"></i> HartTV
+                        </a>
+                        <div class="col-sm-12 col-md-9 my-md-2">
+                            <div class="row my-2 my-md-0">
+                                <div class="col-sm-12 col-md-7 pe-0">
+                                    <input type="text" class="form-control" name="q" id="q"
+                                           aria-label="Search for your next binge..."
+                                           placeholder="Search for your next binge..."
+                                           value="<%= query %>" required>
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="type" id="series" value="series" <%= type === 'series' ? 'checked' : '' %>>
-                                    <label class="form-check-label text-info" for="series">TV Show</label>
+                                <div class="col-sm-12 col-md-5 my-md-0 my-3">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="type" id="movie" value="movie" <%= type === 'movie' ? 'checked' : '' %>>
+                                        <label class="form-check-label text-info" for="movie">Movie</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="type" id="series" value="series" <%= type === 'series' ? 'checked' : '' %>>
+                                        <label class="form-check-label text-info" for="series">TV Show</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-info"><i class="bi-search-heart-fill"></i> Search</button>
                                 </div>
-                                <button type="submit" class="btn btn-info"><i class="bi-search-heart-fill"></i> Search</button>
                             </div>
                         </div>
-                    </div>
                 </div>
             </form>
         </div>
@@ -46,8 +51,9 @@
         <hr class="border border-secondary border-2 opacity-50">
 
     <% if (results && results.length > 0) { %>
-        <h2 class="my-4 text-warning text-capitalize"><%= query %> <i class="text-lowercase">search results</i></h2>
+        <!-- Search Results -->
         <div class="row">
+            <h2 class="my-4 text-warning text-capitalize"><%= query %> <i class="text-lowercase">search results</i></h2>
             <% results.forEach(result => { %>
                 <div class="col-md-3 col-sm-6 mb-4">
                     <div class="card text-bg-dark mb-3">
@@ -70,13 +76,14 @@
     <% } %>
 
     <% if (results.length === 0) { %>
-        <h1 class="display-4 my-4 text-warning">New Movies</h1>
+        <!-- New Movies -->
         <div class="row">
+            <h1 class="display-4 my-4 text-warning">New Movies</h1>
             <% newMovies.forEach(movie => { %>
                 <div class="col-md-3 col-sm-6 mb-4">
                     <div class="card text-bg-dark mb-3">
                         <a href="/view/<%= movie.imdb_id %>?type=movie">
-                            <img src="<%= movie.poster !== undefined ? movie.poster : '/images/no_image_available.png' %>" alt="<%= movie.title %>" class="card-img-top">
+                            <img src="<%= movie.poster %>" alt="<%= movie.title %>" class="card-img-top">
                         </a>
                         <div class="card-body">
                             <h5 class="card-title text-nowrap text-warning"><%= movie.title %></h5>
@@ -91,13 +98,14 @@
 
         <hr class="border border-secondary border-2 opacity-50">
 
-        <h1 class="display-4 my-4 text-warning">New TV Shows</h1>
+        <!-- New TV Shows -->
         <div class="row">
+            <h1 class="display-4 my-4 text-warning">New TV Shows</h1>
             <% newTVShows.forEach(show => { %>
                 <div class="col-md-3 col-sm-6 mb-4">
                     <div class="card text-bg-dark mb-3">
                         <a href="/view/<%= show.imdb_id %>?type=series">
-                            <img class="card-img-top" src="<%= show.poster !== undefined ? show.poster : '/images/no_image_available.png' %>" alt="<%= show.title %>">
+                            <img class="card-img-top" src="<%= show.poster %>" alt="<%= show.title %>">
                         </a>
                         <div class="card-body">
                             <h5 class="card-title text-nowrap text-warning"><%= show.title %></h5>

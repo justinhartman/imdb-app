@@ -13,6 +13,21 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 
 /**
+ * Fetches the poster image URL for a movie or TV show using the OMDB API.
+ * @param {string} imdbID - The IMDb ID of the movie or TV show.
+ * @returns {Promise<string|null>} A Promise that resolves to the poster image URL or null if an error occurs.
+ */
+const getPoster = async (imdbID) => {
+    try {
+        const response = await axios.get(`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${imdbID}`);
+        return response.data.Poster || '/images/no_image_available.png';
+    } catch (error) {
+        console.error('Error fetching poster:', error);
+        return null;
+    }
+};
+
+/**
  * Handles the '/' route.
  * This route is responsible for rendering the home page with new movies and TV shows.
  * @param {Request} req - Express request object containing the request parameters and query string.
@@ -33,17 +48,6 @@ app.get('/', async (req, res) => {
 
         newMovies = newMovieResponse.data.result.items || [];
         newTVShows = newTVResponse.data.result.items || [];
-
-        // Function to get poster from OMDB
-        const getPoster = async (imdbID) => {
-            try {
-                const response = await axios.get(`http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${imdbID}`);
-                return response.data.Poster;
-            } catch (error) {
-                console.error('Error fetching poster:', error);
-                return null;
-            }
-        };
 
         // Fetch posters for new movies
         await Promise.all(newMovies.map(async (movie) => {
@@ -99,9 +103,8 @@ app.get('/view/:id', async (req, res) => {
     let type = req.query.type || 'movie';
     if (type === 'series') { type = 'tv' }
     const iframeSrc = `https://vidsrc.to/embed/${type}/${id}`;
-    const title = req.params.Title || 'Video';
 
-    res.render('view', { iframeSrc, title });
+    res.render('view', { iframeSrc });
 });
 
 /**
