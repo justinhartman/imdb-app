@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 
 const routes = require('./routes/appRoutes');
-const config = require('./config/app');
+const { PORT } = require('./config/app');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -27,6 +27,6 @@ app.use('/', routes);
  * @param {Number} PORT - The port number on which the server will listen on.
  * @returns {void} - No return value.
  */
-app.listen(config.PORT, () => {
-    console.log(`Server is running on port ${config.PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
