@@ -28,6 +28,21 @@ const getPoster = async (imdbID) => {
 };
 
 /**
+ * Fetches and updates the poster images for new movies and TV shows.
+ * @param {Array} show - An array of movie or tv objects.
+ * @returns {Promise<void>} A Promise that resolves when the poster images are fetched and updated.
+ */
+const fetchAndUpdatePosters = async (show) => {
+    try {
+        await Promise.all(show.map(async (x) => {
+            x.poster = await getPoster(x.imdb_id);
+        }));
+    } catch (error) {
+        console.error('Error fetching and updating poster images:', error);
+    }
+};
+
+/**
  * Handles the '/' route.
  * This route is responsible for rendering the home page with new movies and TV shows.
  * @param {Request} req - Express request object containing the request parameters and query string.
@@ -36,35 +51,38 @@ const getPoster = async (imdbID) => {
  */
 app.get('/', async (req, res) => {
     let newMovies = [];
-    let newTVShows = [];
+    let newSeries = [];
     const query = req.query.q || '';
     const type = req.query.type || 'movie';
 
     try {
-        // Fetch new movies from VidSrc
-        const newMovieResponse = await axios.get('https://vidsrc.to/vapi/movie/new');
-        // Fetch new TV shows from VidSrc
-        const newTVResponse = await axios.get('https://vidsrc.to/vapi/tv/new');
+        /**
+         * Fetch new movies from VidSrc.
+         * You can switch to new movies instead with 'https://vidsrc.to/vapi/movie/new'
+         * @type {axios.AxiosResponse<any>}
+         * @docs https://vidsrc.to/#api
+         */
+        const axiosMovieResponse = await axios.get('https://vidsrc.to/vapi/movie/add');
+        /**
+         * Fetch new TV shows from VidSrc.
+         * You can switch to new movies instead with 'https://vidsrc.to/vapi/tv/new'
+         * @type {axios.AxiosResponse<any>}
+         * @docs https://vidsrc.to/#api
+         */
+        const axiosSeriesResponse = await axios.get('https://vidsrc.to/vapi/tv/add');
 
-        newMovies = newMovieResponse.data.result.items || [];
-        newTVShows = newTVResponse.data.result.items || [];
+        // Fetch and update poster images for new movies.
+        newMovies = axiosMovieResponse.data.result.items || [];
+        await fetchAndUpdatePosters(newMovies);
 
-        // Fetch posters for new movies
-        await Promise.all(newMovies.map(async (movie) => {
-            const poster = await getPoster(movie.imdb_id);
-            movie.poster = poster;
-        }));
-
-        // Fetch posters for new TV shows
-        await Promise.all(newTVShows.map(async (show) => {
-            const poster = await getPoster(show.imdb_id);
-            show.poster = poster;
-        }));
+        // Fetch and update poster images for new TV shows.
+        newSeries = axiosSeriesResponse.data.result.items || [];
+        await fetchAndUpdatePosters(newSeries);
     } catch (error) {
         console.error('Error fetching top movies and TV shows:', error);
     }
 
-    res.render('index', { newMovies, newTVShows, query, type, results: [] });
+    res.render('index', { newMovies, newSeries: newSeries, query, type, results: [] });
 });
 
 /**
@@ -88,7 +106,7 @@ app.get('/search', async (req, res) => {
         }
     }
 
-    res.render('index', { query, type, results, newMovies: [], newTVShows: [] });
+    res.render('index', { query, type, results, newMovies: [], newSeries: [] });
 });
 
 /**
