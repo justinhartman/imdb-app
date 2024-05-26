@@ -9,7 +9,7 @@ const { OMDB_API_KEY, OMDB_API_URL } = require('../config/app');
  * @param {string} type - The type of media to search for ('movie' or 'series'), default empty.
  * @returns {string} The constructed OMDB API URL.
  */
-function constructOmdbUrl(query, search = true, type = '') {
+const constructOmdbUrl = (query, search = true, type = '') => {
   let url = `${OMDB_API_URL}/?apikey=${OMDB_API_KEY}&s=${query}&type=${type}`;
   if (type === '' && search === false) {
     url = `${OMDB_API_URL}/?apikey=${OMDB_API_KEY}&i=${query}`
@@ -17,7 +17,7 @@ function constructOmdbUrl(query, search = true, type = '') {
     url = `${OMDB_API_URL}/?apikey=${OMDB_API_KEY}&s=${query}`
   }
   return url;
-}
+};
 
 /**
  * Fetches search results from OMDB API.
