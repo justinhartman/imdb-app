@@ -55,10 +55,11 @@ Modify these to suite your environment to get the app running.
       perform searches and watch videos.
 - [ ] The application does not have a proper logging mechanism. If an error occurs during the search request or while 
       rendering the webpage, it may not be logged or displayed to the user.
-- [ ] There are some layout issues on mobile and tablet that need resolving.
+- [x] There are some layout issues on mobile and tablet that need resolving.
 
 ## Future Enhancements
 
+- [x] Improve UI on View player page to include movie/tv information and title.
 - [ ] Change layout to include all episodes on the view screen.
 - [ ] Implement a proper authentication mechanism to restrict access to the application.
 - [ ] Add more features such as: 
