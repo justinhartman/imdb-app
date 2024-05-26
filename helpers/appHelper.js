@@ -1,6 +1,6 @@
 const axios = require('axios');
 const asyncHandler = require('express-async-handler');
-const config = require('../config/app');
+const { OMDB_API_KEY, OMDB_API_URL } = require('../config/app');
 
 /**
  * Constructs the OMDB API URL based on the query and type parameters.
@@ -10,11 +10,11 @@ const config = require('../config/app');
  * @returns {string} The constructed OMDB API URL.
  */
 function constructOmdbUrl(query, search = true, type = '') {
-  let url = `https://www.omdbapi.com/?apikey=${config.OMDB_API_KEY}&s=${query}&type=${type}`;
+  let url = `${OMDB_API_URL}/?apikey=${OMDB_API_KEY}&s=${query}&type=${type}`;
   if (type === '' && search === false) {
-    url = `https://www.omdbapi.com/?apikey=${config.OMDB_API_KEY}&i=${query}`
+    url = `${OMDB_API_URL}/?apikey=${OMDB_API_KEY}&i=${query}`
   } else if (type === '' && search === true) {
-    url = `https://www.omdbapi.com/?apikey=${config.OMDB_API_KEY}&s=${query}`
+    url = `${OMDB_API_URL}/?apikey=${OMDB_API_KEY}&s=${query}`
   }
   return url;
 }

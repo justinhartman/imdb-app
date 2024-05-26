@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 
 const routes = require('./routes/appRoutes');
-const { PORT } = require('./config/app');
+const { API_HOST, API_PORT } = require('./config/app');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -24,9 +24,10 @@ app.use('/', routes);
 
 /**
  * Starts the server and listens on the specified port.
- * @param {Number} PORT - The port number on which the server will listen on.
+ * @param {String} API_HOST - The host name on which the server will listen on.
+ * @param {Number} API_PORT - The port number on which the server will listen on.
  * @returns {void} - No return value.
  */
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(API_PORT, API_HOST, () => {
+  console.log(`Server is running on http://${API_HOST}:${API_PORT}`);
 });
