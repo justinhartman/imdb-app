@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HartTV Watch Free Movies & TV Series</title>
+    <title>Binger Watch Free Movies & TV Series</title>
     <meta name="description" content="Free app for searching, browsing and watching movies and TV shows.">
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
@@ -16,6 +16,37 @@
 </head>
 <body class="bg-dark">
 <div class="container my-4">
+<% if (data.Response !== 'False') { %>
+    <div class="row text-white my-4">
+        <h1 class="display-5 text-warning">
+        <% if (data.Type === 'series') { %>
+            <i class="bi-collection-play-fill px-1"></i>
+        <% } else if (data.Type === 'movie') { %>
+            <i class="bi-play-btn-fill px-1"></i>
+        <% } %>
+            <%= data.Title %> (<%= data.Year %>)
+        </h1>
+        <h2><%= data.Plot %></h2>
+        <div class="row mt-2">
+            <div class="col-6">
+                <p>Cast: <%= data.Actors %></p>
+                <p>Runtime: <%= data.Runtime %></p>
+                <p>Genre: <%= data.Genre %></p>
+            <% if (Array.isArray(data.Ratings)) { %>
+                <% data.Ratings.forEach(rating => { %>
+                    <p><%= rating.Source %> - <%= rating.Value %></p>
+                <% }); %>
+            <% } %>
+            </div>
+            <div class="col-6">
+                <p>Director: <%= data.Director %></p>
+                <p>Rated: <%= data.Rated %></p>
+                <p>Country: <%= data.Country %></p>
+                <p>Language: <%= data.Language %></p>
+            </div>
+        </div>
+    </div>
+<% } %>
     <div class="ratio ratio-16x9">
         <iframe src="<%= iframeSrc %>" allow="autoplay; fullscreen" allowfullscreen="yes" class="w-100"></iframe>
     </div>

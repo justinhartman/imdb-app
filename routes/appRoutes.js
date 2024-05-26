@@ -45,18 +45,20 @@ router.get('/', asyncHandler(async (req, res, next) => {
 }));
 
 /**
- * Handles the '/view/:id' route.
+ * Handles the '/view/:id/:type' route.
  * This route is responsible for rendering the view page for a specific video.
+ * It returns the iFrame VidSrc URL along with parsed OMDB data for the template.
  * @param {Request} req - Express request object containing the request parameters and query string.
  * @param {Response} res - Express response object used to send the rendered view page.
  * @returns {void} - No return value.
  */
-router.get('/view/:id', asyncHandler(async (req, res, next) => {
+router.get('/view/:id/:type', asyncHandler(async (req, res, next) => {
   const id = req.params.id;
-  let type = req.query.type || 'movie';
+  let type = req.params.type;
   if (type === 'series') type = 'tv'
   const iframeSrc = `https://vidsrc.to/embed/${type}/${id}`;
-  res.render('view', {iframeSrc});
+  const data = await fetchOmdbData(id, false);
+  res.render('view', { iframeSrc, data });
 }));
 
 /**

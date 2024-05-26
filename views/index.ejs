@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HartTV Watch Free Movies & TV Series</title>
+    <title>Binger Watch Free Movies & TV Series</title>
     <meta name="description" content="Free app for searching, browsing and watching movies and TV shows.">
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
@@ -22,7 +22,7 @@
                 <form action="/search" method="get" name="search">
                     <div class="input-group text-center">
                             <a href="/" class="display-5 text-info text-decoration-none col-sm-12 col-md-3" for="q">
-                                <i class="bi-collection-play-fill px-1"></i> HartTV
+                                <i class="bi-collection-play-fill px-1"></i> Binger
                             </a>
                             <div class="col-sm-12 col-md-9 my-md-2">
                                 <div class="row my-2 my-md-0">
@@ -61,12 +61,12 @@
             <% results.forEach(result => { %>
             <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card text-bg-dark mb-3">
-                    <a href="/view/<%= result.imdbID %>?type=<%= type === 'movie' ? 'movie' : 'series' %>">
+                    <a href="/view/<%= result.imdbID %>/<%= type === 'movie' ? 'movie' : 'series' %>">
                         <img class="card-img-top" src="<%= result.Poster !== 'N/A' ? result.Poster : '/images/no_image_available.png' %>" alt="<%= result.Title %>">
                     </a>
                     <div class="card-body">
                         <h5 class="card-title text-nowrap overflow-hidden"><%= result.Title %> (<%= result.Year %>)</h5>
-                        <a class="btn btn-primary w-100" href="/view/<%= result.imdbID %>?type=<%= type === 'movie' ? 'movie' : 'series' %>">
+                        <a class="btn btn-primary w-100" href="/view/<%= result.imdbID %>/<%= type === 'movie' ? 'movie' : 'series' %>">
                             <i class="bi-play-btn-fill px-1"></i> Watch Now
                         </a>
                     </div>
@@ -88,12 +88,12 @@
             <% newMovies.forEach(movie => { %>
             <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card text-bg-dark mb-3">
-                    <a href="/view/<%= movie.imdb_id %>?type=movie">
+                    <a href="/view/<%= movie.imdb_id %>/movie">
                         <img src="<%= movie.poster %>" alt="<%= movie.title %>" class="card-img-top">
                     </a>
                     <div class="card-body">
                         <h5 class="card-title text-nowrap overflow-hidden text-warning"><%= movie.title %></h5>
-                        <a href="/view/<%= movie.imdb_id %>?type=movie" class="btn btn-primary w-100">
+                        <a href="/view/<%= movie.imdb_id %>/movie" class="btn btn-primary w-100">
                             <i class="bi-play-btn-fill px-1"></i> Watch Now
                         </a>
                     </div>
@@ -112,12 +112,12 @@
             <% newSeries.forEach(show => { %>
             <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card text-bg-dark mb-3">
-                    <a href="/view/<%= show.imdb_id %>?type=series">
+                    <a href="/view/<%= show.imdb_id %>/series">
                         <img class="card-img-top" src="<%= show.poster %>" alt="<%= show.title %>">
                     </a>
                     <div class="card-body">
                         <h5 class="card-title text-nowrap overflow-hidden text-warning"><%= show.title %></h5>
-                        <a class="btn btn-primary w-100" href="/view/<%= show.imdb_id %>?type=series">
+                        <a class="btn btn-primary w-100" href="/view/<%= show.imdb_id %>/series">
                             <i class="bi-collection-play-fill px-1"></i> Watch Now
                         </a>
                     </div>
