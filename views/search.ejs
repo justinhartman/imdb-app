@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Binger Watch Free Movies & TV Series</title>
-    <meta name="description" content="Free app for searching, browsing and watching movies and TV shows.">
+    <title><%= query %> - Binger Watch Free Movies & TV Series</title>
+    <meta name="description" content="Free app for watching <%= query %> movies and TV shows.">
     <link rel="canonical" href="<%= url %>"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png"/>
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png"/>
@@ -54,49 +54,28 @@
 
     <div class="b-divider"></div>
 
-    <!-- New Movies -->
+    <!-- Search Results -->
     <div class="container">
         <div class="row">
-            <h1 class="display-4 my-4 text-warning">New Movies</h1>
-            <% newMovies.forEach(movie => { %>
+            <h1 class="display-4 my-4 text-warning text-capitalize"><%= query %></h1>
+            <% results.forEach(result => { %>
             <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card text-bg-dark mb-3">
-                    <a href="/view/<%= movie.imdb_id %>/movie">
-                        <img src="<%= movie.poster %>" alt="<%= movie.title %>" class="card-img-top">
+                    <a href="/view/<%= result.imdbID %>/<%= type === 'movie' ? 'movie' : 'series' %>">
+                        <img class="card-img-top" src="<%= result.Poster !== 'N/A' ? result.Poster : '/images/no_image_available.png' %>" alt="<%= result.Title %>">
                     </a>
                     <div class="card-body">
-                        <h5 class="card-title text-nowrap overflow-hidden text-warning"><%= movie.title %></h5>
-                        <a href="/view/<%= movie.imdb_id %>/movie" class="btn btn-primary w-100">
+                        <h5 class="card-title text-nowrap overflow-hidden"><%= result.Title %> (<%= result.Year %>)</h5>
+                        <a class="btn btn-primary w-100" href="/view/<%= result.imdbID %>/<%= type === 'movie' ? 'movie' : 'series' %>">
                             <i class="bi-play-btn-fill px-1"></i> Watch Now
                         </a>
                     </div>
                 </div>
             </div>
             <% }); %>
-        </div>
-    </div>
-
-    <hr class="border border-secondary border-2 opacity-50">
-
-    <!-- New TV Shows -->
-    <div class="container">
-        <div class="row">
-            <h1 class="display-4 my-4 text-warning">New TV Shows</h1>
-            <% newSeries.forEach(show => { %>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card text-bg-dark mb-3">
-                    <a href="/view/<%= show.imdb_id %>/series">
-                        <img class="card-img-top" src="<%= show.poster %>" alt="<%= show.title %>">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title text-nowrap overflow-hidden text-warning"><%= show.title %></h5>
-                        <a class="btn btn-primary w-100" href="/view/<%= show.imdb_id %>/series">
-                            <i class="bi-collection-play-fill px-1"></i> Watch Now
-                        </a>
-                    </div>
-                </div>
+            <div class="text-center m-4">
+                <a href="/" class="btn btn-warning btn-md-lg">Back to Home</a>
             </div>
-            <% }); %>
         </div>
     </div>
 </body>
