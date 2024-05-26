@@ -1,0 +1,14 @@
+# /etc/systemd/system/binger.service
+[Unit]
+Description=Binger TV Express Application
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /var/www/binger.uk/app.js
+Restart=always
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/var/www/binger.uk
+
+[Install]
+WantedBy=multi-user.target

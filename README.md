@@ -19,11 +19,12 @@ The application provides the following features:
 The project's structure is as follows:
 
 - `app.js`: The main entry point of the application, which sets up the server and listens for incoming requests.
-- `.env` file: This file contains environment variables that are used by the application, such as the OMDB API key.
-- `/public` directory: This directory contains static assets such as CSS and images that are served directly to the 
-  client.
-- `/views` directory: This directory contains EJS templates for rendering web pages. 
-  The `index.ejs` file is the main template for the application, which displays the search results and other content.
+- `.env.example` file: Example file containing environment variables used by the application (see instructions below).
+- `/config` directory: Contains all the application config files.
+- `/helpers` directory: Contains helper files for reusable components.
+- `/public` directory: Contains static assets that are served directly to the client browser.
+- `/routes` directory: Contains the application route logic.
+- `/views` directory: Contains EJS templates for rendering web pages.
 
 ## Installation and Setup
 
@@ -32,20 +33,28 @@ To install and set up the project, follow these steps:
 1. Clone the repository to your local machine.
 2. Navigate to the project directory in your terminal.
 3. Install the required dependencies by running `yarn install`.
-4. Create a `.env` file in the project root directory and add the following lines:
+4. Rename `.env.example` to simply `.env` in the project root directory and change the following lines:
    - [ ] `OMDB_API_KEY=your_api_key_here` - replace `your_api_key_here` with your actual OMDB API key.
-   - [ ] `PORT=1234` - replace `1234` with the port you want the node server to run on. 
-         _The server will listen on port 3000 by default without this setting._
+   - [ ] `API_PORT=3000` - replace `3000` with the port you want the node server to run on. 
+   - [ ] `APP_URL=binger.uk` - replace `binger.uk` with your website/app's live URL.
 5. Start the application by running `yarn start`.
 
 ## Nginx and Systemd Server Setup
 
 Included in the `/system` folder are two configuration files:
 
-1. `/system/nginx/hart.tv.conf`: this is an Nginx config file for running the app using Nginx
-2. `/system/systemd/harttv.service`: this is an Ubuntu/Debian systemd config file for booting up the Node.js server
+1. `/system/nginx/binger.uk.conf`: this is an Nginx config file for running the app using Nginx
+2. `/system/systemd/binger.service`: this is an Ubuntu/Debian systemd config file for booting up the Node.js server
 
 Modify these to suite your environment to get the app running.
+
+**Note:** the empty folder `/system/nginx-root/` is used in the `/system/nginx/binger.uk.conf` nginx file for SSL.
+If you would like to use SSL we recommend installing `certbot` and then executing this command:
+
+```bash
+# replace binger.uk with your domain name
+$ sudo certbot --nginx -d binger.uk
+```
 
 ## Known Issues
 
