@@ -14,6 +14,30 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
     <link rel="stylesheet" href="/css/style.css"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Binger Watch Free Movies & TV Series",
+            "url": "https://binger.uk/",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://binger.uk/search?q={search_term_string}&type={movie_or_series}",
+                "query-input": [
+                    {
+                        "@type": "PropertyValueSpecification",
+                        "valueRequired": true,
+                        "valueName": "search_term_string"
+                    },
+                    {
+                        "@type": "PropertyValueSpecification",
+                        "valueRequired": false,
+                        "valueName": "movie_or_series"
+                    }
+                ]
+            }
+        }
+    </script>
 </head>
 <body class="bg-dark bg-gradient">
     <header class="pt-3 p-md-3 bg-dark text-white sticky-top shadow">
