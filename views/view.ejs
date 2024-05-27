@@ -60,32 +60,36 @@
             <%= data.Title %> (<%= data.Year %>)
         </h1>
         <h2><%= data.Plot %></h2>
-        <div class="row mt-2">
-            <div class="col-6">
-                <p>Cast: <%= data.Actors %></p>
-                <p>Runtime: <%= data.Runtime %></p>
-                <p>Genre: <%= data.Genre %></p>
-            <% if (Array.isArray(data.Ratings)) { -%>
-                <% data.Ratings.forEach(rating => { -%>
-                    <p><%= rating.Source %> - <%= rating.Value %></p>
-                <% }); -%>
-            <% } -%>
-            </div>
-            <div class="col-6">
-                <p>Director: <%= data.Director %></p>
-                <p>Rated: <%= data.Rated %></p>
-                <p>Country: <%= data.Country %></p>
-                <p>Language: <%= data.Language %></p>
-            </div>
-        </div>
     </div>
 <% } %>
     <div class="ratio ratio-16x9">
         <iframe src="<%= iframeSrc %>" allow="autoplay; fullscreen" allowfullscreen="yes" class="w-100"></iframe>
     </div>
-    <div class="text-center mt-4">
-        <a href="<%= APP_URL %>/" class="btn btn-outline-warning btn-md-lg">Home</a>
-        <a href="javascript:history.back()" class="btn btn-warning btn-md-lg">Back to Search</a>
+<% if (data.Response !== 'False') { -%>
+    <div class="row text-white my-4">
+        <div class="col-12 col-md-6">
+            <p>Cast: <%= data.Actors %></p>
+            <p>Runtime: <%= data.Runtime %></p>
+            <p>Genre: <%= data.Genre %></p>
+        <% if (Array.isArray(data.Ratings)) { -%>
+            <% data.Ratings.forEach(rating => { -%>
+                <p><%= rating.Source %> - <%= rating.Value %></p>
+            <% }); -%>
+        <% } -%>
+        </div>
+        <div class="col-12 col-md-6">
+            <p>Director: <%= data.Director %></p>
+            <p>Rated: <%= data.Rated %></p>
+            <p>Country: <%= data.Country %></p>
+            <p>Language: <%= data.Language %></p>
+        </div>
+    </div>
+<% } %>
+    <div class="row mt-2">
+        <div class="text-center">
+            <a href="<%= APP_URL %>/" class="btn btn-outline-warning btn-md-lg">Home</a>
+            <a href="javascript:history.back()" class="btn btn-warning btn-md-lg">Back to Search</a>
+        </div>
     </div>
 </div>
 </body>
