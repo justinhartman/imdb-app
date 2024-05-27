@@ -3,34 +3,40 @@ const asyncHandler = require('express-async-handler');
 const { OMDB_API_KEY, OMDB_API_URL } = require('../config/app');
 
 /**
- * Constructs the OMDB API URL based on the query and type parameters.
+ * Constructs the parameters for an OMDB API request.
  * @param {string} query - The query string to search for movies or TV shows.
- * @param {boolean} [search=true] - Search or standard query, default true.
- * @param {string} type - The type of media to search for ('movie' or 'series'), default empty.
- * @returns {string} The constructed OMDB API URL.
+ * @param {boolean} search - Search or standard query, default true.
+ * @param {string} type - The type of media to search for ('movie', 'series', or 'episode'), default empty.
+ * @returns {Object} An object containing the constructed parameters for the OMDB API request.
  */
-const constructOmdbUrl = (query, search = true, type = '') => {
-  let url = `${OMDB_API_URL}/?apikey=${OMDB_API_KEY}&s=${query}&type=${type}`;
-  if (type === '' && search === false) {
-    url = `${OMDB_API_URL}/?apikey=${OMDB_API_KEY}&i=${query}`
-  } else if (type === '' && search === true) {
-    url = `${OMDB_API_URL}/?apikey=${OMDB_API_KEY}&s=${query}`
-  }
-  return url;
+const constructOmdbParams = (query, search, type) => {
+  return {
+    apikey: OMDB_API_KEY,
+    ...(type && {type: type}),
+    ...(search ? {s: query} : {i: query})
+  };
 };
 
 /**
  * Fetches search results from OMDB API.
  * @param {string} query - The query string to search for movies or TV shows.
  * @param {boolean} [search=true] - Search or standard query, default true.
- * @param {string} type - The type of media to search for ('movie' or 'series'), default empty.
- * @returns {Promise<Array>} A Promise that resolves to an array of search results or an empty array if no results are found.
+ * @param {string} type - The type of media to search for ('movie', 'series', or 'episode'), default empty.
+ * @returns {Promise<Object>} A Promise that resolves to the search results or an empty object if no results are found.
  */
 const fetchOmdbData = async (query, search = true, type = '') => {
-  if(!query) return [];
-  const url = constructOmdbUrl(query, search, type);
-  const results = (await axios.get(url)).data || [];
-  return results || [];
+  if (!query) return {};
+  const params = constructOmdbParams(query, search, type);
+  const options = {
+    method: 'GET',
+    url: OMDB_API_URL,
+    params: params,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+  const response = await axios.request(options);
+  return response.data || {};
 };
 
 /**
