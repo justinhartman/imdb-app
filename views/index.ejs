@@ -5,24 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Binger Watch Free Movies & TV Series</title>
     <meta name="description" content="Free app for searching, browsing and watching movies and TV shows.">
-    <link rel="canonical" href="<%= url %>"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png"/>
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png"/>
-    <link rel="manifest" href="/images/favicons/site.webmanifest"/>
+    <link rel="canonical" href="<%= APP_URL %>"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="<%= APP_URL %>/images/favicons/apple-touch-icon.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="<%= APP_URL %>/images/favicons/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="<%= APP_URL %>/images/favicons/favicon-16x16.png"/>
+    <link rel="manifest" href="<%= APP_URL %>/images/favicons/site.webmanifest"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
-    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="<%= APP_URL %>/css/style.css"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "Binger Watch Free Movies & TV Series",
-            "url": "https://binger.uk/",
+            "url": "<%= APP_URL %>/",
             "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://binger.uk/search?q={search_term_string}&type={movie_or_series}",
+                "target": "<%= APP_URL %>/search?q={search_term_string}&type={movie_or_series}",
                 "query-input": [
                     {
                         "@type": "PropertyValueSpecification",
@@ -44,9 +44,9 @@
         <div class="container">
             <!-- Header Search -->
             <div class="row">
-                <form action="/search" method="get" name="search">
+                <form action="<%= APP_URL %>/search" method="get" name="search">
                     <div class="input-group text-center">
-                            <a href="/" class="display-5 text-info text-decoration-none col-sm-12 col-md-3" for="q">
+                            <a href="<%= APP_URL %>/" class="display-5 text-info text-decoration-none col-sm-12 col-md-3" for="q">
                                 <i class="bi-collection-play-fill px-1"></i> Binger
                             </a>
                             <div class="col-sm-12 col-md-9 my-md-2">
@@ -85,12 +85,12 @@
             <% newMovies.forEach(movie => { %>
             <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card text-bg-dark mb-3">
-                    <a href="/view/<%= movie.imdb_id %>/movie">
+                    <a href="<%= APP_URL %>/view/<%= movie.imdb_id %>/movie">
                         <img src="<%= movie.poster %>" alt="<%= movie.title %>" class="card-img-top">
                     </a>
                     <div class="card-body">
                         <h5 class="card-title text-nowrap overflow-hidden text-warning"><%= movie.title %></h5>
-                        <a href="/view/<%= movie.imdb_id %>/movie" class="btn btn-primary w-100">
+                        <a href="<%= APP_URL %>/view/<%= movie.imdb_id %>/movie" class="btn btn-primary w-100">
                             <i class="bi-play-btn-fill px-1"></i> Watch Now
                         </a>
                     </div>
@@ -109,12 +109,12 @@
             <% newSeries.forEach(show => { %>
             <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card text-bg-dark mb-3">
-                    <a href="/view/<%= show.imdb_id %>/series">
+                    <a href="<%= APP_URL %>/view/<%= show.imdb_id %>/series">
                         <img class="card-img-top" src="<%= show.poster %>" alt="<%= show.title %>">
                     </a>
                     <div class="card-body">
                         <h5 class="card-title text-nowrap overflow-hidden text-warning"><%= show.title %></h5>
-                        <a class="btn btn-primary w-100" href="/view/<%= show.imdb_id %>/series">
+                        <a class="btn btn-primary w-100" href="<%= APP_URL %>/view/<%= show.imdb_id %>/series">
                             <i class="bi-collection-play-fill px-1"></i> Watch Now
                         </a>
                     </div>

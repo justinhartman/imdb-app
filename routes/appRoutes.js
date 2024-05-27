@@ -17,7 +17,6 @@ const {
  * @returns {void} - No return value.
  */
 router.get('/', asyncHandler(async (req, res, next) => {
-  const url = `${APP_URL}`;
   const query = req.query.q || '';
   const type = req.query.type || 'movie';
   let newMovies = [];
@@ -43,7 +42,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
   newSeries = axiosSeriesResponse.data.result.items || [];
   await fetchAndUpdatePosters(newSeries);
 
-  res.render('index', { newMovies, newSeries, query, type, url });
+  res.render('index', { newMovies, newSeries, query, type });
 }));
 
 /**
@@ -60,8 +59,7 @@ router.get('/view/:id/:type', asyncHandler(async (req, res, next) => {
   if (type === 'series') type = 'tv'
   const iframeSrc = `https://vidsrc.to/embed/${type}/${id}`;
   const data = await fetchOmdbData(id, false);
-  const url = `${APP_URL}/view/${id}/${req.params.type}`;
-  res.render('view', { data, iframeSrc, url });
+  res.render('view', { data, iframeSrc });
 }));
 
 /**
@@ -74,11 +72,10 @@ router.get('/view/:id/:type', asyncHandler(async (req, res, next) => {
 router.get('/search', asyncHandler(async (req, res, next) => {
   const query = req.query.q;
   const type = req.query.type || 'movie';
-  const url = `${APP_URL}/search?q=${query}&type=${type}`;
   const omdbSearch = await fetchOmdbData(query, true, type);
   const results = omdbSearch.Search || [];
   if (!query) res.redirect('/');
-  res.render('search', { query, results, type, url });
+  res.render('search', { query, results, type });
 }));
 
 module.exports = router;
