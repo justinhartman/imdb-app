@@ -39,6 +39,14 @@ To install and set up the project, follow these steps:
    - [ ] `APP_URL=binger.uk` - replace `binger.uk` with your website/app's live URL.
 5. Start the application by running `yarn start`.
 
+## OMDb API
+
+Included in this repository is a [RapidAPI](https://rapidapi.com) file created by the macOS app RapidAPI which is free.
+There is also a VSCode extension which should be able to work with this file but YMMV.
+
+The file is located at [/docs/api/OMDb_API.paw](/docs/api/OMDb_API.paw) and contains a working implementation of the 
+OMDb API used in this project. Open the file and begin testing the API to see responses.
+
 ## Nginx and Systemd Server Setup
 
 Included in the `/system` folder are two configuration files:
