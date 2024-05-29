@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
-const routes = require('./routes/appRoutes');
 const { API_HOST, API_PORT, APP_URL } = require('./config/app');
+const routes = require('./routes/appRoutes');
 
 /**
  * Middleware function that sets the APP_URL as a local variable for the views.
@@ -12,8 +12,8 @@ const { API_HOST, API_PORT, APP_URL } = require('./config/app');
  * @param {NextFunction} next - The next middleware function in the chain.
  */
 app.use((req, res, next) => {
-    res.locals.APP_URL = APP_URL;
-    next();
+  res.locals.APP_URL = APP_URL;
+  next();
 });
 
 app.set('view engine', 'ejs');

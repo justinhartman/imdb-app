@@ -12,8 +12,8 @@ const { OMDB_API_KEY, OMDB_API_URL } = require('../config/app');
 const constructOmdbParams = (query, search, type) => {
   return {
     apikey: OMDB_API_KEY,
-    ...(type && {type: type}),
-    ...(search ? {s: query} : {i: query})
+    ...(type && { type: type }),
+    ...(search ? { s: query } : { i: query })
   };
 };
 
