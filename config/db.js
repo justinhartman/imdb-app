@@ -1,3 +1,10 @@
+/**
+ * Mongoose configuration to connect to MongoDB database using Mongoose.
+ * @module config/db
+ * @description This module exports a function that connects to the MongoDB database using Mongoose.
+ */
+
+/** @inheritDoc */
 const mongoose = require('mongoose');
 const appConfig = require('../config/app');
 

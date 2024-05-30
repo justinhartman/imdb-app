@@ -1,3 +1,10 @@
+/**
+ * Application configuration.
+ * @module config/app
+ * @description This module exports an object containing the application configuration.
+ */
+
+/** @inheritDoc */
 require('dotenv').config();
 
 /**

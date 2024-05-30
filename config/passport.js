@@ -1,14 +1,19 @@
+/**
+ * Passport.js configuration module.
+ * @module config/passport
+ * @description This module exports a function that configures Passport.js for local strategy.
+ */
+
+/** @inheritDoc */
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/User');
 
 /**
- * @module auth
- * This module exports a function that configures Passport.js for local strategy.
  * It sets up the user authentication process using username and password.
  * @param {Object} passport - The Passport.js instance.
  * @returns {void}
  */
-module.exports = function (passport) {
+module.exports = (passport) => {
   /**
    * This function is a middleware for Passport.js that authenticates a user using their username and password.
    * It checks if the user exists in the database and if the provided password matches the stored password hash.

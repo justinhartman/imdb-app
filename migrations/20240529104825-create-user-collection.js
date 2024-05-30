@@ -1,3 +1,8 @@
+/**
+ * User collection migration.
+ * @module migrations/create-users
+ * @description This module contains a migration function that creates a 'users' collection in the database.
+ */
 module.exports = {
   /**
    * Migrates the database schema by creating a 'users' collection.

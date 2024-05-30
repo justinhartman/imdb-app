@@ -1,10 +1,18 @@
 /**
+ * Configuration for migrate-mongo package.
+ * @module config
+ * @description This module contains the configuration for the application.
+ */
+
+/**
+ * Application configuration.
  * @description This function imports the application configuration from the 'helpers/appHelper' module.
  * @returns {Object} The application configuration object.
  */
 const appConfig = require('./config/app');
 
 /**
+ * The MongoDB configuration object.
  * @description This object contains the configuration for the application.
  * @type {Object}
  * @property {string} mongodb.url - The MongoDB URI.
@@ -39,7 +47,7 @@ const config = {
 };
 
 /**
- * @description This function exports the configuration object.
+ * @description This exports the configuration object.
  * @returns {Object} The configuration object.
  */
 module.exports = config;

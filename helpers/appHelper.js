@@ -1,3 +1,10 @@
+/**
+ * Application helpers.
+ * @module helpers/app
+ * @description This module contains helper functions for the application.
+ */
+
+/** @inheritDoc */
 const axios = require('axios');
 const asyncHandler = require('express-async-handler');
 const appConfig = require('../config/app');
