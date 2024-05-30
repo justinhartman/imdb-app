@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
-const { API_HOST, API_PORT, APP_URL } = require('./config/app');
+const { appConfig } = require('./config/app');
 const routes = require('./routes/appRoutes');
 
 /**
@@ -12,7 +12,7 @@ const routes = require('./routes/appRoutes');
  * @param {NextFunction} next - The next middleware function in the chain.
  */
 app.use((req, res, next) => {
-  res.locals.APP_URL = APP_URL;
+  res.locals.APP_URL = appConfig.APP_URL;
   next();
 });
 
@@ -39,6 +39,6 @@ app.use('/', routes);
  * @param {Number} API_PORT - The port number on which the server will listen on.
  * @returns {void} - No return value.
  */
-app.listen(API_PORT, API_HOST, () => {
-  console.log(`Server is running on http://${API_HOST}:${API_PORT}`);
+app.listen(appConfig.API_PORT, appConfig.API_HOST, () => {
+  console.log(`Server is running on http://${appConfig.API_HOST}:${appConfig.API_PORT}`);
 });
