@@ -1,6 +1,6 @@
 const axios = require('axios');
 const asyncHandler = require('express-async-handler');
-const { appConfig } = require('../config/app');
+const appConfig = require('../config/app');
 
 /**
  * Constructs the parameters for an OMDB API request.

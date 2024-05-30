@@ -2,7 +2,7 @@
  * @description This function imports the application configuration from the 'helpers/appHelper' module.
  * @returns {Object} The application configuration object.
  */
-const { appConfig } = require('./config/app');
+const appConfig = require('./config/app');
 
 /**
  * @description This object contains the configuration for the application.

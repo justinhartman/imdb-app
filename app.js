@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
-const { appConfig } = require('./config/app');
+const appConfig = require('./config/app');
 const routes = require('./routes/appRoutes');
 
 /**
