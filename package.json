@@ -16,6 +16,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "lint": "node_modules/.bin/ejslint ./views/*.ejs ./views/**/*.ejs",
     "db:status": "node_modules/.bin/migrate-mongo status",
     "db:migrate": "node_modules/.bin/migrate-mongo up",
     "db:rollback": "node_modules/.bin/migrate-mongo down"
@@ -36,6 +37,7 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "ejs-lint": "^2.0.0",
     "migrate-mongo": "^11.0.0"
   }
 }
