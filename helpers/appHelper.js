@@ -54,7 +54,10 @@ const fetchOmdbData = async (query, search = true, type = '') => {
 const fetchAndUpdatePosters = async (show) => {
   await Promise.all(show.map(async (x) => {
     const data = await fetchOmdbData(x.imdb_id, false);
-    x.poster = data.Poster || '/images/no_image_available.png';
+    if (data.Response === 'True')
+      x.poster = data.Poster !== 'N/A' ? data.Poster : '/images/no_image_available.png';
+    else
+      x.poster = '/images/no_image_available.png';
   }));
 };
 
