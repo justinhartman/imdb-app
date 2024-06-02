@@ -96,6 +96,7 @@ router.use(passport.session());
 router.get('/', asyncHandler(async (req, res, next) => {
   const query = req.query.q || '';
   const type = req.query.type || 'movie';
+  const canonical = res.locals.APP_URL;
   let newMovies = [];
   let newSeries = [];
 
@@ -119,7 +120,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
   newSeries = axiosSeriesResponse.data.result.items || [];
   await fetchAndUpdatePosters(newSeries);
 
-  res.render('index', { newMovies, newSeries, query, type, user: req.user });
+  res.render('index', { newMovies, newSeries, query, type, canonical, user: req.user });
 }));
 
 /**
@@ -131,12 +132,15 @@ router.get('/', asyncHandler(async (req, res, next) => {
  * @returns {void} - No return value.
  */
 router.get('/view/:id/:type', asyncHandler(async (req, res, next) => {
+  const query = req.params.q || '';
   const id = req.params.id;
   let type = req.params.type;
-  if (type === 'series') type = 'tv'
-  const iframeSrc = `https://vidsrc.to/embed/${type}/${id}`;
+  let t = 'movie';
+  if (type === 'series') t = 'tv'
+  const iframeSrc = `https://vidsrc.to/embed/${t}/${id}`;
+  const canonical = `${res.locals.APP_URL}/view/${id}/${type}`;
   const data = await fetchOmdbData(id, false);
-  res.render('view', { data, iframeSrc, user: req.user });
+  res.render('view', { data, iframeSrc, query, type, canonical, user: req.user });
 }));
 
 /**
@@ -147,12 +151,13 @@ router.get('/view/:id/:type', asyncHandler(async (req, res, next) => {
  * @returns {void} - No return value.
  */
 router.get('/search', asyncHandler(async (req, res, next) => {
-  const query = req.query.q;
+  const query = req.query.q.trim();
   const type = req.query.type || 'movie';
   const omdbSearch = await fetchOmdbData(query, true, type);
   const results = omdbSearch.Search || [];
+  const canonical = `${res.locals.APP_URL}/search/?q=${query}&type=${type}`;
   if (!query) res.redirect('/');
-  res.render('search', { query, results, type, user: req.user });
+  res.render('search', { query, results, type, canonical, user: req.user });
 }));
 
 /**

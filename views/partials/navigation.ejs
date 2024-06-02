@@ -1,0 +1,38 @@
+<body class="bg-dark bg-gradient">
+    <header class="pt-3 p-md-3 bg-dark text-white sticky-top shadow">
+        <div class="container">
+            <!-- Header Search -->
+            <div class="row">
+                <form action="<%= APP_URL %>/search" method="get" name="search">
+                    <div class="input-group text-center">
+                        <a href="<%= APP_URL %>/" class="display-5 text-info text-decoration-none col-sm-12 col-md-3" for="q">
+                            <i class="bi-collection-play-fill px-1"></i> Binger
+                        </a>
+                        <div class="col-sm-12 col-md-9 my-md-2">
+                            <div class="row my-2 my-md-0">
+                                <div class="col-sm-12 col-md-7 pe-md-0">
+                                    <input type="text" class="form-control" name="q" id="q"
+                                           aria-label="Search for your next binge..."
+                                           placeholder="Search for your next binge..."
+                                           value="<%= query _%>" required>
+                                </div>
+                                <div class="col-sm-12 col-md-5 my-md-0 my-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="type" id="movie" value="movie" <%= type === 'movie' ? 'checked' : '' %>>
+                                        <label class="form-check-label text-info" for="movie">Movie</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="type" id="series" value="series" <%= type === 'series' ? 'checked' : '' %>>
+                                        <label class="form-check-label text-info" for="series">TV Show</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-info"><i class="bi-search-heart-fill"></i> Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div class="b-divider"></div>

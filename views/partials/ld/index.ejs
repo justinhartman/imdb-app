@@ -1,0 +1,24 @@
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Binger Watch Free Movies & TV Series",
+            "url": "<%= canonical %>",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "<%= canonical %>/search?q={search_term_string}&type={movie_or_series}",
+                "query-input": [
+                    {
+                        "@type": "PropertyValueSpecification",
+                        "valueRequired": true,
+                        "valueName": "search_term_string"
+                    },
+                    {
+                        "@type": "PropertyValueSpecification",
+                        "valueRequired": false,
+                        "valueName": "movie_or_series"
+                    }
+                ]
+            }
+        }
+    </script>

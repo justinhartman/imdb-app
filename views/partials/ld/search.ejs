@@ -1,0 +1,16 @@
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": [
+            <% results.forEach((result, index) => { -%>{
+                "@type": "<%= result.Type === 'movie' ? 'Movie' : 'TVSeries' %>",
+                "position": <%= index + 1 -%>,
+                "name": "<%= result.Title -%>",
+                "url": "<%= APP_URL %>/view/<%= result.imdbID -%>/<%= result.Type -%>",
+                "image": "<%= result.Poster !== 'N/A' ? result.Poster : APP_URL + '/images/no_image_available.png' -%>"
+            }<% if (index < results.length - 1) { -%>,<% } %>
+            <% }); %>
+            ]
+        }
+    </script>
