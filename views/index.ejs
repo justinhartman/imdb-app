@@ -15,19 +15,11 @@
         <div class="row">
             <h1 class="display-4 my-4 text-warning">New Movies</h1>
             <% newMovies.forEach(movie => { %>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card text-bg-dark mb-3">
-                    <a href="<%= APP_URL %>/view/<%= movie.imdb_id %>/movie">
-                        <img src="<%= movie.poster %>" alt="<%= movie.title %>" class="card-img-top">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title text-nowrap overflow-hidden text-warning"><%= movie.title %></h5>
-                        <a href="<%= APP_URL %>/view/<%= movie.imdb_id %>/movie" class="btn btn-primary w-100">
-                            <i class="bi-play-btn-fill px-1"></i> Watch Now
-                        </a>
-                    </div>
-                </div>
-            </div>
+                <%- include('./partials/card.ejs', {
+                    url: `${APP_URL}/view/${movie.imdb_id}/movie`,
+                    poster: movie.poster,
+                    title: movie.title
+                })%>
             <% }); %>
         </div>
     </div>
@@ -38,20 +30,12 @@
     <div class="container">
         <div class="row">
             <h1 class="display-4 my-4 text-warning">New TV Shows</h1>
-            <% newSeries.forEach(show => { %>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card text-bg-dark mb-3">
-                    <a href="<%= APP_URL %>/view/<%= show.imdb_id %>/series">
-                        <img class="card-img-top" src="<%= show.poster %>" alt="<%= show.title %>">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title text-nowrap overflow-hidden text-warning"><%= show.title %></h5>
-                        <a class="btn btn-primary w-100" href="<%= APP_URL %>/view/<%= show.imdb_id %>/series">
-                            <i class="bi-collection-play-fill px-1"></i> Watch Now
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <% newSeries.forEach(series => { %>
+                <%- include('./partials/card.ejs', {
+                    url: `${APP_URL}/view/${series.imdb_id}/series`,
+                    poster: series.poster,
+                    title: series.title
+                })%>
             <% }); %>
         </div>
     </div>

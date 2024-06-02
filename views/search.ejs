@@ -14,19 +14,11 @@
         <div class="row">
             <h1 class="display-4 my-4 text-warning text-capitalize"><%= query %></h1>
             <% results.forEach(result => { %>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card text-bg-dark mb-3">
-                    <a href="<%= APP_URL %>/view/<%= result.imdbID %>/<%= type === 'movie' ? 'movie' : 'series' %>">
-                        <img class="card-img-top" src="<%= result.Poster !== 'N/A' ? result.Poster : '/images/no_image_available.png' %>" alt="<%= result.Title %>">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title text-nowrap overflow-hidden"><%= result.Title %> (<%= result.Year %>)</h5>
-                        <a class="btn btn-primary w-100" href="<%= APP_URL %>/view/<%= result.imdbID %>/<%= type === 'movie' ? 'movie' : 'series' %>">
-                            <i class="bi-play-btn-fill px-1"></i> Watch Now
-                        </a>
-                    </div>
-                </div>
-            </div>
+                <%- include('./partials/card.ejs', {
+                    url: `${APP_URL}/view/${result.imdbID}/${type === 'movie' ? 'movie' : 'series'}`,
+                    poster: result.Poster !== 'N/A' ? result.Poster : '/images/no_image_available.png',
+                    title: `${result.Title} (${result.Year})`
+                })%>
             <% }); %>
             <div class="text-center p-4">
                 <a href="<%= APP_URL %>/" class="btn btn-warning btn-md-lg">Back to Home</a>
