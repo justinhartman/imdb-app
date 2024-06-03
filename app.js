@@ -1,3 +1,14 @@
+/**
+ * Binger App.
+ * Web application that provides a user-friendly interface for searching and watching movies and TV shows.
+ * @author     Justin Hartman <code@justhart.com>
+ * @copyright  Copyright (c) 2024, Justin Hartman <https://justhart.com>
+ * @link       https://binger.uk Binger UK
+ * @license    MIT
+ * @version    0.0.1
+ */
+
+/** @inheritDoc */
 const express = require('express');
 const app = express();
 const path = require('path');
