@@ -54,7 +54,27 @@
         </div>
     </div>
 <% } %>
+<<<<<<< HEAD
 <%- include('./partials/disqus.ejs') -%>
+=======
+    <div class="row my-4">
+        <div id="disqus_thread"></div>
+        <script>
+          var disqus_config = function () {
+            this.page.url = "<%= APP_URL %>/view/<%= data.imdbID %>/<%= data.Type %>";
+            this.page.identifier = "<%= data.imdbID %>";
+          };
+          // Disqus load code, do not edit.
+          (function () {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://binger-uk.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+>>>>>>> origin/develop
     <div class="row mt-2">
         <div class="text-center">
             <a href="<%= APP_URL %>/" class="btn btn-outline-warning btn-md-lg">Home</a>
