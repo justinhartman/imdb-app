@@ -19,7 +19,13 @@
     "lint": "node_modules/.bin/ejslint ./views/*.ejs ./views/**/*.ejs",
     "db:status": "node_modules/.bin/migrate-mongo status",
     "db:migrate": "node_modules/.bin/migrate-mongo up",
-    "db:rollback": "node_modules/.bin/migrate-mongo down"
+    "db:rollback": "node_modules/.bin/migrate-mongo down",
+    "publish:patch": "npx grunt",
+    "publish:minor": "npx grunt minor",
+    "publish:major": "npx grunt major",
+    "deploy:default": "yarn db:migrate && yarn start",
+    "deploy:yarn": "yarn db:migrate && yarn start",
+    "deploy:npm": "npm run db:migrate && npm start"
   },
   "dependencies": {
     "axios": "^1.6.8",

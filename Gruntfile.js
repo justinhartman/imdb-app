@@ -92,7 +92,7 @@ module.exports = function (grunt) {
     gitadd: {
       task: {
         files: {
-          src: ['docs/tags', 'public/site.webmanifest', 'package.json', 'yarn.lock', 'README.md'],
+          src: ['docs/tags', 'views', 'public/site.webmanifest', 'package.json', 'yarn.lock', 'README.md'],
         },
       },
     },
@@ -126,5 +126,5 @@ module.exports = function (grunt) {
   grunt.registerTask('publish', ['gitadd', 'gitcommit', 'gittag', 'gitpush']);
   grunt.registerTask('minor', ['bump:minor', 'git_changelog', 'publish']);
   grunt.registerTask('major', ['bump:major', 'git_changelog', 'publish']);
-  grunt.registerTask('default', ['bump', 'git_changelog', 'publish']);
+  grunt.registerTask('default', ['bump:patch', 'git_changelog', 'publish']);
 };
