@@ -10,7 +10,7 @@
     <title><%= data.Title %> (<%= data.Year %>) - Binger Watch Free Movies & TV Series</title>
     <meta name="description" content="<%= data.Plot %>">
 <% } -%>
-<%- include('./partials/meta-base.ejs') -%>
+<%- include('./partials/meta/base.ejs') -%>
 <% if (data.Response !== 'False') { -%>
 <%- include('./partials/ld/view.ejs') -%>
 <% } -%>
