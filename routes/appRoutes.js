@@ -242,4 +242,27 @@ router.get('/profile', ensureAuthenticated, async (req, res) => {
   res.render('profile', { user: req.user });
 });
 
+/**
+ * Handles the '/add-to-watchlist' route.
+ * This route is responsible for adding a movie or TV show to the user's watchlist.
+ * @param {Request} req - Express request object containing the request parameters and query string.
+ * @param {Response} res - Express response object used to send the redirect response.
+ * @param {Function} next - Express middleware function used to handle errors.
+ * @returns {void} - No return value.
+ */
+router.post('/add-to-watchlist', ensureAuthenticated, async (req, res) => {
+  const { imdbID, title, poster, type } = req.body;
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user.watchlist.some(item => item.imdbID === imdbID)) {
+      user.watchlist.push({ imdbID, title, poster, type });
+      await user.save();
+    }
+    res.redirect('/profile');
+  } catch (error) {
+    console.error(error.message);
+    res.redirect('/');
+  }
+});
+
 module.exports = router;
