@@ -18,7 +18,8 @@ const connectDB = require('../config/db');
 require('../config/passport')(passport);
 
 const { ensureAuthenticated } = require('../middleware/auth');
-const User = require('../models/User');
+const authController = require('../controllers/authController');
+const watchlistController = require('../controllers/watchlistController');
 
 /**
  * Make sure the MongoDB URI is defined else stop.
@@ -106,11 +107,7 @@ router.get('/login', (req, res) => {
  * @param {Function} next - Express middleware function used to handle errors.
  * @returns {void} - No return value.
  */
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/profile',
-  failureRedirect: '/login',
-  failureFlash: true,
-}));
+router.post('/login', authController.login);
 
 /**
  * Handles the '/register' route.
@@ -132,20 +129,7 @@ router.get('/register', (req, res) => {
  * @param {Function} next - Express middleware function used to handle errors.
  * @returns {void} - No return value.
  */
-router.post('/register', async (req, res) => {
-  const { username, password } = req.body;
-  try {
-    let user = await User.findOne({ username });
-    if (user) return res.redirect('/register');
-    user = new User({ username, password });
-    await user.save();
-    req.flash('success_msg', 'You are now registered and can log in');
-    res.redirect('/login');
-  } catch (error) {
-    req.flash('error_msg', `Failed to register. ${error.message}`);
-    res.redirect('/register');
-  }
-});
+router.post('/register', authController.register);
 
 /**
  * Handles the '/logout' route.
@@ -155,13 +139,7 @@ router.post('/register', async (req, res) => {
  * @param {Function} next - Express middleware function used to handle errors.
  * @returns {void} - No return value.
  */
-router.get('/logout', (req, res, next) => {
-  req.logout((error) => {
-    if (error) return next(error.message);
-    req.flash('success_msg', 'You are now logged out of the app.');
-    res.redirect('/');
-  });
-});
+router.get('/logout', authController.logout);
 
 /**
  * Handles the '/profile' route.
@@ -183,21 +161,8 @@ router.get('/profile', ensureAuthenticated, async (req, res) => {
  * @param {Function} next - Express middleware function used to handle errors.
  * @returns {void} - No return value.
  */
-router.post('/add-to-watchlist', ensureAuthenticated, async (req, res) => {
-  const { imdbID, title, poster, type } = req.body;
-  try {
-    const user = await User.findById(req.user.id);
-    if (!user.watchlist.some(item => item.imdbID === imdbID)) {
-      user.watchlist.push({ imdbID, title, poster, type });
-      await user.save();
-    }
-    req.flash('success_msg', `Added ${title} to watchlist.`);
-    res.redirect('/profile');
-  } catch (error) {
-    console.error(error.message);
-    req.flash('error_msg', `Failed to add to watchlist. ${error.message}`);
-    res.redirect('/');
-  }
-});
+router.post('/add-to-watchlist', ensureAuthenticated, watchlistController.addToWatchlist);
+
+router.post('/delete-from-watchlist', ensureAuthenticated, watchlistController.deleteFromWatchlist);
 
 module.exports = router;
