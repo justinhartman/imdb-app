@@ -19,8 +19,4 @@ lijit.com, 279534-eb, DIRECT, fafdf38b16bf6b2b
 taboola.com, 1003147, DIRECT, c228e6794e811952
 themediagrid.com, EGZCXK, DIRECT, 35d5010d7789b49d
 themediagrid.com, 7MTKQZ, RESELLER, 35d5010d7789b49d
-<<<<<<< HEAD
 appnexus.com, 2797, RESELLER
-=======
-appnexus.com, 2797, RESELLER
->>>>>>> origin/develop
