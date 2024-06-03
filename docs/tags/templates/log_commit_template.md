@@ -1,0 +1,1 @@
+<%= link %>: <%= commit.subject %> <% if (closes) { %>(<%= closes %>)<% } %>
