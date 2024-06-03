@@ -14,7 +14,7 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
     bump: {
       options: {
-        files: ['package.json', 'site.webmanifest', 'app.js'],
+        files: ['package.json', 'public/site.webmanifest'],
         updateConfigs: ['pkg', 'git_changelog'],
         commit: false,
         createTag: false,
@@ -92,7 +92,7 @@ module.exports = function (grunt) {
     gitadd: {
       task: {
         files: {
-          src: ['app.js', 'docs/tags', 'package.json', 'yarn.lock', 'README.md', 'public/site.webmanifest'],
+          src: ['docs/tags', 'public/site.webmanifest', 'package.json', 'yarn.lock', 'README.md'],
         },
       },
     },

@@ -5,7 +5,6 @@
  * @copyright  Copyright (c) 2024, Justin Hartman <https://justhart.com>
  * @link       https://binger.uk Binger UK
  * @license    MIT
- * @version    0.0.1
  */
 
 /** @inheritDoc */
