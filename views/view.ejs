@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <% if (data.Response === 'False') { -%>
-    <title>Binger Watch Free Movies & TV Series</title>
-    <meta name="description" content="Free app for searching, browsing and watching movies and TV shows.">
+    <title><%= APP_NAME %> <%= APP_SUBTITLE _%></title>
+    <meta name="description" content="<%= APP_DESCRIPTION _%>">
 <% } else { -%>
-    <title><%= data.Title %> (<%= data.Year %>) - Binger Watch Free Movies & TV Series</title>
+    <title><%= data.Title %> (<%= data.Year %>) - <%= APP_NAME %> <%= APP_SUBTITLE _%></title>
     <meta name="description" content="<%= data.Plot %>">
 <% } -%>
 <%- include('./partials/meta/base.ejs') -%>
 <% if (data.Response !== 'False') { -%>
+<%- include('./partials/meta/og-view.ejs') -%>
 <%- include('./partials/ld/view.ejs') -%>
 <% } -%>
 </head>
