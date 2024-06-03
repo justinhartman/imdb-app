@@ -10,17 +10,7 @@
     <div class="container">
         <h1>Login</h1>
 
-        <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
-            <div class="alert alert-success"><%= success_msg %></div>
-        <% } %>
-
-        <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
-            <div class="alert alert-danger"><%= error_msg %></div>
-        <% } %>
-
-        <% if (typeof error !== 'undefined' && error.length > 0) { %>
-            <div class="alert alert-danger"><%= error %></div>
-        <% } %>
+        <%- include('./partials/alerts.ejs') -%>
 
         <form action="/login" method="post">
             <div class="mb-3">
