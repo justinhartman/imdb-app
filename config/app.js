@@ -39,6 +39,12 @@ const appConfig = () => {
     APP_SECRET: process.env.APP_SECRET || 'DnOBGdGY3YjGFWLkvhGquqtSmlSKBMFw',
     // Change the APP_URL to the domain where you will be using the application on.
     APP_URL: process.env.APP_URL || 'http://localhost:3000',
+    // Change to the name of your application.
+    APP_NAME: process.env.APP_NAME || 'Binger',
+    // Change to the subtitle of your application.
+    APP_SUBTITLE: process.env.APP_SUBTITLE || '',
+    // Change to the description of your application.
+    APP_DESCRIPTION: process.env.APP_DESCRIPTION || 'Free app for searching, browsing and watching movies and TV shows.',
     // The name of your MongoDB database.
     MONGO_DB_NAME: process.env.MONGO_DATABASE,
     MONGO_DB_URI: mongoUri,

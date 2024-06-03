@@ -12,6 +12,9 @@ const routes = require('./routes/appRoutes');
  * @param {NextFunction} next - The next middleware function in the chain.
  */
 app.use((req, res, next) => {
+  res.locals.APP_NAME = appConfig.APP_NAME;
+  res.locals.APP_SUBTITLE = appConfig.APP_SUBTITLE;
+  res.locals.APP_DESCRIPTION = appConfig.APP_DESCRIPTION;
   res.locals.APP_URL = appConfig.APP_URL;
   next();
 });
