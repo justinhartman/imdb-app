@@ -16,7 +16,7 @@
             <% results.forEach(result => { %>
                 <%- include('./partials/card.ejs', {
                     url: `${APP_URL}/view/${result.imdbID}/${type === 'movie' ? 'movie' : 'series'}`,
-                    poster: result.Poster !== 'N/A' ? result.Poster : '/images/no_image_available.png',
+                    poster: result.Poster !== 'N/A' ? result.Poster : `${APP_URL}/images/no-binger.jpg`,
                     title: `${result.Title} (${result.Year})`
                 })%>
             <% }); %>

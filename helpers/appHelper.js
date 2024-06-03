@@ -55,9 +55,9 @@ const fetchAndUpdatePosters = async (show) => {
   await Promise.all(show.map(async (x) => {
     const data = await fetchOmdbData(x.imdb_id, false);
     if (data.Response === 'True')
-      x.poster = data.Poster !== 'N/A' ? data.Poster : '/images/no_image_available.png';
+      x.poster = data.Poster !== 'N/A' ? data.Poster : `${appConfig.APP_URL}/images/no-binger.jpg`;
     else
-      x.poster = '/images/no_image_available.png';
+      x.poster = `${appConfig.APP_URL}/images/no-binger.jpg`;
   }));
 };
 

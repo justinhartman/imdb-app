@@ -4,7 +4,7 @@
           "@type": "<%= data.Type === 'movie' ? 'Movie' : 'TVSeries' -%>",
           "name": "<%= data.Title %>",
           "url": "<%= canonical -%>",
-          "image": "<%= data.Poster !== 'N/A' ? data.Poster : APP_URL + '/images/no_image_available.png' -%>",
+          "image": "<%= data.Poster !== 'N/A' ? data.Poster : '<%= APP_URL %>/images/no-binger.jpg' -%>",
           "description": "<%= data.Plot -%>",
           "director": "<%= data.Director -%>",
           "actor": [<% data.Actors.split(', ').forEach((actor, index, array) => { %>
