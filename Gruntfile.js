@@ -14,7 +14,7 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
     bump: {
       options: {
-        files: ['package.json', 'site.webmanifest', 'app.js'],
+        files: ['package.json', 'public/site.webmanifest'],
         updateConfigs: ['pkg', 'git_changelog'],
         commit: false,
         createTag: false,
@@ -78,6 +78,10 @@ module.exports = function (grunt) {
               grep: '^yarn',
             },
             {
+              title: 'NPM Package Updates',
+              grep: '^npm',
+            },
+            {
               title: 'Branches Merged',
               grep: '^Merge branch',
             },
@@ -92,7 +96,7 @@ module.exports = function (grunt) {
     gitadd: {
       task: {
         files: {
-          src: ['app.js', 'docs/tags', 'package.json', 'yarn.lock', 'README.md', 'public/site.webmanifest'],
+          src: ['docs/tags', 'views', 'public/site.webmanifest', 'package.json', 'yarn.lock', 'README.md'],
         },
       },
     },
@@ -126,5 +130,5 @@ module.exports = function (grunt) {
   grunt.registerTask('publish', ['gitadd', 'gitcommit', 'gittag', 'gitpush']);
   grunt.registerTask('minor', ['bump:minor', 'git_changelog', 'publish']);
   grunt.registerTask('major', ['bump:major', 'git_changelog', 'publish']);
-  grunt.registerTask('default', ['bump', 'git_changelog', 'publish']);
+  grunt.registerTask('default', ['bump:patch', 'git_changelog', 'publish']);
 };
