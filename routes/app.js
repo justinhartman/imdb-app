@@ -69,7 +69,7 @@ router.get('/view/:id/:type', asyncHandler(async (req, res, next) => {
   const iframeSrc = `https://vidsrc.to/embed/${t}/${id}`;
   const canonical = `${res.locals.APP_URL}/view/${id}/${type}`;
   const data = await fetchOmdbData(id, false);
-  res.render('view', { data, iframeSrc, query, type, canonical, user: req.user });
+  res.render('view', { data, iframeSrc, query, id, type, canonical, user: req.user });
 }));
 
 /**
