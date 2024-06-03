@@ -64,4 +64,5 @@ const fetchAndUpdatePosters = async (show) => {
 module.exports = {
   fetchAndUpdatePosters: asyncHandler(fetchAndUpdatePosters),
   fetchOmdbData: asyncHandler(fetchOmdbData),
+  useAuth: appConfig.MONGO_DB_URI !== '',
 };

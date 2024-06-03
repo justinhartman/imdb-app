@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 
 const appConfig = require('./config/app');
+const appHelper = require('./helpers/appHelper');
 const appRoutes = require('./routes/app');
 const authRoutes = require('./routes/auth');
 
@@ -17,6 +18,8 @@ app.use((req, res, next) => {
   res.locals.APP_SUBTITLE = appConfig.APP_SUBTITLE;
   res.locals.APP_DESCRIPTION = appConfig.APP_DESCRIPTION;
   res.locals.APP_URL = appConfig.APP_URL;
+  // We have different card types based on whether the app uses MongoDB or not.
+  res.locals.CARD_TYPE = appHelper.useAuth ? 'card-add' : 'card';
   next();
 });
 
