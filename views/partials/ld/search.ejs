@@ -8,7 +8,7 @@
                 "position": <%= index + 1 -%>,
                 "name": "<%= result.Title -%>",
                 "url": "<%= APP_URL %>/view/<%= result.imdbID -%>/<%= result.Type -%>",
-                "image": "<%= result.Poster !== 'N/A' ? result.Poster : '<%= APP_URL %>/images/no-binger.jpg', -%>"
+                "image": "<%= result.Poster !== 'N/A' ? result.Poster : `${APP_URL}/images/no-binger.jpg` -%>"
             }<% if (index < results.length - 1) { -%>,<% } %>
             <% }); %>
             ]
