@@ -9,17 +9,19 @@
 <%- include('./partials/meta/og-index.ejs') -%>
 <%- include('./partials/ld/index.ejs') -%>
 </head>
-<%# This imports the <body> tag and renders the navigation/search bar. -%>
 <%- include('./partials/navigation.ejs') -%>
     <!-- New Movies -->
     <div class="container">
         <div class="row">
+            <%- include('./partials/alerts.ejs') -%>
             <h1 class="display-4 my-4 text-warning">New Movies</h1>
             <% newMovies.forEach(movie => { %>
-                <%- include('./partials/card.ejs', {
+                <%-include(`./partials/${card}.ejs`, {
                     url: `${APP_URL}/view/${movie.imdb_id}/movie`,
                     poster: movie.poster,
-                    title: movie.title
+                    title: movie.title,
+                    id: movie.imdb_id,
+                    type: 'movie'
                 })%>
             <% }); %>
         </div>
@@ -32,10 +34,12 @@
         <div class="row">
             <h1 class="display-4 my-4 text-warning">New TV Shows</h1>
             <% newSeries.forEach(series => { %>
-                <%- include('./partials/card.ejs', {
+                <%-include(`./partials/${card}.ejs`, {
                     url: `${APP_URL}/view/${series.imdb_id}/series`,
                     poster: series.poster,
-                    title: series.title
+                    title: series.title,
+                    id: series.imdb_id,
+                    type: 'series'
                 })%>
             <% }); %>
         </div>

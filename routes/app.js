@@ -49,7 +49,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
   newSeries = axiosSeriesResponse.data.result.items || [];
   await fetchAndUpdatePosters(newSeries);
 
-  res.render('index', { newMovies, newSeries, query, type, canonical, user: req.user });
+  res.render('index', { newMovies, newSeries, query, type, canonical, card: res.locals.CARD_TYPE, user: req.user });
 }));
 
 /**
@@ -86,7 +86,7 @@ router.get('/search', asyncHandler(async (req, res, next) => {
   const results = omdbSearch.Search || [];
   const canonical = `${res.locals.APP_URL}/search/?q=${query}&type=${type}`;
   if (!query) res.redirect('/');
-  res.render('search', { query, results, type, canonical, user: req.user });
+  res.render('search', { query, results, type, canonical, card: res.locals.CARD_TYPE, user: req.user });
 }));
 
 module.exports = router;

@@ -9,22 +9,22 @@
 </head>
 <%- include('./partials/navigation.ejs') -%>
     <div class="container">
-        <h1>Profile</h1>
-        <p>Welcome, <%= user.username %></p>
-        <a href="/logout" class="btn btn-secondary">Logout</a>
-        <h2>Watchlist</h2>
-        <% if (user.watchlist.length > 0) { %>
-            <ul class="list-group">
-                <% user.watchlist.forEach(item => { %>
-                    <li class="list-group-item">
-                        <img src="<%= item.poster %>" alt="<%= item.title %>" style="width: 50px; height: auto;">
-                        <strong><%= item.title %></strong>
-                        <span>(<%= item.type %>)</span>
-                    </li>
-                <% }); %>
-            </ul>
-        <% } else { %>
-            <p>Your watchlist is empty.</p>
-        <% } %>
+        <%- include('./partials/alerts.ejs') -%>
+        <div class="row">
+            <h1 class="display-4 my-4 text-warning">Your Watchlist</h1>
+        <% if (user.watchlist.length > 0) { -%>
+            <% user.watchlist.forEach(item => { -%>
+                <%-include('./partials/card-delete.ejs', {
+                    url: `${APP_URL}/view/${item.imdbID}/${item.type}`,
+                    poster: item.poster,
+                    title: item.title,
+                    id: item.imdbID,
+                    type: item.type
+                })%>
+            <% }); -%>
+        <% } else { -%>
+            <h2 class="card-title text-info">Your watchlist is empty.</h2>
+        <% } -%>
+        </div>
     </div>
 <%- include('./partials/footer.ejs') -%>
