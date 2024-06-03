@@ -93,7 +93,10 @@ router.use(passport.session());
  * @param {Response} res - Express response object used to send the rendered login page.
  * @returns {void} - No return value.
  */
-router.get('/login', (req, res) => res.render('login'));
+router.get('/login', (req, res) => {
+  const canonical = `${res.locals.APP_URL}/login`;
+  res.render('login', { canonical, query: '', type: 'movie' });
+});
 
 /**
  * Handles the '/login' route.
@@ -116,7 +119,10 @@ router.post('/login', passport.authenticate('local', {
  * @param {Response} res - Express response object used to send the rendered registration page.
  * @returns {void} - No return value.
  */
-router.get('/register', (req, res) => res.render('register'));
+router.get('/register', (req, res) => {
+  const canonical = `${res.locals.APP_URL}/register`;
+  res.render('register', { canonical, query: '', type: 'movie' })
+});
 
 /**
  * Handles the '/register' route.
@@ -165,7 +171,8 @@ router.get('/logout', (req, res, next) => {
  * @returns {void} - No return value.
  */
 router.get('/profile', ensureAuthenticated, async (req, res) => {
-  res.render('profile', { user: req.user });
+  const canonical = `${res.locals.APP_URL}/profile`;
+  res.render('profile', { canonical, query: '', type: 'movie', user: req.user });
 });
 
 /**
