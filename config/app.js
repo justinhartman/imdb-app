@@ -15,12 +15,13 @@ const MONGO_HOST = process.env.MONGO_HOST;
 const MONGO_PORT = process.env.MONGO_PORT;
 const MONGO_USERNAME = process.env.MONGO_USERNAME;
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI || '';
 
 /**
  * This builds out the proper MongoDB URI string so the app uses the correct connection.
  * We check if you have a username and password set on your instance else we use the standard connection string.
  * @type {string}
+ * @returns {string} The MongoDB URI string.
  */
 const mongoUri = MONGO_USERNAME && MONGO_PASSWORD
   ? `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}`

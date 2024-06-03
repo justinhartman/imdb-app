@@ -3,7 +3,8 @@ const app = express();
 const path = require('path');
 
 const appConfig = require('./config/app');
-const routes = require('./routes/appRoutes');
+const appRoutes = require('./routes/app');
+const authRoutes = require('./routes/auth');
 
 /**
  * Middleware function that sets the APP_URL as a local variable for the views.
@@ -23,18 +24,20 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 /**
- * Uses the provided static middleware for the specified path.
+ * Uses the provided routes middleware for the specified path.
  * @param {String} path - The path to the directory containing the static files.
  * @returns {void} - No return value.
  */
 app.use(express.static('public'));
 
 /**
- * Uses the provided routes middleware for the root path ('/').
+ * Conditionally uses the provided routes middleware for the root path ('/').
+ * If MONGO_DB_URI is not empty, it uses both appRoutes and authRoutes middlewares.
+ * Otherwise, it only uses appRoutes middleware.
  * @param {Object} routes - The routes middleware to be used for the root path.
  * @returns {void} - No return value.
  */
-app.use('/', routes);
+appConfig.MONGO_DB_URI !== '' ? app.use('/', appRoutes, authRoutes) : app.use('/', appRoutes);
 
 /**
  * Starts the server and listens on the specified port.
