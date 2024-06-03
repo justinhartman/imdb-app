@@ -1,6 +1,13 @@
+/**
+ * Application helpers.
+ * @module helpers/app
+ * @description This module contains helper functions for the application.
+ */
+
+/** @inheritDoc */
 const axios = require('axios');
 const asyncHandler = require('express-async-handler');
-const { OMDB_API_KEY, OMDB_API_URL } = require('../config/app');
+const appConfig = require('../config/app');
 
 /**
  * Constructs the parameters for an OMDB API request.
@@ -11,9 +18,9 @@ const { OMDB_API_KEY, OMDB_API_URL } = require('../config/app');
  */
 const constructOmdbParams = (query, search, type) => {
   return {
-    apikey: OMDB_API_KEY,
-    ...(type && {type: type}),
-    ...(search ? {s: query} : {i: query})
+    apikey: appConfig.OMDB_API_KEY,
+    ...(type && { type: type }),
+    ...(search ? { s: query } : { i: query })
   };
 };
 
@@ -29,7 +36,7 @@ const fetchOmdbData = async (query, search = true, type = '') => {
   const params = constructOmdbParams(query, search, type);
   const options = {
     method: 'GET',
-    url: OMDB_API_URL,
+    url: appConfig.OMDB_API_URL,
     params: params,
     headers: {
       'Content-Type': 'application/json'
@@ -47,11 +54,15 @@ const fetchOmdbData = async (query, search = true, type = '') => {
 const fetchAndUpdatePosters = async (show) => {
   await Promise.all(show.map(async (x) => {
     const data = await fetchOmdbData(x.imdb_id, false);
-    x.poster = data.Poster || '/images/no_image_available.png';
+    if (data.Response === 'True')
+      x.poster = data.Poster !== 'N/A' ? data.Poster : `${appConfig.APP_URL}/images/no-binger.jpg`;
+    else
+      x.poster = `${appConfig.APP_URL}/images/no-binger.jpg`;
   }));
 };
 
 module.exports = {
   fetchAndUpdatePosters: asyncHandler(fetchAndUpdatePosters),
   fetchOmdbData: asyncHandler(fetchOmdbData),
+  useAuth: appConfig.MONGO_DB_URI !== '',
 };

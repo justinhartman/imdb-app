@@ -3,96 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= query %> - Binger Watch Free Movies & TV Series</title>
-    <meta name="description" content="Free app for watching <%= query %> movies and TV shows.">
-    <link rel="canonical" href="<%= APP_URL %>/search?q=<%= query %>&amp;type=<%= results.Type %>"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="<%= APP_URL %>/images/favicons/apple-touch-icon.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="<%= APP_URL %>/images/favicons/favicon-32x32.png"/>
-    <link rel="icon" type="image/png" sizes="16x16" href="<%= APP_URL %>/images/favicons/favicon-16x16.png"/>
-    <link rel="manifest" href="<%= APP_URL %>/images/favicons/site.webmanifest"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
-    <link rel="stylesheet" href="<%= APP_URL %>/css/style.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "ItemList",
-            "itemListElement": [<% results.forEach((result, index) => { %>
-                {
-                    "@type": "<%= result.Type === 'movie' ? 'Movie' : 'TVSeries' %>",
-                    "position": <%= index + 1 -%>,
-                    "name": "<%= result.Title -%>",
-                    "url": "<%= APP_URL %>/view/<%= result.imdbID -%>/<%= result.Type -%>",
-                    "image": "<%= result.Poster !== 'N/A' ? result.Poster : APP_URL + '/images/no_image_available.png' -%>"
-                }<% if (index < results.length - 1) { -%>,<% } -%>
-            <% }); %>
-            ]
-        }
-    </script>
+    <title><%= query _%> - <%= APP_NAME %> <%= APP_SUBTITLE _%></title>
+    <meta name="description" content="Free app for watching <%= query _%> movies and TV shows.">
+<%- include('./partials/meta/base.ejs') -%>
+<%- include('./partials/meta/og-search.ejs') -%>
+<%- include('./partials/ld/search.ejs') -%>
 </head>
-<body class="bg-dark bg-gradient">
-    <header class="pt-3 p-md-3 bg-dark text-white sticky-top shadow">
-        <div class="container">
-            <!-- Header Search -->
-            <div class="row">
-                <form action="<%= APP_URL %>/search" method="get" name="search">
-                    <div class="input-group text-center">
-                            <a href="<%= APP_URL %>/" class="display-5 text-info text-decoration-none col-sm-12 col-md-3" for="q">
-                                <i class="bi-collection-play-fill px-1"></i> Binger
-                            </a>
-                            <div class="col-sm-12 col-md-9 my-md-2">
-                                <div class="row my-2 my-md-0">
-                                    <div class="col-sm-12 col-md-7 pe-md-0">
-                                        <input type="text" class="form-control" name="q" id="q"
-                                               aria-label="Search for your next binge..."
-                                               placeholder="Search for your next binge..."
-                                               value="<%= query %>" required>
-                                    </div>
-                                    <div class="col-sm-12 col-md-5 my-md-0 my-2">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="type" id="movie" value="movie" <%= type === 'movie' ? 'checked' : '' %>>
-                                            <label class="form-check-label text-info" for="movie">Movie</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="type" id="series" value="series" <%= type === 'series' ? 'checked' : '' %>>
-                                            <label class="form-check-label text-info" for="series">TV Show</label>
-                                        </div>
-                                        <button type="submit" class="btn btn-info"><i class="bi-search-heart-fill"></i> Search</button>
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </header>
-
-    <div class="b-divider"></div>
-
+<%- include('./partials/navigation.ejs') -%>
     <!-- Search Results -->
     <div class="container">
         <div class="row">
             <h1 class="display-4 my-4 text-warning text-capitalize"><%= query %></h1>
             <% results.forEach(result => { %>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card text-bg-dark mb-3">
-                    <a href="<%= APP_URL %>/view/<%= result.imdbID %>/<%= type === 'movie' ? 'movie' : 'series' %>">
-                        <img class="card-img-top" src="<%= result.Poster !== 'N/A' ? result.Poster : '/images/no_image_available.png' %>" alt="<%= result.Title %>">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title text-nowrap overflow-hidden"><%= result.Title %> (<%= result.Year %>)</h5>
-                        <a class="btn btn-primary w-100" href="<%= APP_URL %>/view/<%= result.imdbID %>/<%= type === 'movie' ? 'movie' : 'series' %>">
-                            <i class="bi-play-btn-fill px-1"></i> Watch Now
-                        </a>
-                    </div>
-                </div>
-            </div>
+                <%-include(`./partials/${card}.ejs`, {
+                    url: `${APP_URL}/view/${result.imdbID}/${type === 'movie' ? 'movie' : 'series'}`,
+                    poster: result.Poster !== 'N/A' ? result.Poster : `${APP_URL}/images/no-binger.jpg`,
+                    title: `${result.Title} (${result.Year})`,
+                    id: result.imdbID,
+                    type: `${type === 'movie' ? 'movie' : 'series'}`
+                })%>
             <% }); %>
             <div class="text-center p-4">
                 <a href="<%= APP_URL %>/" class="btn btn-warning btn-md-lg">Back to Home</a>
             </div>
         </div>
     </div>
-</body>
-</html>
+<%- include('./partials/footer.ejs') -%>

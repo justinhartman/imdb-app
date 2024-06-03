@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to <%= APP_NAME %> account</title>
+    <meta name="description" content="<%= APP_DESCRIPTION _%>">
+<%- include('./partials/meta/base.ejs') -%>
+</head>
+<%- include('./partials/navigation.ejs') -%>
+    <div class="container">
+        <h1>Login</h1>
+        <%- include('./partials/alerts.ejs') -%>
+        <form action="/login" method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+<%- include('./partials/footer.ejs') -%>

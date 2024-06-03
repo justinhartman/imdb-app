@@ -1,0 +1,25 @@
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "<%= data.Type === 'movie' ? 'Movie' : 'TVSeries' -%>",
+          "name": "<%= data.Title %>",
+          "url": "<%= canonical -%>",
+          "image": "<%= data.Poster !== 'N/A' ? data.Poster : `${APP_URL}/images/no-binger.jpg` -%>",
+          "description": "<%= data.Plot -%>",
+          "director": "<%= data.Director -%>",
+          "actor": [<% data.Actors.split(', ').forEach((actor, index, array) => { %>
+              {
+                  "@type": "Person",
+                  "name": "<%= actor -%>"
+              }<% if (index < array.length - 1) { %>,<% } -%>
+        <% }); %>
+            ],
+            "datePublished": "<%= data.Released -%>",
+            "genre": "<%= data.Genre -%>"<% if (data.imdbRating !== 'N/A') { %>,
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "<%= data.imdbRating -%>",
+                "ratingCount": "<%= data.imdbVotes.replace(/,/g, '') -%>"
+            }<% } %>
+        }
+    </script>

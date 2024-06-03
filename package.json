@@ -1,5 +1,5 @@
 {
-  "name": "tv.justhart.com",
+  "name": "binger.uk",
   "version": "1.0.0",
   "description": "Web application that provides a user-friendly interface for searching and watching movies and TV shows.",
   "license": "MIT",
@@ -12,16 +12,32 @@
   "bugs": {
     "url": "https://github.com/justinhartman/imdb-app/issues"
   },
-  "homepage": "https://tv.justhart.com",
+  "homepage": "https://binger.uk",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "lint": "node_modules/.bin/ejslint ./views/*.ejs ./views/**/*.ejs",
+    "db:status": "node_modules/.bin/migrate-mongo status",
+    "db:migrate": "node_modules/.bin/migrate-mongo up",
+    "db:rollback": "node_modules/.bin/migrate-mongo down"
   },
   "dependencies": {
     "axios": "^1.6.8",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "connect-flash": "^0.1.1",
+    "connect-mongo": "^5.1.0",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
-    "express-async-handler": "^1.2.0"
+    "express-async-handler": "^1.2.0",
+    "express-session": "^1.18.0",
+    "mongoose": "^8.4.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "ejs-lint": "^2.0.0",
+    "migrate-mongo": "^11.0.0"
   }
 }

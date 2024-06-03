@@ -1,0 +1,19 @@
+    <meta property="og:site_name" content="<%= APP_NAME _%>"/>
+    <meta property="og:title" content="<%= data.Title _%>"/>
+    <meta property="og:description" content="<%= data.Plot _%>"/>
+    <meta property="og:url" content="<%= canonical %>"/>
+    <meta property="og:image" content="<%= data.Poster !== 'N/A' ? data.Poster : `${APP_URL}/images/binger.uk-hero.jpg` -%>"/>
+    <meta property="og:image:alt" content="<%= data.Title _%>"/>
+    <!-- @see https://ogp.me/#type_video.episode -->
+    <meta property="og:type" content="<%= data.Type === 'movie' ? 'video.movie' : 'video.tv_show' -%>"/>
+<% data.Actors.split(', ').forEach((actor) => { -%>
+    <meta property="video:actor" content="<%= actor _%>"/>
+<% }); -%>
+    <meta property="video:director" content="<%= data.Director _%>"/>
+    <meta property="video:release_date" content="<%= data.Released _%>"/>
+    <meta property="video:duration" content="<%= data.Runtime _%>"/>
+    <meta property="video:tag" content="<%= data.Genre _%>"/>
+<% if (data.imdbRating !== 'N/A') { -%>
+    <meta property="video:rating" content="<%= data.imdbRating %>"/>
+    <meta property="video:rating:count" content="<%= data.imdbVotes.replace(/,/g,'') %>"/>
+<% } -%>
