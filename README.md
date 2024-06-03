@@ -68,22 +68,22 @@ $ sudo certbot --nginx -d binger.uk
 
 - [ ] The application currently does not handle errors gracefully. If an error occurs during the search request or 
       while rendering the webpage, it may cause the application to crash.
-- [ ] The application does not have a proper authentication mechanism. Anyone with access to the application can 
-      perform searches and watch videos.
+- [x] ~~The application does not have a proper authentication mechanism. Anyone with access to the application can 
+      perform searches and watch videos.~~
 - [ ] The application does not have a proper logging mechanism. If an error occurs during the search request or while 
       rendering the webpage, it may not be logged or displayed to the user.
-- [x] There are some layout issues on mobile and tablet that need resolving.
+- [x] ~~There are some layout issues on mobile and tablet that need resolving.~~
 
 ## Future Enhancements
 
-- [x] Improve UI on View player page to include movie/tv information and title.
+- [x] ~~Improve UI on View player page to include movie/tv information and title.~~
 - [ ] Change layout to include all episodes on the view screen.
-- [ ] Implement a proper authentication mechanism to restrict access to the application.
+- [x] ~~Implement a proper authentication mechanism to restrict access to the application.~~
 - [ ] Add more features such as: 
-  - [ ] User profiles 
+  - [x] ~~User profiles~~ 
   - [ ] Personalised recommendations
-  - [ ] Better search interface
-  - [ ] Bookmarks to save items to profile
+  - [x] ~~Better search interface~~
+  - [x] ~~Bookmarks to save items to profile~~
 - [ ] Implement a proper logging mechanism to track errors and user interactions.
 - [ ] Improve the error handling mechanism to provide better feedback to the user when an error occurs.
 
