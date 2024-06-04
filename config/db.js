@@ -17,8 +17,9 @@ const connectDB = async () => {
     /**
      * Attempts to connect to the MongoDB database using the provided URI.
      * @param {string} MONGO_DB_URI - The URI for the MongoDB database.
+     * @param {Object} options - The options for the MongoDB connection.
      */
-    await mongoose.connect(appConfig.MONGO_DB_URI);
+    await mongoose.connect(appConfig.MONGO_DB_URI, { dbName: appConfig.MONGO_DB_NAME, family: 4 });
     console.log('MongoDB Connected');
   } catch (error) {
     /**
