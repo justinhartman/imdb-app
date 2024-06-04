@@ -23,7 +23,6 @@
     "publish:patch": "npx grunt",
     "publish:minor": "npx grunt minor",
     "publish:major": "npx grunt major",
-    "deploy:default": "yarn db:migrate && yarn start",
     "deploy:yarn": "yarn db:migrate && yarn start",
     "deploy:npm": "npm run db:migrate && npm start"
   },
