@@ -129,8 +129,8 @@ Application and then follow these steps.
    sudo systemctl restart binger.service
    ```
 
-5. You can now test your app URL paths like `./register`, `./login` and `./profile` paths to see if data is being 
-   stored correctly.
+5. You can now test your app URL paths like `./user/register`, `./user/login` and `./user/profile` paths to see if data 
+   is being stored correctly.
 
 ## OMDb API
 

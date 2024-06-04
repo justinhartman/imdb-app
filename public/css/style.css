@@ -16,6 +16,11 @@ a.btn-primary:hover {
     background-color: #0056b3;
 }
 
+/* Grow the search bar input. */
+.navbar .search-input {
+    flex-grow: 1;
+}
+
 /* Styles that apply at the 'md' breakpoint and above */
 @media (min-width: 768px) {
     .card-img-top {
