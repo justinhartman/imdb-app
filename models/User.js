@@ -13,8 +13,6 @@ const bcrypt = require('bcryptjs');
  * @typedef {Object} SchemaDefinition
  * @property {String} username - The user's unique email which is used as the username.
  * @property {String} password - The user's password.
- * @property {Boolean} isVerified - Whether the user has verified their email address.
- * @property {Array} watchlist - An array of objects representing the user's watchlist.
  */
 const definition = {
   username: {
@@ -41,53 +39,6 @@ const definition = {
     //   'Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.',
     // ],
   },
-  watchlist: [{
-    imdbID: {
-      type: String,
-      required: true,
-    },
-    title: {
-      type: String,
-      required: true,
-    },
-    poster: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      enum: ['movie', 'series', 'episode'],
-      required: true,
-    },
-    plot: {
-      type: String,
-      required: false,
-    },
-    year: {
-      type: String,
-      required: false,
-    },
-    genre: {
-      type: String,
-      required: false,
-    },
-    rated: {
-      type: String,
-      required: false,
-    },
-    runtime: {
-      type: String,
-      required: false,
-    },
-    imdbRating: {
-      type: String,
-      required: false,
-    },
-    totalSeasons: {
-      type: String,
-      required: false,
-    },
-  }],
 };
 
 /**
@@ -120,43 +71,6 @@ UserSchema.pre('save', async function (next) {
  */
 UserSchema.methods.matchPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
-};
-
-/**
- * Method to check if the user is in the watchlist.
- * @function
- * @param {String} imdbID - The IMDB ID of the media to check.
- * @returns {Promise<Boolean>} - A promise that resolves to true if the user is in the watchlist, and false otherwise.
- */
-UserSchema.methods.isInWatchlist = async function (imdbID) {
-  return await this.watchlist.some((item) => item.imdbID === imdbID);
-};
-
-/**
- * Method to add a media to the user's watchlist.
- * @function
- * @param {String} imdbID - The IMDB ID of the media to add.
- * @param {String} title - The title of the media.
- * @param {String} poster - The poster of the item.
- * @param {String} type - The type of media.
- */
-UserSchema.methods.addToWatchlist = async function (imdbID, title, poster, type) {
-  if (!await this.isInWatchlist(imdbID)) {
-    this.watchlist.push({ imdbID, title, poster, type });
-    await this.save();
-  }
-};
-
-/**
- * Method to remove a media from the user's watchlist.
- * @function
- * @param {String} imdbID - The IMDB ID of the media to remove.
- */
-UserSchema.methods.deleteFromWatchlist = async function (imdbID) {
-  if (await this.isInWatchlist(imdbID)) {
-    this.watchlist = this.watchlist.filter((item) => item.imdbID !== imdbID);
-    await this.save();
-  }
 };
 
 /**

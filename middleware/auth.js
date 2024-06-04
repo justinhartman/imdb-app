@@ -7,7 +7,7 @@
 /**
  * @function ensureAuthenticated
  * @description This middleware function checks if the user is authenticated. If the user is authenticated,
- *              it allows the request to proceed. If not, it redirects the user to the login page.
+ *              it allows the request to proceed. If not, it redirects the user to the postLogin page.
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
  * @param {Function} next - The next middleware function in the stack.
@@ -16,6 +16,6 @@
 module.exports = {
   ensureAuthenticated: (req, res, next) => {
     if (req.isAuthenticated()) return next();
-    res.redirect('/login');
+    res.redirect('/user/login');
   },
 };

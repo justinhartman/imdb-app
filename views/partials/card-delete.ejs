@@ -1,13 +1,13 @@
 <div class="col-md-3 col-sm-6 mb-4">
-    <div class="card text-bg-dark mb-3">
+    <div class="card bg-dark bg-gradient mb-3 shadow-lg border border-0">
         <a href="<%- url %>">
             <img class="card-img-top" src="<%- poster %>" alt="<%- title %>">
         </a>
         <div class="card-body">
             <h5 class="card-title text-nowrap text-truncate text-warning"><%- title %></h5>
             <div class="d-flex">
-                <form action="<%= APP_URL %>/delete-from-watchlist" method="post" class="w-25 mt-2 me-2">
-                    <input type="hidden" name="imdbID" value="<%- id %>">
+                <form action="<%= APP_URL %>/watchlist/delete" method="post" class="w-25 mt-2 me-2">
+                    <input type="hidden" name="imdbId" value="<%- id %>">
                     <button type="submit" class="btn btn-danger">
                         <i class="bi-x-circle-fill px-1"></i>
                     </button>

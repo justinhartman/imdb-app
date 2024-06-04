@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watchlist</title>
+    <meta name="description" content="<%= APP_DESCRIPTION _%>">
+<%- include('./partials/meta/base.ejs') -%>
+</head>
+<%- include('./partials/navigation.ejs') -%>
+    <div class="container">
+        <%- include('./partials/alerts.ejs') -%>
+        <div class="row">
+            <h1 class="display-4 my-4 text-warning">Your Watchlist</h1>
+        <% if (watchlist && watchlist.length > 0) {
+            watchlist.forEach(item => {
+                for (const i of item.items) { -%>
+                <%-include('./partials/card-delete.ejs', {
+                    url: `${APP_URL}/view/${i.imdbId}/${i.type}`,
+                    poster: i.poster,
+                    title: i.title,
+                    id: i.imdbId,
+                    type: i.type
+                })%>
+            <% }});
+            } else { -%>
+            <h2 class="card-title text-info">Your watchlist is empty.</h2>
+        <% } -%>
+        </div>
+    </div>
+<%- include('./partials/footer.ejs') -%>

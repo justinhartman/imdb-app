@@ -11,20 +11,15 @@
     <div class="container">
         <%- include('./partials/alerts.ejs') -%>
         <div class="row">
-            <h1 class="display-4 my-4 text-warning">Your Watchlist</h1>
-        <% if (user.watchlist.length > 0) { -%>
-            <% user.watchlist.forEach(item => { -%>
-                <%-include('./partials/card-delete.ejs', {
-                    url: `${APP_URL}/view/${item.imdbID}/${item.type}`,
-                    poster: item.poster,
-                    title: item.title,
-                    id: item.imdbID,
-                    type: item.type
-                })%>
-            <% }); -%>
-        <% } else { -%>
-            <h2 class="card-title text-info">Your watchlist is empty.</h2>
-        <% } -%>
+            <h1 class="display-4 my-4 text-warning">Welcome <%= user.username %></h1>
+            <div class="d-flex">
+                <a class="btn btn-outline-danger w-50 mx-2" href="<%= APP_URL %>/watchlist">
+                    <i class="bi-box-arrow-left px-1"></i> Log out Account
+                </a>
+                <a class="btn btn-success w-50 mx-2" href="<%= APP_URL %>/watchlist">
+                    <i class="bi-card-checklist px-1"></i> View Watchlist
+                </a>
+            </div>
         </div>
     </div>
 <%- include('./partials/footer.ejs') -%>
