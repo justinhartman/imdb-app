@@ -13,9 +13,8 @@ const app = express();
 const path = require('path');
 
 const appConfig = require('./config/app');
+const connectDB = require('./config/db');
 const appHelper = require('./helpers/appHelper');
-const appRoutes = require('./routes/app');
-const authRoutes = require('./routes/auth');
 
 /**
  * Middleware function that sets the APP_URL as a local variable for the views.
@@ -44,13 +43,18 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 
 /**
- * Conditionally uses the provided routes middleware for the root path ('/').
- * If MONGO_DB_URI is not empty, it uses both appRoutes and authRoutes middlewares.
- * Otherwise, it only uses appRoutes middleware.
- * @param {Object} routes - The routes middleware to be used for the root path.
- * @returns {void} - No return value.
+ * Load standard routes and conditionally use additional routes based on the value of useAuth boolean.
+ * The method checks if MONGO_DB_URI is true then connects to MongoDB and uses additional middleware.
  */
-appConfig.MONGO_DB_URI !== '' ? app.use('/', appRoutes, authRoutes) : app.use('/', appRoutes);
+app.use('/', require('./routes/app'));
+// Test if MONGO_DB_URI is set.
+if (appHelper.useAuth) {
+  // Connect to MongoDB instance.
+  connectDB().catch(e => console.log(e.message));
+  // Use additional routes.
+  app.use('/user', require('./routes/auth'));
+  app.use('/watchlist', require('./routes/watchlist'));
+}
 
 /**
  * Starts the server and listens on the specified port.
