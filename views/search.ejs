@@ -16,7 +16,7 @@
             <h1 class="display-4 my-4 text-warning text-capitalize"><%= query %></h1>
             <% results.forEach(result => { %>
                 <%-include(`./partials/${card}.ejs`, {
-                    url: `${APP_URL}/view/${result.imdbId}/${type === 'movie' ? 'movie' : 'series'}`,
+                    url: `${APP_URL}/view/${result.imdbID}/${type === 'movie' ? 'movie' : 'series'}`,
                     poster: result.Poster !== 'N/A' ? result.Poster : `${APP_URL}/images/no-binger.jpg`,
                     title: `${result.Title} (${result.Year})`,
                     id: result.imdbID,
