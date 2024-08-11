@@ -54,7 +54,10 @@ const appConfig = () => {
     OMDB_API_KEY: process.env.OMDB_API_KEY,
     // You should never change these unless OMDb change their API endpoints.
     OMDB_API_URL: process.env.OMDB_API_URL || 'http://www.omdbapi.com',
-    OMDB_IMG_URL: process.env.OMDB_IMG_URL || 'http://img.omdbapi.com'
+    OMDB_IMG_URL: process.env.OMDB_IMG_URL || 'http://img.omdbapi.com',
+    // The vidsrc player domain has been prone to be taken down. Use one of the following domains if it's not working:
+    // vidsrc.in, vidsrc.pm, vidsrc.xyz, vidsrc.net
+    VIDSRC_DOMAIN: process.env.VIDSRC_DOMAIN || 'vidsrc.in'
   };
 }
 

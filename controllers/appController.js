@@ -1,6 +1,7 @@
 const axios = require("axios");
 const asyncHandler = require('express-async-handler');
 
+const appConfig = require('../config/app');
 const {
   fetchOmdbData,
   fetchAndUpdatePosters
@@ -22,29 +23,27 @@ const appController = {
    */
   getHome: asyncHandler(async (req, res) => {
     const query = req.query.q || '';
-    const type = req.query.type || 'ovie';
+    const type = req.query.type || 'movie';
     const canonical = res.locals.APP_URL;
     let newMovies = [];
     let newSeries = [];
 
     /**
-     * Fetch new movies from VidSrc.
-     * You can switch to new movies instead of the default 'added' with 'https://vidsrc.to/vapi/movie/new'
+     * Fetch latest movies from VidSrc.
      * @type {axios.AxiosResponse<any>}
-     * @docs https://vidsrc.to/#api
+     * @docs https://vidsrc.me/api/#list-item-ls-mov
      */
-    const axiosMovieResponse = await axios.get('https://vidsrc.to/vapi/movie/add');
-    newMovies = axiosMovieResponse.data.result.items || [];
+    const axiosMovieResponse = await axios.get(`https://${appConfig.VIDSRC_DOMAIN}/movies/latest/page-1.json`);
+    newMovies = axiosMovieResponse.data.result || [];
     await fetchAndUpdatePosters(newMovies);
 
     /**
-     * Fetch new TV shows from VidSrc.
-     * You can switch to new movies instead of the default 'added' with 'https://vidsrc.to/vapi/tv/new'
+     * Fetch latest TV shows from VidSrc.
      * @type {axios.AxiosResponse<any>}
-     * @docs https://vidsrc.to/#api
+     * @docs https://vidsrc.me/api/#list-item-ls-tvshow
      */
-    const axiosSeriesResponse = await axios.get('https://vidsrc.to/vapi/tv/add');
-    newSeries = axiosSeriesResponse.data.result.items || [];
+    const axiosSeriesResponse = await axios.get(`https://${appConfig.VIDSRC_DOMAIN}/tvshows/latest/page-1.json`);
+    newSeries = axiosSeriesResponse.data.result || [];
     await fetchAndUpdatePosters(newSeries);
 
     res.render('index', { newMovies, newSeries, query, type, canonical, card: res.locals.CARD_TYPE, user: req.user });
@@ -66,7 +65,7 @@ const appController = {
     let type = req.params.type;
     let t = 'movie';
     if (type === 'series') t = 'tv'
-    const iframeSrc = `https://vidsrc.to/embed/${t}/${id}`;
+    const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/${t}/${id}`;
     const canonical = `${res.locals.APP_URL}/view/${id}/${type}`;
     const data = await fetchOmdbData(id, false);
     res.render('view', { data, iframeSrc, query, id, type, canonical, user: req.user });
