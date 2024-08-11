@@ -72,7 +72,7 @@ const authController = {
     try {
       await passport.authenticate('local', {
         successRedirect: '/user/profile',
-        failureRedirect: '/user/postLogin',
+        failureRedirect: '/user/login',
         failureFlash: true,
       })(req, res);
     } catch (error) {
