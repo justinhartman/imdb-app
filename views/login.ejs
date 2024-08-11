@@ -8,19 +8,21 @@
 <%- include('./partials/meta/base.ejs') -%>
 </head>
 <%- include('./partials/navigation.ejs') -%>
-    <div class="container">
-        <h1>Login</h1>
+    <div class="container text-white">
+        <h1 class="text-warning mt-4 mb-3">Log in to you <%= APP_NAME %> account</h1>
+        <p>Log in to access your <%= APP_NAME %> account and view your movie and TV show watchlist and history.</p>
         <%- include('./partials/alerts.ejs') -%>
         <form action="/user/login" method="post">
             <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
+                <label for="username" class="form-label text-info">Username</label>
                 <input type="text" class="form-control" id="username" name="username" required>
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+                <label for="password" class="form-label text-info">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="btn btn-success">Login <i class="bi-lock"></i></button>
         </form>
+        <p class="mt-4">Don't have an account? <a href="/user/register" class="text-warning">Register here <i class="bi-arrow-right"></i></a></p>
     </div>
 <%- include('./partials/footer.ejs') -%>

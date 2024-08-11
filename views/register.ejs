@@ -8,20 +8,21 @@
 <%- include('./partials/meta/base.ejs') -%>
 </head>
 <%- include('./partials/navigation.ejs') -%>
-    <div class="container">
-        <h1>Register</h1>
+    <div class="container text-white">
+        <h1 class="text-warning mt-4 mb-3">Create a <%= APP_NAME %> account</h1>
+        <p>With a <%= APP_NAME %> account you can add or remove movies and shows to your wishlist. Create a new account with your email and password. </p>
         <%- include('./partials/alerts.ejs') -%>
         <form action="/user/register" method="post">
             <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
+                <label for="username" class="form-label text-info">Username</label>
                 <input type="text" class="form-control" id="username" name="username" required>
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+                <label for="password" class="form-label text-info">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-success">Register <i class="bi-lock"></i></button>
         </form>
-        <p>Already have an account? <a href="/login">Login here</a></p>
+        <p class="mt-4">Already have an account? <a href="/user/login" class="text-warning">Login here <i class="bi-arrow-right"></i></a></p>
     </div>
 <%- include('./partials/footer.ejs') -%>
