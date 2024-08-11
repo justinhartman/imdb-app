@@ -32,7 +32,7 @@
     </div>
 <% } %>
     <div class="ratio ratio-16x9">
-        <iframe src="<%= iframeSrc %>" allow="autoplay; fullscreen" allowfullscreen="yes" class="w-100"></iframe>
+        <iframe src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" allowfullscreen="yes" class="w-100"></iframe>
     </div>
 <% if (data.Response !== 'False') { -%>
     <div class="row text-white my-4">
@@ -54,12 +54,13 @@
         </div>
     </div>
 <% } %>
-<%- include('./partials/disqus.ejs') -%>
     <div class="row mt-2">
         <div class="text-center">
-            <a href="<%= APP_URL %>/" class="btn btn-outline-warning btn-md-lg">Home</a>
-            <a href="javascript:history.back()" class="btn btn-warning btn-md-lg">Back to Search</a>
+            <a href="<%= APP_URL %>/" class="btn btn-outline-info btn-md-lg"><i class="bi-house"></i> Home</a>
+            <a href="<%= APP_URL %>/watchlist" class="btn btn-outline-success btn-md-lg"><i class="bi-view-list"></i> Watchlist</a>
+            <a href="javascript:history.back()" class="btn btn-warning btn-md-lg"><i class="bi-search"></i> Back to Search</a>
         </div>
     </div>
+<%- include('./partials/disqus.ejs') -%>
 </div>
 <%- include('./partials/footer.ejs') -%>
