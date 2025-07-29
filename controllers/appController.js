@@ -25,8 +25,6 @@ const appController = {
     const query = req.query.q || '';
     const type = req.query.type || 'movie';
     const canonical = res.locals.APP_URL;
-    let newMovies = [];
-    let newSeries = [];
 
     /**
      * Fetch latest movies from VidSrc.
@@ -34,7 +32,7 @@ const appController = {
      * @docs https://vidsrc.me/api/#list-item-ls-mov
      */
     const axiosMovieResponse = await axios.get(`https://${appConfig.VIDSRC_DOMAIN}/movies/latest/page-1.json`);
-    newMovies = axiosMovieResponse.data.result || [];
+    let newMovies = axiosMovieResponse.data.result || [];
     await fetchAndUpdatePosters(newMovies);
 
     /**
@@ -43,7 +41,7 @@ const appController = {
      * @docs https://vidsrc.me/api/#list-item-ls-tvshow
      */
     const axiosSeriesResponse = await axios.get(`https://${appConfig.VIDSRC_DOMAIN}/tvshows/latest/page-1.json`);
-    newSeries = axiosSeriesResponse.data.result || [];
+    let newSeries = axiosSeriesResponse.data.result || [];
     await fetchAndUpdatePosters(newSeries);
 
     res.render('index', { newMovies, newSeries, query, type, canonical, card: res.locals.CARD_TYPE, user: req.user });
@@ -64,7 +62,16 @@ const appController = {
     const id = req.params.id;
     let type = req.params.type;
     let t = 'movie';
-    if (type === 'series') t = 'tv'
+
+    if (type === 'series') {
+        const season = req.params.season || '1';
+        const episode = req.params.episode || '1';
+        const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
+        const canonical = `${res.locals.APP_URL}/view/${id}/${type}/${season}/${episode}`;
+        const data = await fetchOmdbData(id, false);
+        return res.render('view', { data, iframeSrc, query, id, type, season, episode, canonical, user: req.user });
+    }
+
     const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/${t}/${id}`;
     const canonical = `${res.locals.APP_URL}/view/${id}/${type}`;
     const data = await fetchOmdbData(id, false);

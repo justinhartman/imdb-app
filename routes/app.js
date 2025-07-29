@@ -9,11 +9,13 @@ const express = require('express');
 const appController = require('../controllers/appController');
 const router = express.Router();
 
-//Handles the '/' route.
+// Handles the home route.
 router.get('/', appController.getHome);
-// Handles the '/view/:id/:type' route.
+// Handles the movies route.
 router.get('/view/:id/:type', appController.getView);
-// Handles the '/search' route.
+// Handles the TV series and episodes route.
+router.get('/view/:id/:type/:season/:episode', appController.getView);
+// Handles the search route.
 router.get('/search', appController.getSearch);
 
 /**
