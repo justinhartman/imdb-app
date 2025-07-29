@@ -32,8 +32,26 @@
     </div>
 <% } %>
     <div class="ratio ratio-16x9">
-        <iframe src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" allowfullscreen="yes" class="w-100"></iframe>
+        <iframe src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" allowfullscreen="allowfullscreen" class="w-100"></iframe>
     </div>
+    <% if (data.Type === 'series') { -%>
+    <div class="hstack gap-3">
+        <div class="pt-3">
+            <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${Number(episode) - 1}` %>" class="btn btn-outline-info btn-md-lg">
+                <i class="bi bi-caret-left-square"></i> Previous Episode
+            </a>
+        </div>
+        <div class="pt-3 ms-auto d-none d-sm-inline">
+            <a href="<%= APP_URL %>/watchlist" class="btn btn-outline-light btn-md-lg"><i class="bi-view-list"></i> Watchlist</a>-->
+        </div>
+        <div class="pt-3 ms-auto">
+            <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${Number(episode) + 1}` %>" class="btn btn-success btn-md-lg">
+                Next Episode <i class="bi bi-caret-right-square"></i>
+            </a>
+
+        </div>
+    </div>
+    <% } -%>
 <% if (data.Response !== 'False') { -%>
     <div class="row text-white my-4">
         <div class="col-12 col-md-6">
