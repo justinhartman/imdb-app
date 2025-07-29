@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Node 16.20" type="NodeJSConfigurationType" working-dir="$PROJECT_DIR$">
+    <EXTENSION ID="com.intellij.lang.javascript.buildTools.npm.rc.StartBrowserRunConfigurationExtension">
+      <browser name="c84f9772-8204-4f02-89f8-6feb5c47de74" />
+    </EXTENSION>
+    <method v="2" />
+  </configuration>
+</component>
