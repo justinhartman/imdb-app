@@ -13,9 +13,9 @@
     "url": "https://github.com/justinhartman/imdb-app/issues"
   },
   "homepage": "https://binger.uk",
-  "main": "app.js",
+  "main": "index.ts",
   "scripts": {
-    "start": "node ./app.js",
+    "start": "node api/index.ts",
     "lint": "npx ejslint ./views/*.ejs ./views/**/*.ejs",
     "db:status": "npx migrate-mongo status",
     "db:migrate": "npx migrate-mongo up",
