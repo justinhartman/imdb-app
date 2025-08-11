@@ -124,4 +124,3 @@ WatchlistSchema.methods.deleteFromWatchlist = async function (
 
 const Watchlist = mongoose.model<IWatchlist>('Watchlist', WatchlistSchema);
 export default Watchlist;
-

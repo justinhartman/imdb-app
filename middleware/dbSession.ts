@@ -61,4 +61,3 @@ const dbSessionMiddleware = (router: Router): void => {
 };
 
 export default dbSessionMiddleware;
-
