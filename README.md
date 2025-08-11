@@ -18,6 +18,18 @@ The application provides the following features:
 8. Documentation to help you get setup with MongoDB and other items for making the app work.
 9. A RapidAPI file for macOS and Visual Studio with all the OMDb API endpoints for you to test with.
 
+## Stats
+
+![GitHub License][badge-lic]
+![GitHub Release][badge-rel]
+![GitHub Release Date][badge-reldate]
+
+![github main][badge-gh-main]
+![github develop][badge-gh-dev]
+![GitHub commit activity][badge-tots]
+![GitHub commits since latest release][badge-relcom]
+[![code coverage][codecov-img]][codecov-lnk]
+
 ## Core Project Structure
 
 The core project's structure is as follows:
@@ -62,18 +74,6 @@ To install and set up the basic project, follow these steps:
    - [ ] `API_PORT=3000` - replace `3000` with the port you want the node server to run on. 
    - [ ] `APP_URL=binger.uk` - replace `binger.uk` with your website/app's live URL.
 5. Start the application by running `yarn start`.
-
-## Linting
-
-- Run `yarn lint` to type-check all TypeScript files using the TypeScript compiler in no-emit mode and lint EJS templates.
-- Run `yarn lint:ts` to type-check only the TypeScript files.
-
-## Testing and Coverage
-
-- Run `yarn test` to execute the test suite.
-- Run `yarn test:coverage` to generate coverage for the entire project. A summary will be printed to the console and full reports will be written to the `coverage/` folder (HTML, lcov, text).
-- To focus on the passport tests while still producing project-wide coverage, run: `yarn test:coverage:passport`. This will execute `config/passport.spec.ts` and show you how much of `config/passport.ts` (and the rest of the project) is covered.
-- Run `yarn lint:ejs` to lint EJS templates.
 
 ### Nginx and Systemd Server Setup
 
@@ -144,6 +144,19 @@ Application and then follow these steps.
 5. You can now test your app URL paths like `./user/register`, `./user/login` and `./user/profile` paths to see if data 
    is being stored correctly.
 
+## Testing and Coverage
+
+[![code coverage][codecov-ice]][codecov-lnk]
+
+- Run `yarn test` to execute the test suite.
+- Run `yarn test:coverage` to generate coverage for the entire project. A summary will be printed to the console and full reports will be written to the `coverage/` folder (HTML, lcov, text).
+
+## Linting
+
+- Run `yarn lint` to type-check all TypeScript files using the TypeScript compiler in no-emit mode and lint EJS templates.
+- Run `yarn lint:ts` to type-check only the TypeScript files.
+- Run `yarn lint:ejs` to lint EJS templates.
+
 ## OMDb API
 
 Included in this repository is a [RapidAPI](https://rapidapi.com) file created by the macOS app RapidAPI which is free.
@@ -164,20 +177,49 @@ OMDb API used in this project. Open the file and begin testing the API to see re
 
 ## Future Enhancements
 
-- [ ] Migrate code to TypeScript for better extensibility.
-- [x] ~~Improve UI on View player page to include movie/tv information and title.~~
+**Would love some help on these...**
+
+- [ ] Work out a way to stop the video player from adding popups when watching[^1].
 - [ ] Change layout to include all episodes on the view screen.
-- [x] ~~Implement a proper authentication mechanism to restrict access to the application.~~
-- [ ] Add more features such as: 
-  - [x] ~~User profiles~~ 
-  - [ ] Personalised recommendations
-  - [x] ~~Better search interface~~
-  - [x] ~~Bookmarks to save items to profile~~
+- [ ] Add personalised recommendations. _(not so easy to do)_
 - [ ] Implement a proper logging mechanism to track errors and user interactions.
 - [ ] Improve the error handling mechanism to provide better feedback to the user when an error occurs.
-- [ ] Add test suite so we can code better.
+- [ ] Complete test suite.
+
+[^1]: This is a product of not hosting your own video content and the video feed providers try monetise through popups. 
+I want a way to kill this because there's known malware in these popups!
+
+## Completed Enhancements
+
+> It's nice to tick some things off the list...
+
+- [x] Migrate code to TypeScript for better extensibility.
+- [x] Improve UI on View player page to include movie/tv information and title.
+- [x] Implement a proper authentication mechanism to restrict access to the application.
+- [x] Add next and previous buttons to easily switch between series.
+- [x] Add more features such as: 
+  - [x] User profiles
+  - [x] Better search interface
+  - [x] Bookmarks to save items to profile
+- [x] Add test suite so we can code better.
+- [x] Add code coverage reporting
 
 ## License
 
 > Copyright (c) 2024-2025 [Justin Hartman](https://justhart.com). All rights reserved.   
 > The application is licensed under the [MIT license](LICENSE.md).
+
+
+[//]: # (Keep URLs clean by linking them as annoations here below.)
+[codecov-img]: https://codecov.io/gh/justinhartman/imdb-app/branch/main/graph/badge.svg
+[codecov-sun]: https://codecov.io/gh/justinhartman/imdb-app/graphs/sunburst.svg
+[codecov-grd]: https://codecov.io/gh/justinhartman/imdb-app/graphs/tree.svg
+[codecov-ice]: https://codecov.io/gh/justinhartman/imdb-app/graphs/icicle.svg
+[codecov-lnk]: https://codecov.io/gh/justinhartman/imdb-app
+[badge-gh-main]: https://github.com/justinhartman/imdb-app/actions/workflows/main-workflow.yml/badge.svg
+[badge-gh-dev]: https://github.com/justinhartman/imdb-app/actions/workflows/develop-workflow.yml/badge.svg
+[badge-lic]: https://img.shields.io/github/license/justinhartman/imdb-app
+[badge-rel]: https://img.shields.io/github/v/release/justinhartman/imdb-app
+[badge-relcom]: https://img.shields.io/github/commits-since/justinhartman/imdb-app/latest
+[badge-tots]: https://img.shields.io/github/commit-activity/t/justinhartman/imdb-app
+[badge-reldate]: https://img.shields.io/github/release-date/justinhartman/imdb-app
