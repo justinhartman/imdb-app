@@ -5,7 +5,6 @@
  */
 
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 const MONGO_HOST = process.env.MONGO_HOST;
@@ -30,20 +29,30 @@ const mongoUri: string =
     : `${MONGO_URI}`;
 
 /**
- * The URL of the application.
+ * Determines if the application is running in production environment.
+ * Checks both NODE_ENV and VERCEL_ENV environment variables.
  *
- * This variable resolves to the application's base URL, prioritising environment-specific configurations:
- * - If `APP_URL` is set in the environment variables, its value is assigned to `appUrl`.
- * - If `APP_URL` is not defined but `VERCEL_BRANCH_URL` is set, the URL is constructed dynamically
- *   with `https://` as the prefix and the value of `VERCEL_BRANCH_URL`.
- * - Falls back to `http://localhost:3000` if neither `APP_URL` nor `VERCEL_BRANCH_URL` is defined.
- *
- * @type {string}
- * @returns {string} The URL string to use for the application.
+ * @constant {boolean}
  */
-const appUrl: string =
-  process.env.APP_URL
-  || (process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : 'http://localhost:3000');
+const isProd =
+  process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
+
+/**
+ * Determines the Vercel host URL based on the environment.
+ * Uses VERCEL_PROJECT_PRODUCTION_URL for production, VERCEL_URL otherwise.
+ *
+ * @constant {string | undefined}
+ */
+const vercelHost =
+  isProd ? process.env.VERCEL_PROJECT_PRODUCTION_URL : process.env.VERCEL_URL;
+
+/**
+ * The application's base URL.
+ * Prioritises explicit APP_URL, falls back to Vercel host URL if available, otherwise defaults to localhost.
+ *
+ * @constant {string}
+ */
+export const appUrl: string = process.env.APP_URL || (vercelHost ? `https://${vercelHost}` : 'http://localhost:3000');
 
 /**
  * Configuration object for the application.
