@@ -10,9 +10,13 @@
     "types": ["node"]
   },
   "include": [
-    "api/*.ts",
-    // "config/**/*.ts",
-    // "routes/**/*.ts",
-    // "helpers/**/*.ts"
+    "api/**/*.ts",
+    "config/**/*.ts",
+    "controllers/**/*.ts",
+    "helpers/**/*.ts",
+    "middleware/**/*.ts",
+    "models/**/*.ts",
+    "routes/**/*.ts",
+    "types/**/*.d.ts"
   ]
 }

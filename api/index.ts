@@ -7,18 +7,21 @@
  * @license    MIT
  */
 
-/** @inheritDoc */
-const express = require('express');
-const app = express();
-const path = require('path');
-const analytics = require('@vercel/analytics');
+import express, { Request, Response, NextFunction } from 'express';
+import path from 'path';
+import { inject } from '@vercel/analytics';
 
-const appConfig = require('../config/app');
-const connectDB = require('../config/db');
-const appHelper = require('../helpers/appHelper');
+import appConfig from '../config/app';
+import connectDB from '../config/db';
+import { useAuth } from '../helpers/appHelper';
+import appRouter from '../routes/app';
+import authRouter from '../routes/auth';
+import watchlistRouter from '../routes/watchlist';
+
+const app = express();
 
 /** Load Vercel Analytics */
-analytics.inject();
+inject();
 
 /**
  * Middleware function that sets the APP_URL as a local variable for the views.
@@ -26,13 +29,13 @@ analytics.inject();
  * @param {Response} res - The response object containing the HTTP response details.
  * @param {NextFunction} next - The next middleware function in the chain.
  */
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.locals.APP_NAME = appConfig.APP_NAME;
   res.locals.APP_SUBTITLE = appConfig.APP_SUBTITLE;
   res.locals.APP_DESCRIPTION = appConfig.APP_DESCRIPTION;
   res.locals.APP_URL = appConfig.APP_URL;
   // We have different card types based on whether the app uses MongoDB or not.
-  res.locals.CARD_TYPE = appHelper.useAuth ? 'card-add' : 'card';
+  res.locals.CARD_TYPE = useAuth ? 'card-add' : 'card';
   next();
 });
 
@@ -50,14 +53,14 @@ app.use(express.static('public'));
  * Load standard routes and conditionally use additional routes based on the value of useAuth boolean.
  * The method checks if MONGO_DB_URI is true then connects to MongoDB and uses additional middleware.
  */
-app.use('/', require('../routes/app'));
+app.use('/', appRouter);
 // Test if MONGO_DB_URI is set.
-if (appHelper.useAuth) {
+if (useAuth) {
   // Connect to MongoDB instance.
-  connectDB().catch(e => console.log(e.message));
+  connectDB().catch((e: Error) => console.log(e.message));
   // Use additional routes.
-  app.use('/user', require('../routes/auth'));
-  app.use('/watchlist', require('../routes/watchlist'));
+  app.use('/user', authRouter);
+  app.use('/watchlist', watchlistRouter);
 }
 
 /**
@@ -70,4 +73,4 @@ app.listen(appConfig.API_PORT, appConfig.API_HOST, () => {
   console.log(`Server is running on http://${appConfig.API_HOST}:${appConfig.API_PORT}`);
 });
 
-module.exports = app;
+export default app;

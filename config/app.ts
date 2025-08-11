@@ -4,13 +4,10 @@
  * @description This module exports an object containing the application configuration.
  */
 
-/** @inheritDoc */
-require('dotenv').config();
+import dotenv from 'dotenv';
 
-/**
- * The MongoDB settings are required for making a connection to your DB instance.
- * The mongoUri() method will construct the correct URI string based on if you have a secure installation or not.
- */
+dotenv.config();
+
 const MONGO_HOST = process.env.MONGO_HOST;
 const MONGO_PORT = process.env.MONGO_PORT;
 const MONGO_USERNAME = process.env.MONGO_USERNAME;
@@ -23,19 +20,20 @@ const MONGO_URI = process.env.MONGO_URI || '';
  * @type {string}
  * @returns {string} The MongoDB URI string.
  */
-const mongoUri = MONGO_USERNAME && MONGO_PASSWORD
-  ? `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}`
-  : `${MONGO_URI}`;
+const mongoUri =
+  MONGO_USERNAME && MONGO_PASSWORD
+    ? `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}`
+    : `${MONGO_URI}`;
 
 /**
  * This function retrieves the application configuration from the environment variables.
- * @returns {Object} An object containing the application configuration.
+ * @returns {Record<string, any>} An object containing the application configuration.
  */
 const appConfig = () => {
   return {
     // These two configs are used for the Node.js server and should work out the box.
     API_HOST: process.env.API_URL || 'localhost',
-    API_PORT: process.env.API_PORT || 3000,
+    API_PORT: Number(process.env.API_PORT) || 3000,
     // Very important you set your own APP_SECRET as this is unique to your app and used for authentication.
     APP_SECRET: process.env.APP_SECRET || 'DnOBGdGY3YjGFWLkvhGquqtSmlSKBMFw',
     // Change the APP_URL to the domain where you will be using the application on.
@@ -45,7 +43,9 @@ const appConfig = () => {
     // Change to the subtitle of your application.
     APP_SUBTITLE: process.env.APP_SUBTITLE || '',
     // Change to the description of your application.
-    APP_DESCRIPTION: process.env.APP_DESCRIPTION || 'Free app for searching, browsing and watching movies and TV shows.',
+    APP_DESCRIPTION:
+      process.env.APP_DESCRIPTION ||
+      'Free app for searching, browsing and watching movies and TV shows.',
     // The name of your MongoDB database.
     MONGO_DB_NAME: process.env.MONGO_DATABASE,
     MONGO_DB_URI: mongoUri,
@@ -57,8 +57,9 @@ const appConfig = () => {
     OMDB_IMG_URL: process.env.OMDB_IMG_URL || 'http://img.omdbapi.com',
     // The vidsrc player domain has been prone to be taken down. Use one of the following domains if it's not working:
     // vidsrc.in, vidsrc.pm, vidsrc.xyz, vidsrc.net
-    VIDSRC_DOMAIN: process.env.VIDSRC_DOMAIN || 'vidsrc.in'
+    VIDSRC_DOMAIN: process.env.VIDSRC_DOMAIN || 'vidsrc.in',
   };
-}
+};
 
-module.exports = appConfig();
+export default appConfig();
+
