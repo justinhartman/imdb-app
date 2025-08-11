@@ -16,7 +16,9 @@
   "main": "index.ts",
   "scripts": {
     "start": "node api/index.ts",
-    "lint": "npx ejslint ./views/*.ejs ./views/**/*.ejs",
+    "lint": "yarn lint:ts && yarn lint:ejs",
+    "lint:ejs": "npx ejslint ./views/*.ejs ./views/**/*.ejs",
+    "lint:ts": "npx tsc -p tsconfig.json --noEmit",
     "db:status": "npx migrate-mongo status",
     "db:migrate": "npx migrate-mongo up",
     "db:rollback": "npx migrate-mongo down",
@@ -24,7 +26,10 @@
     "publish:minor": "npx grunt minor",
     "publish:major": "npx grunt major",
     "deploy:yarn": "yarn db:migrate && yarn start",
-    "deploy:npm": "npm run db:migrate && npm start"
+    "deploy:npm": "npm run db:migrate && npm start",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:coverage:passport": "jest config/passport.spec.ts --coverage"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",
@@ -46,13 +51,16 @@
   "devDependencies": {
     "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.2.1",
     "ejs-lint": "^2.0.0",
     "git-changelog": "^2.0.0",
     "grunt": "^1.6.1",
     "grunt-bump": "^0.8.0",
     "grunt-git": "^1.1.1",
+    "jest": "^30.0.5",
     "migrate-mongo": "^11.0.0",
+    "ts-jest": "^29.4.1",
     "typescript": "^5.9.2"
   }
 }
