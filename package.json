@@ -16,7 +16,6 @@
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",
-    "build": "yarn db:migrate && yarn start &",
     "lint": "npx ejslint ./views/*.ejs ./views/**/*.ejs",
     "db:status": "npx migrate-mongo status",
     "db:migrate": "npx migrate-mongo up",
