@@ -1,5 +1,4 @@
 /**
- * Passport.js configuration module.
  * @module config/passport
  * @description This module exports a function that configures Passport.js for local strategy.
  */

@@ -1,12 +1,26 @@
+/**
+ * @module models/User
+ * @description Mongoose model for managing users.
+ */
+
 import mongoose, { CallbackWithoutResultAndOptionalError, Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+/**
+ * Interface representing a User document in MongoDB.
+ * @interface IUser
+ * @extends {Document}
+ */
 export interface IUser extends Document {
   username: string;
   password: string;
   matchPassword(password: string): Promise<boolean>;
 }
 
+/**
+ * Schema definition for User model.
+ * @const {Record<string, any>}
+ */
 const definition: Record<string, any> = {
   username: {
     type: String,
@@ -30,6 +44,10 @@ const definition: Record<string, any> = {
 
 const UserSchema = new Schema<IUser>(definition, { timestamps: true });
 
+/**
+ * Pre-save hook to hash password before saving to database.
+ * @param {CallbackWithoutResultAndOptionalError} next - Mongoose middleware next function
+ */
 UserSchema.pre<IUser>('save', async function (next: CallbackWithoutResultAndOptionalError) {
   if (!this.isModified('password')) return next();
   try {
@@ -41,10 +59,19 @@ UserSchema.pre<IUser>('save', async function (next: CallbackWithoutResultAndOpti
   }
 });
 
+/**
+ * Compare provided password with stored hashed password.
+ * @param {string} password - Password to compare
+ * @returns {Promise<boolean>} True if passwords match, false otherwise
+ */
 UserSchema.methods.matchPassword = async function (password: string): Promise<boolean> {
   return await bcrypt.compare(password, this.password);
 };
 
+/**
+ * Mongoose model for User.
+ * @const {Model<IUser>}
+ */
 const User = mongoose.model<IUser>('User', UserSchema);
 export default User;
 

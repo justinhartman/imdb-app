@@ -1,14 +1,25 @@
+/**
+ * @module controllers/watchlistController
+ * @description Controller for managing user watchlist operations including retrieving, adding, and removing items.
+ */
+
 import { Response } from 'express';
 import asyncHandler from 'express-async-handler';
 
 import Watchlist from '../models/Watchlist';
 
 /**
- * @module watchlistController
- * @description Functions for managing a user's watchlist.
+ * @namespace watchlistController
+ * @description Each method handles authentication through req.user and uses flash messages for user feedback.
  */
 const watchlistController = {
-  /** Retrieve the user's watchlist */
+  /**
+   * Retrieves and displays the user's watchlist.
+   * @param req - Express request object containing authenticated user information
+   * @param res - Express response object
+   * @returns Rendered watchlist page with user's saved items
+   * @throws Will redirect to watchlist page with error message if retrieval fails
+   */
   getWatchlist: asyncHandler(async (req: any, res: Response) => {
     try {
       const canonical = `${res.locals.APP_URL}/watchlist`;
@@ -24,7 +35,13 @@ const watchlistController = {
     }
   }),
 
-  /** Add a movie or TV show to the watchlist */
+  /**
+   * Adds a movie or TV show to the user's watchlist.
+   * @param req - Express request object containing item details (imdbId, title, poster, type) and user information
+   * @param res - Express response object
+   * @returns Redirects to watchlist page with success/error message
+   * @throws Will redirect to watchlist page with error message if addition fails
+   */
   addToWatchlist: asyncHandler(async (req: any, res: Response) => {
     const { imdbId, title, poster, type } = req.body;
     try {
@@ -42,7 +59,13 @@ const watchlistController = {
     }
   }),
 
-  /** Remove an item from the watchlist */
+  /**
+   * Removes an item from the user's watchlist.
+   * @param req - Express request object containing imdbId and user information
+   * @param res - Express response object
+   * @returns Redirects to watchlist page with success/error message
+   * @throws Will redirect to watchlist page with error message if removal fails
+   */
   deleteFromWatchlist: asyncHandler(async (req: any, res: Response) => {
     const { imdbId } = req.body;
     try {

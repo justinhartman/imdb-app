@@ -1,33 +1,65 @@
+/**
+ * @module controllers/appController
+ * @description Application controller module handling main application routes and views.
+ */
+
 import axios from 'axios';
 import asyncHandler from 'express-async-handler';
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 
 import appConfig from '../config/app';
-import { fetchOmdbData, fetchAndUpdatePosters } from '../helpers/appHelper';
+import {fetchOmdbData, fetchAndUpdatePosters} from '../helpers/appHelper';
 
+/**
+ * Extended Express Request interface with optional user property.
+ * @interface AuthRequest
+ * @extends {Request}
+ */
 interface AuthRequest extends Request {
   user?: any;
 }
 
 /**
  * @namespace appController
- * @description A controller object containing methods for handling web application routes such as the home page,
- *              view page, and search functionality.
+ * @description Controller object containing methods for handling web application routes and views.
+ * This controller manages the main functionality of the application including home page display,
+ * content viewing, and search operations.
  *
- * @property {function} getHome Handles rendering of the home page, displaying the latest movies and TV shows.
- * @property {function} getView Handles rendering of a specific content view page, either for movies or TV series episodes.
- * @property {function} getSearch Handles rendering of search results based on user queries and content type.
+ * @property {function} getHome - Renders home page with latest movies and TV shows
+ * @property {function} getView - Renders specific content view for movies or TV episodes
+ * @property {function} getSearch - Processes search queries and renders results
+ *
+ * @example
+ * // Using getHome to render the home page
+ * appController.getHome(req, res);
+ *
+ * // Using getView to display specific content
+ * appController.getView(req, res);
+ *
+ * // Using getSearch to find content
+ * appController.getSearch(req, res);
  */
 const appController = {
   /**
    * Handles the home route to retrieve and render the latest movies and TV shows.
-   * Fetches and updates posters for both movies and TV series from an external API.
-   * Renders the data along with query parameters and user-specific information.
    *
    * @function getHome
-   * @param {AuthRequest} req - The HTTP request object, containing query parameters and user authentication.
-   * @param {Response} res - The HTTP response object used to render the home page and pass data to the client.
-   * @throws Will throw an error if an issue occurs during API requests or rendering.
+   * @async
+   * @param {AuthRequest} req - The HTTP request object with query parameters and user auth
+   * @param {Response} res - The HTTP response object for rendering
+   * @throws {Error} If API requests fail or rendering encounters an error
+   *
+   * @description
+   * This function performs the following operations:
+   * 1. Extracts query parameters for search and content type
+   * 2. Fetches latest movies from VIDSRC API
+   * 3. Fetches latest TV shows from VIDSRC API
+   * 4. Updates poster images for both movies and shows
+   * 5. Renders the home page with all gathered data
+   *
+   * @example
+   * // Route handler usage
+   * router.get('/', appController.getHome);
    */
   getHome: asyncHandler(async (req: AuthRequest, res: Response) => {
     const query = (req.query.q as string) || '';

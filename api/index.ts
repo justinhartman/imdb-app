@@ -1,8 +1,8 @@
 /**
- * Binger App.
- * Web application that provides a user-friendly interface for searching and watching movies and TV shows.
+ * @module api
+ * @description Main API module for the Binger App that initialises Express server and sets up middleware.
  * @author     Justin Hartman <code@justhart.com>
- * @copyright  Copyright (c) 2024, Justin Hartman <https://justhart.com>
+ * @copyright  Copyright (c) 2024-2025, Justin Hartman <https://justhart.com>
  * @link       https://binger.uk Binger UK
  * @license    MIT
  */
@@ -18,6 +18,10 @@ import appRouter from '../routes/app';
 import authRouter from '../routes/auth';
 import watchlistRouter from '../routes/watchlist';
 
+/**
+ * Express application instance.
+ * @constant {express.Application}
+ */
 const app = express();
 
 /** Load Vercel Analytics */
@@ -43,9 +47,8 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 
 /**
- * Uses the provided routes middleware for the specified path.
- * @param {String} path - The path to the directory containing the static files.
- * @returns {void} - No return value.
+ * Serves static files from the 'public' directory.
+ * @param {string} path - The path to the directory containing the static files.
  */
 app.use(express.static('public'));
 

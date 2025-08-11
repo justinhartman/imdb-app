@@ -1,3 +1,8 @@
+/**
+ * @module middleware/dbSession
+ * @description Handles database session management middleware setup.
+ */
+
 import { Router } from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
@@ -11,7 +16,19 @@ import passportConfig from '../config/passport';
 passportConfig(passport);
 
 /**
- * Database and Session middleware.
+ * Configures and sets up database session and authentication middleware.
+ *
+ * @description Sets up session management, flash messages, and Passport authentication
+ * using MongoDB as the session store. Configures body parsing for URL-encoded data
+ * and initializes passport authentication.
+ *
+ * @param {Router} router - Express Router instance to attach middleware to
+ * @returns {void} Nothing is returned
+ *
+ * @example
+ * // Use in Express application setup
+ * const router = express.Router();
+ * dbSessionMiddleware(router);
  */
 const dbSessionMiddleware = (router: Router): void => {
   if (appConfig.MONGO_DB_URI === '') return;
