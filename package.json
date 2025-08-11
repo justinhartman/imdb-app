@@ -43,11 +43,15 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.2.1",
     "ejs-lint": "^2.0.0",
     "git-changelog": "^2.0.0",
     "grunt": "^1.6.1",
     "grunt-bump": "^0.8.0",
     "grunt-git": "^1.1.1",
-    "migrate-mongo": "^11.0.0"
+    "migrate-mongo": "^11.0.0",
+    "typescript": "^5.9.2"
   }
 }
