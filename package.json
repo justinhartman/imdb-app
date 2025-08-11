@@ -1,6 +1,6 @@
 {
   "name": "binger.uk",
-  "version": "1.1.1",
+  "version": "1.3.0",
   "description": "Web application that provides a user-friendly interface for searching and watching movies and TV shows.",
   "license": "MIT",
   "copyright": "Copyright (c) 2024 Justin Hartman. All rights reserved.",
@@ -13,9 +13,9 @@
     "url": "https://github.com/justinhartman/imdb-app/issues"
   },
   "homepage": "https://binger.uk",
-  "main": "app.js",
+  "main": "index.ts",
   "scripts": {
-    "start": "node app.js",
+    "start": "node api/index.ts",
     "lint": "npx ejslint ./views/*.ejs ./views/**/*.ejs",
     "db:status": "npx migrate-mongo status",
     "db:migrate": "npx migrate-mongo up",
@@ -27,6 +27,7 @@
     "deploy:npm": "npm run db:migrate && npm start"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
     "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
@@ -37,16 +38,21 @@
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
     "express-session": "^1.18.0",
+    "mongodb": "^6.18.0",
     "mongoose": "^8.4.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.2.1",
     "ejs-lint": "^2.0.0",
     "git-changelog": "^2.0.0",
     "grunt": "^1.6.1",
     "grunt-bump": "^0.8.0",
     "grunt-git": "^1.1.1",
-    "migrate-mongo": "^11.0.0"
+    "migrate-mongo": "^11.0.0",
+    "typescript": "^5.9.2"
   }
 }

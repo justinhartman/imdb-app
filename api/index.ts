@@ -11,10 +11,14 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const analytics = require('@vercel/analytics');
 
-const appConfig = require('./config/app');
-const connectDB = require('./config/db');
-const appHelper = require('./helpers/appHelper');
+const appConfig = require('../config/app');
+const connectDB = require('../config/db');
+const appHelper = require('../helpers/appHelper');
+
+/** Load Vercel Analytics */
+analytics.inject();
 
 /**
  * Middleware function that sets the APP_URL as a local variable for the views.
@@ -33,7 +37,7 @@ app.use((req, res, next) => {
 });
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../views'));
 
 /**
  * Uses the provided routes middleware for the specified path.
@@ -46,14 +50,14 @@ app.use(express.static('public'));
  * Load standard routes and conditionally use additional routes based on the value of useAuth boolean.
  * The method checks if MONGO_DB_URI is true then connects to MongoDB and uses additional middleware.
  */
-app.use('/', require('./routes/app'));
+app.use('/', require('../routes/app'));
 // Test if MONGO_DB_URI is set.
 if (appHelper.useAuth) {
   // Connect to MongoDB instance.
   connectDB().catch(e => console.log(e.message));
   // Use additional routes.
-  app.use('/user', require('./routes/auth'));
-  app.use('/watchlist', require('./routes/watchlist'));
+  app.use('/user', require('../routes/auth'));
+  app.use('/watchlist', require('../routes/watchlist'));
 }
 
 /**
@@ -65,3 +69,5 @@ if (appHelper.useAuth) {
 app.listen(appConfig.API_PORT, appConfig.API_HOST, () => {
   console.log(`Server is running on http://${appConfig.API_HOST}:${appConfig.API_PORT}`);
 });
+
+module.exports = app;
