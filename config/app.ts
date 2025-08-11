@@ -5,7 +5,6 @@
  */
 
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 const MONGO_HOST = process.env.MONGO_HOST;
@@ -34,16 +33,15 @@ const mongoUri: string =
  *
  * This variable resolves to the application's base URL, prioritising environment-specific configurations:
  * - If `APP_URL` is set in the environment variables, its value is assigned to `appUrl`.
- * - If `APP_URL` is not defined but `VERCEL_BRANCH_URL` is set, the URL is constructed dynamically
- *   with `https://` as the prefix and the value of `VERCEL_BRANCH_URL`.
- * - Falls back to `http://localhost:3000` if neither `APP_URL` nor `VERCEL_BRANCH_URL` is defined.
+ * - If `APP_URL` is not defined but `VERCEL_URL` is set, the URL is constructed dynamically
+ *   with `https://` as the prefix and the value of `VERCEL_URL`.
+ * - Falls back to `http://localhost:3000` if neither `APP_URL` nor `VERCEL_URL` is defined.
  *
  * @type {string}
  * @returns {string} The URL string to use for the application.
  */
 const appUrl: string =
-  process.env.APP_URL
-  || (process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : 'http://localhost:3000');
+  process.env.APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
 /**
  * Configuration object for the application.

@@ -25,7 +25,9 @@ import watchlistRouter from '../routes/watchlist';
 const app = express();
 
 /** Load Vercel Analytics */
-inject();
+inject({
+  debug: true,
+});
 
 /**
  * Middleware function that sets the APP_URL as a local variable for the views.
