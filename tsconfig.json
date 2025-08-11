@@ -17,6 +17,7 @@
     "middleware/**/*.ts",
     "models/**/*.ts",
     "routes/**/*.ts",
+    "tests/**/*.ts",
     "types/**/*.d.ts"
   ]
 }
