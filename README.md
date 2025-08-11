@@ -63,6 +63,18 @@ To install and set up the basic project, follow these steps:
    - [ ] `APP_URL=binger.uk` - replace `binger.uk` with your website/app's live URL.
 5. Start the application by running `yarn start`.
 
+## Linting
+
+- Run `yarn lint` to type-check all TypeScript files using the TypeScript compiler in no-emit mode and lint EJS templates.
+- Run `yarn lint:ts` to type-check only the TypeScript files.
+
+## Testing and Coverage
+
+- Run `yarn test` to execute the test suite.
+- Run `yarn test:coverage` to generate coverage for the entire project. A summary will be printed to the console and full reports will be written to the `coverage/` folder (HTML, lcov, text).
+- To focus on the passport tests while still producing project-wide coverage, run: `yarn test:coverage:passport`. This will execute `config/passport.spec.ts` and show you how much of `config/passport.ts` (and the rest of the project) is covered.
+- Run `yarn lint:ejs` to lint EJS templates.
+
 ### Nginx and Systemd Server Setup
 
 Included in the `/system` folder are two configuration files:
@@ -152,6 +164,7 @@ OMDb API used in this project. Open the file and begin testing the API to see re
 
 ## Future Enhancements
 
+- [ ] Migrate code to TypeScript for better extensibility.
 - [x] ~~Improve UI on View player page to include movie/tv information and title.~~
 - [ ] Change layout to include all episodes on the view screen.
 - [x] ~~Implement a proper authentication mechanism to restrict access to the application.~~
@@ -162,8 +175,9 @@ OMDb API used in this project. Open the file and begin testing the API to see re
   - [x] ~~Bookmarks to save items to profile~~
 - [ ] Implement a proper logging mechanism to track errors and user interactions.
 - [ ] Improve the error handling mechanism to provide better feedback to the user when an error occurs.
+- [ ] Add test suite so we can code better.
 
 ## License
 
-> Copyright (c) 2024 [Justin Hartman](https://justhart.com). All rights reserved.   
+> Copyright (c) 2024-2025 [Justin Hartman](https://justhart.com). All rights reserved.   
 > The application is licensed under the [MIT license](LICENSE.md).

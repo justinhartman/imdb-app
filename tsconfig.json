@@ -7,12 +7,17 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": [
-    "api/*.ts",
-    // "config/**/*.ts",
-    // "routes/**/*.ts",
-    // "helpers/**/*.ts"
+    "api/**/*.ts",
+    "config/**/*.ts",
+    "controllers/**/*.ts",
+    "helpers/**/*.ts",
+    "middleware/**/*.ts",
+    "models/**/*.ts",
+    "routes/**/*.ts",
+    "tests/**/*.ts",
+    "types/**/*.d.ts"
   ]
 }
