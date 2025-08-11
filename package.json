@@ -15,7 +15,8 @@
   "homepage": "https://binger.uk",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node ./app.js",
+    "build": "yarn deploy:yarn",
     "lint": "npx ejslint ./views/*.ejs ./views/**/*.ejs",
     "db:status": "npx migrate-mongo status",
     "db:migrate": "npx migrate-mongo up",
@@ -37,6 +38,7 @@
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
     "express-session": "^1.18.0",
+    "mongodb": "^6.18.0",
     "mongoose": "^8.4.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0"
