@@ -11,10 +11,14 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const analytics = require('@vercel/analytics');
 
 const appConfig = require('../config/app');
 const connectDB = require('../config/db');
 const appHelper = require('../helpers/appHelper');
+
+/** Load Vercel Analytics */
+analytics.inject();
 
 /**
  * Middleware function that sets the APP_URL as a local variable for the views.
