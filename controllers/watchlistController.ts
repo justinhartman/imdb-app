@@ -87,4 +87,3 @@ const watchlistController = {
 };
 
 export default watchlistController;
-

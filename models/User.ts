@@ -74,4 +74,3 @@ UserSchema.methods.matchPassword = async function (password: string): Promise<bo
  */
 const User = mongoose.model<IUser>('User', UserSchema);
 export default User;
-

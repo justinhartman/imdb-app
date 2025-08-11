@@ -89,4 +89,3 @@ export const fetchAndUpdatePosters = async (show: any[]): Promise<void> => {
  * }
  */
 export const useAuth = appConfig.MONGO_DB_URI !== '';
-

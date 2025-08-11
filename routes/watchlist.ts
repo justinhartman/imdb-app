@@ -36,4 +36,3 @@ router.post('/add', ensureAuthenticated, watchlistController.addToWatchlist);
 router.post('/delete', ensureAuthenticated, watchlistController.deleteFromWatchlist);
 
 export default router;
-

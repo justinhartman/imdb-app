@@ -27,4 +27,3 @@ router.get('/logout', ensureAuthenticated, authController.logout);
 router.get('/profile', ensureAuthenticated, authController.getProfile);
 
 export default router;
-
