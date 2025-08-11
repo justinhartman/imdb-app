@@ -8,8 +8,12 @@ import mongoose from 'mongoose';
 import appConfig from './app';
 
 /**
- * Connects to the MongoDB database using Mongoose.
- * @returns {Promise<void>} A Promise that resolves when the database is connected.
+ * A function to establish a connection to the MongoDB database.
+ * Uses the mongoose library to connect to the database URI and specified database name.
+ * In case of a connection failure, it logs the error message and terminates the process.
+ *
+ * @returns {Promise<void>} A promise that resolves once the connection is successfully established.
+ * @throws Will exit the process if the connection fails.
  */
 const connectDB = async (): Promise<void> => {
   try {

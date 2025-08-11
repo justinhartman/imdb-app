@@ -10,13 +10,24 @@ interface AuthRequest extends Request {
 }
 
 /**
- * @module appController
- * @description This module contains the standard application controller functions.
+ * @namespace appController
+ * @description A controller object containing methods for handling web application routes such as the home page,
+ *              view page, and search functionality.
+ *
+ * @property {function} getHome Handles rendering of the home page, displaying the latest movies and TV shows.
+ * @property {function} getView Handles rendering of a specific content view page, either for movies or TV series episodes.
+ * @property {function} getSearch Handles rendering of search results based on user queries and content type.
  */
 const appController = {
   /**
+   * Handles the home route to retrieve and render the latest movies and TV shows.
+   * Fetches and updates posters for both movies and TV series from an external API.
+   * Renders the data along with query parameters and user-specific information.
+   *
    * @function getHome
-   * @description Render the home page with new movies and TV shows.
+   * @param {AuthRequest} req - The HTTP request object, containing query parameters and user authentication.
+   * @param {Response} res - The HTTP response object used to render the home page and pass data to the client.
+   * @throws Will throw an error if an issue occurs during API requests or rendering.
    */
   getHome: asyncHandler(async (req: AuthRequest, res: Response) => {
     const query = (req.query.q as string) || '';
@@ -47,8 +58,17 @@ const appController = {
   }),
 
   /**
+   * Handles the "getView" route for rendering a view page based on the provided query parameters.
+   *
    * @function getView
-   * @description Render a movie or TV video player page.
+   * @async
+   * @param {AuthRequest} req - The request object, containing parameters like `q`, `id`, `type`, `season`, and `episode`.
+   * @param {Response} res - The response object, used for rendering the view or sending a response.
+   * @returns {void}
+   *
+   * This function processes the route parameters to determine the content type (movie or series). It dynamically constructs
+   * the iframe source URL and the canonical URL for SEO purposes, and fetches additional data from the OMDb API. Depending on
+   * the `type` parameter (series or default movie), it includes additional fields for season and episode when rendering the view.
    */
   getView: asyncHandler(async (req: AuthRequest, res: Response) => {
     const query = req.params.q || '';
@@ -90,8 +110,15 @@ const appController = {
   }),
 
   /**
+   * Handles the search functionality for the application.
+   * Processes the search query and type from the request, fetches search results from the OMDB API, and renders the
+   * search results page.
+   *
    * @function getSearch
-   * @description Render the search results page.
+   * @async
+   * @param {AuthRequest} req - The request object, including query parameters for the search query and type.
+   * @param {Response} res - The response object used to render the search page or perform a redirect.
+   * @throws {Error} Propagates errors due to issues in fetching data from OMDB or rendering the response.
    */
   getSearch: asyncHandler(async (req: AuthRequest, res: Response) => {
     const query = (req.query.q as string).trim();
