@@ -42,6 +42,26 @@ describe('controllers/appController', () => {
     }));
   });
 
+  test('getHome handles empty results', async () => {
+    (axios.get as jest.Mock)
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: {} });
+    (fetchAndUpdatePosters as jest.Mock).mockResolvedValue(undefined);
+
+    const req: any = { query: {}, user: {} };
+    const res: any = {
+      locals: { APP_URL: 'http://app', CARD_TYPE: 'card' },
+      render: jest.fn(),
+    };
+
+    await appController.getHome(req, res, jest.fn());
+
+    expect(res.render).toHaveBeenCalledWith('index', expect.objectContaining({
+      newMovies: [],
+      newSeries: [],
+    }));
+  });
+
   test('getView renders series view', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
     const req: any = { params: { q: '', id: 'tt', type: 'series', season: '1', episode: '2' }, user: {} };
@@ -53,6 +73,19 @@ describe('controllers/appController', () => {
       season: '1',
       episode: '2',
       type: 'series',
+    }));
+  });
+
+  test('getView defaults season and episode when missing', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: {} };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
+
+    await appController.getView(req, res, jest.fn());
+
+    expect(res.render).toHaveBeenCalledWith('view', expect.objectContaining({
+      season: '1',
+      episode: '1',
     }));
   });
 

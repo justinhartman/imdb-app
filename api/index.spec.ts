@@ -47,6 +47,7 @@ describe('api/index', () => {
     const res: any = { locals: {} };
     localsMiddleware({}, res, () => {});
     expect(res.locals.APP_NAME).toBe('name');
+    expect(res.locals.CARD_TYPE).toBe('card-add');
     expect(connectMock).toHaveBeenCalled();
     expect(app.use).toHaveBeenCalledWith('/', appRouter);
     expect(app.use).toHaveBeenCalledWith('/user', authRouter);
@@ -58,6 +59,10 @@ describe('api/index', () => {
     expressMock.mockClear();
     loadModule(false);
     const app = expressMock.mock.results[0].value;
+    const localsMiddleware = app.use.mock.calls[0][0];
+    const res: any = { locals: {} };
+    localsMiddleware({}, res, () => {});
+    expect(res.locals.CARD_TYPE).toBe('card');
     expect(connectMock).not.toHaveBeenCalled();
     expect(app.use).toHaveBeenCalledWith('/', appRouter);
     expect(app.use).not.toHaveBeenCalledWith('/user', authRouter);

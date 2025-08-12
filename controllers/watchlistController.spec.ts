@@ -68,6 +68,55 @@ describe('controllers/watchlistController unit', () => {
     expect(res.redirect).toHaveBeenCalledWith('/watchlist');
   });
 
+  test('addToWatchlist: creates new watchlist when none exists', async () => {
+    const save = jest.fn(async () => undefined);
+    const WatchlistMock: any = function (this: any, obj: any) {
+      Object.assign(this, obj);
+      this.save = save;
+      this.items = [];
+    };
+    WatchlistMock.findOne = jest.fn(async () => null);
+
+    jest.doMock('../models/Watchlist', () => ({
+      __esModule: true,
+      default: WatchlistMock,
+    }));
+
+    const req: any = makeReq({ imdbId: 'tt1', title: 'T', poster: 'p', type: 'movie' });
+    const res: any = makeRes();
+    const ctrl = require('./watchlistController').default;
+
+    await ctrl.addToWatchlist(req, res);
+
+    expect(WatchlistMock.findOne).toHaveBeenCalled();
+    expect(save).toHaveBeenCalled();
+    expect(req.flash).toHaveBeenCalledWith(
+      'success_msg',
+      expect.stringMatching(/Added T to watchlist/)
+    );
+    expect(res.redirect).toHaveBeenCalledWith('/watchlist');
+  });
+
+  test('addToWatchlist: model throws → catch path', async () => {
+    jest.doMock('../models/Watchlist', () => ({
+      __esModule: true,
+      default: {
+        findOne: jest.fn(async () => { throw new Error('add fail'); }),
+      },
+    }));
+    const req: any = makeReq({ imdbId: 'tt1', title: 'T', poster: 'p', type: 'movie' });
+    const res: any = makeRes();
+    const ctrl = require('./watchlistController').default;
+
+    await ctrl.addToWatchlist(req, res);
+
+    expect(req.flash).toHaveBeenCalledWith(
+      'error_msg',
+      expect.stringMatching(/Failed to add to watchlist/)
+    );
+    expect(res.redirect).toHaveBeenCalledWith('/watchlist');
+  });
+
   test('deleteFromWatchlist: item missing → error flash and redirect', async () => {
     const save = jest.fn(async () => undefined);
     jest.doMock('../models/Watchlist', () => ({
@@ -84,6 +133,50 @@ describe('controllers/watchlistController unit', () => {
     await ctrl.deleteFromWatchlist(req, res);
 
     expect(req.flash).toHaveBeenCalledWith('error_msg', 'Could not find item in your watchlist.');
+    expect(res.redirect).toHaveBeenCalledWith('/watchlist');
+  });
+
+  test('deleteFromWatchlist: success path removes item', async () => {
+    const save = jest.fn(async () => undefined);
+    jest.doMock('../models/Watchlist', () => ({
+      __esModule: true,
+      default: {
+        findOne: jest.fn(async () => ({ items: [{ imdbId: 'tt1' }], save })),
+      },
+    }));
+
+    const req: any = makeReq({ imdbId: 'tt1' });
+    const res: any = makeRes();
+    const ctrl = require('./watchlistController').default;
+
+    await ctrl.deleteFromWatchlist(req, res);
+
+    expect(save).toHaveBeenCalled();
+    expect(req.flash).toHaveBeenCalledWith(
+      'success_msg',
+      'Removed item from your watchlist.'
+    );
+    expect(res.redirect).toHaveBeenCalledWith('/watchlist');
+  });
+
+  test('deleteFromWatchlist: model throws → catch path', async () => {
+    jest.doMock('../models/Watchlist', () => ({
+      __esModule: true,
+      default: {
+        findOne: jest.fn(async () => { throw new Error('del fail'); }),
+      },
+    }));
+
+    const req: any = makeReq({ imdbId: 'tt1' });
+    const res: any = makeRes();
+    const ctrl = require('./watchlistController').default;
+
+    await ctrl.deleteFromWatchlist(req, res);
+
+    expect(req.flash).toHaveBeenCalledWith(
+      'error_msg',
+      expect.stringMatching(/Failed to remove/)
+    );
     expect(res.redirect).toHaveBeenCalledWith('/watchlist');
   });
 });
