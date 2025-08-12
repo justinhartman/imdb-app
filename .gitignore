@@ -1,5 +1,4 @@
 # Configuration
-.env
 CHANGELOG.md
 
 # Logs
@@ -26,6 +25,7 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 *.lcov
+junit.xml
 
 # nyc test coverage
 .nyc_output
@@ -103,10 +103,6 @@ dist
 
 # vuepress build output
 .vuepress/dist
-
-# vuepress v2.x temp and cache directory
-.temp
-.cache
 
 # Docusaurus cache and generated files
 .docusaurus
