@@ -1,39 +1,52 @@
 name: Development Builds
 on:
   push:
-    branches: [develop]
+    branches:
+      - 'develop'
   pull_request:
-    branches: [develop]
+    branches:
+      - 'develop'
+      - '!analysis*'
+      - '!dependabot/*'
 env:
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  JEST_JUNIT_OUTPUT: junit.xml
 jobs:
   coverage:
     name: CodeCov coverage reports
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout source code
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: 3.11
+          node-version: '22.x'
+          cache: 'yarn'
       - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Install jest-junit
+        run: yarn add --save-dev jest-junit
+      - name: Run coverage tests with Jest
         run: |
-          python -m pip install --upgrade pip
-          pip install -U pytest pytest-cov
-      - name: Test with pytest
-        run: |
-          pytest --cov=. --cov-report=xml --cov-report=term-missing \
-           --junitxml=junit.xml -o junit_family=legacy
+          npx JEST_JUNIT_CLASSNAME="{filepath}" jest jest --coverage \
+            --coverageReporters=lcov,text-summary,cobertura \
+            --reporters=default --reporters=jest-junit
+        env:
+            JEST_JUNIT_OUTPUT: junit.xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ env.CODECOV_TOKEN }}
-          files: ./coverage.xml
+          files: ./coverage/lcov.info,./coverage/cobertura-coverage.xml
+          flags: tests
+          verbose: false
+          fail_ci_if_error: false
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
           token: ${{ env.CODECOV_TOKEN }}
+          files: junit.xml
