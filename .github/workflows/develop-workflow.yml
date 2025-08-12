@@ -10,7 +10,6 @@ on:
       - '!dependabot/*'
 env:
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-  JEST_JUNIT_OUTPUT: junit.xml
 jobs:
   coverage:
     name: CodeCov coverage reports
@@ -27,20 +26,13 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Install jest-junit
-        run: yarn add --save-dev jest-junit
-      - name: Run coverage tests with Jest
-        run: |
-          npx JEST_JUNIT_CLASSNAME="{filepath}" jest jest --coverage \
-            --coverageReporters=lcov,text-summary,cobertura \
-            --reporters=default --reporters=jest-junit
-        env:
-            JEST_JUNIT_OUTPUT: junit.xml
+      - name: Run tests with coverage
+        run: yarn test:coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ env.CODECOV_TOKEN }}
-          files: ./coverage/lcov.info,./coverage/cobertura-coverage.xml
+          files: ./coverage/lcov.info
           flags: tests
           verbose: false
           fail_ci_if_error: false
