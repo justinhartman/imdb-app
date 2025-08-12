@@ -1,5 +1,6 @@
 import passport from 'passport';
 import authController from './authController';
+import User from '../models/User';
 
 const makeRes = () => {
   const res: any = {};
@@ -18,7 +19,6 @@ const makeReq = (body: any = {}) => {
 
 describe('controllers/authController unit', () => {
   beforeEach(() => {
-    jest.resetModules();
     jest.clearAllMocks();
   });
 
@@ -36,24 +36,11 @@ describe('controllers/authController unit', () => {
   });
 
   test('postRegister: User.findOne throws -> catch block', async () => {
-    // Reset module registry so mocks apply to fresh imports
-    jest.resetModules();
-
-    // Mock the User model BEFORE requiring the controller
-    const findOne = jest.fn().mockRejectedValue(new Error('boom'));
-    jest.doMock('../models/User', () => ({
-      __esModule: true,
-      default: { findOne },
-    }));
-
-    // Now require the controller so it captures the mocked module
-    const authController = require('./authController').default;
-
+    const findOne = jest.spyOn(User, 'findOne').mockRejectedValue(new Error('boom'));
     const req: any = makeReq({ username: 'u', password: 'p' });
     const res: any = makeRes();
-    const next = jest.fn();
 
-    await authController.postRegister(req, res, next);
+    await authController.postRegister(req, res, jest.fn());
 
     expect(findOne).toHaveBeenCalledWith({ username: 'u' });
     expect(req.flash).toHaveBeenCalledWith('error_msg', expect.stringMatching(/Failed to register/i));
@@ -66,7 +53,9 @@ describe('controllers/authController unit', () => {
     const next = jest.fn();
 
     const spy = jest.spyOn(passport, 'authenticate').mockImplementation(() => {
-      return () => { throw new Error('auth fail'); };
+      return () => {
+        throw new Error('auth fail');
+      };
     }) as any;
 
     await authController.postLogin(req, res, next);
@@ -74,5 +63,30 @@ describe('controllers/authController unit', () => {
     expect(spy).toHaveBeenCalled();
     expect(req.flash).toHaveBeenCalledWith('error_msg', expect.stringMatching(/Failed to authenticate/));
     expect(res.redirect).toHaveBeenCalledWith('/user/login');
+  });
+
+  test('logout passes error to next', () => {
+    const req: any = makeReq();
+    const res: any = makeRes();
+    const next = jest.fn();
+    req.logout = (cb: any) => cb(new Error('boom'));
+
+    authController.logout(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  test('logout flashes success on success', () => {
+    const req: any = makeReq();
+    const res: any = makeRes();
+    req.logout = (cb: any) => cb();
+
+    authController.logout(req, res, jest.fn());
+
+    expect(req.flash).toHaveBeenCalledWith(
+      'success_msg',
+      'You are now logged out of the app.'
+    );
+    expect(res.redirect).toHaveBeenCalledWith('/');
   });
 });
