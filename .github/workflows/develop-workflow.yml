@@ -4,7 +4,6 @@ on:
     branches: [develop]
   pull_request:
     branches: [develop]
-    branches-ignore: ['analysis*', 'dependabot/*']
 env:
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 jobs:
