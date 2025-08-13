@@ -70,11 +70,15 @@ describe('controllers/appController', () => {
 
   test('getView renders series view', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
-    const req: any = { params: { q: '', id: 'tt', type: 'series', season: '1', episode: '2' }, user: {} };
-    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
+    const req: any = { params: { q: '', id: 'tt', type: 'series', season: '1', episode: '2' }, user: { id: 'u1' } };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
 
     await appController.getView(req, res, jest.fn());
-    expect(fetchOmdbData).toHaveBeenCalledWith('tt', false);
+    expect(History.findOneAndUpdate).toHaveBeenCalledWith(
+      { userId: 'u1', imdbId: 'tt' },
+      { $set: { type: 'series', lastSeason: 1, lastEpisode: 2 } },
+      { upsert: true }
+    );
     expect(res.render).toHaveBeenCalledWith('view', expect.objectContaining({
       season: '1',
       episode: '2',
@@ -84,11 +88,18 @@ describe('controllers/appController', () => {
 
   test('getView defaults season and episode when missing', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
-    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: {} };
-    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
+    (History.findOne as jest.Mock).mockResolvedValue(undefined);
+    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: { id: 'u1' } };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
 
     await appController.getView(req, res, jest.fn());
 
+    expect(res.redirect).not.toHaveBeenCalled();
+    expect(History.findOneAndUpdate).toHaveBeenCalledWith(
+      { userId: 'u1', imdbId: 'tt' },
+      { $set: { type: 'series', lastSeason: 1, lastEpisode: 1 } },
+      { upsert: true }
+    );
     expect(res.render).toHaveBeenCalledWith('view', expect.objectContaining({
       season: '1',
       episode: '1',
@@ -97,11 +108,110 @@ describe('controllers/appController', () => {
 
   test('getView renders movie view', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
-    const req: any = { params: { q: '', id: 'tt', type: 'movie' }, user: {} };
+    (History.findOneAndUpdate as jest.Mock).mockResolvedValue({ watched: true });
+    const req: any = { params: { q: '', id: 'tt', type: 'movie' }, user: { id: 'u1' } };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
 
     await appController.getView(req, res, jest.fn());
-    expect(res.render).toHaveBeenCalledWith('view', expect.objectContaining({ type: 'movie' }));
+    expect(History.findOneAndUpdate).toHaveBeenCalledWith(
+      { userId: 'u1', imdbId: 'tt' },
+      { $set: { type: 'movie', watched: true } },
+      { upsert: true, new: true }
+    );
+    expect(res.render).toHaveBeenCalledWith('view', expect.objectContaining({ type: 'movie', watched: true }));
+  });
+
+  test('getView handles missing history on movie view', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    (History.findOneAndUpdate as jest.Mock).mockResolvedValue(null);
+    const req: any = { params: { q: '', id: 'tt', type: 'movie' }, user: { id: 'u1' } };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
+
+    await appController.getView(req, res, jest.fn());
+
+    expect(res.render).toHaveBeenCalledWith(
+      'view',
+      expect.objectContaining({ type: 'movie', watched: false })
+    );
+  });
+
+  test('getView redirects to history position for series', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    (History.findOne as jest.Mock).mockResolvedValue({ lastSeason: 5, lastEpisode: 11 });
+    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: { id: 'u1' } };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
+
+    await appController.getView(req, res, jest.fn());
+    expect(res.redirect).toHaveBeenCalledWith('/view/tt/series/5/11');
+    expect(History.findOneAndUpdate).not.toHaveBeenCalled();
+  });
+
+  test('getView ignores malformed history and uses defaults', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    (History.findOne as jest.Mock).mockResolvedValue({ lastSeason: 'abc', lastEpisode: null });
+    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: { id: 'u1' } };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
+
+    await appController.getView(req, res, jest.fn());
+
+    expect(res.redirect).not.toHaveBeenCalled();
+    expect(History.findOneAndUpdate).toHaveBeenCalledWith(
+      { userId: 'u1', imdbId: 'tt' },
+      { $set: { type: 'series', lastSeason: 1, lastEpisode: 1 } },
+      { upsert: true }
+    );
+    expect(res.render).toHaveBeenCalledWith(
+      'view',
+      expect.objectContaining({ season: '1', episode: '1' })
+    );
+  });
+
+  test('getView series without user does not query history', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    const req: any = { params: { q: '', id: 'tt', type: 'series' } };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
+
+    await appController.getView(req, res, jest.fn());
+
+    expect(History.findOne).not.toHaveBeenCalled();
+    expect(History.findOneAndUpdate).not.toHaveBeenCalled();
+    expect(res.render).toHaveBeenCalledWith(
+      'view',
+      expect.objectContaining({ season: '1', episode: '1' })
+    );
+  });
+
+  test('getView propagates errors from History.findOne', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    (History.findOne as jest.Mock).mockRejectedValue(new Error('fail'));
+    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: { id: 'u1' } };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
+    const next = jest.fn();
+
+    await appController.getView(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  test('getView propagates errors from History.findOneAndUpdate', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    (History.findOneAndUpdate as jest.Mock).mockRejectedValue(new Error('fail'));
+    const req: any = { params: { q: '', id: 'tt', type: 'movie' }, user: { id: 'u1' } };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
+    const next = jest.fn();
+
+    await appController.getView(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  test('getView movie without user skips history', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    const req: any = { params: { q: '', id: 'tt', type: 'movie' } };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
+
+    await appController.getView(req, res, jest.fn());
+    expect(History.findOneAndUpdate).not.toHaveBeenCalled();
   });
 
   test('getSearch redirects when query empty', async () => {
