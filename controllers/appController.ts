@@ -9,7 +9,6 @@ import {Request, Response} from 'express';
 
 import appConfig from '../config/app';
 import {fetchOmdbData, fetchAndUpdatePosters} from '../helpers/appHelper';
-import History from '../models/History';
 
 /**
  * Extended Express Request interface with optional user property.
@@ -106,41 +105,12 @@ const appController = {
   getView: asyncHandler(async (req: AuthRequest, res: Response) => {
     const query = req.params.q || '';
     const id = req.params.id;
-    const type = req.params.type;
+    let type = req.params.type;
+    let t = 'movie';
 
     if (type === 'series') {
-      let season = req.params.season;
-      let episode = req.params.episode;
-
-      if ((!season || !episode) && req.user) {
-        const history = await History.findOne({
-          userId: req.user.id,
-          imdbId: id,
-        });
-        if (history) {
-          const { lastSeason, lastEpisode } = history as any;
-          if (
-            Number.isInteger(lastSeason) &&
-            Number.isInteger(lastEpisode) &&
-            lastSeason > 0 &&
-            lastEpisode > 0
-          ) {
-            return res.redirect(`/view/${id}/series/${lastSeason}/${lastEpisode}`);
-          }
-        }
-      }
-
-      season = season || '1';
-      episode = episode || '1';
-
-      if (req.user) {
-        await History.findOneAndUpdate(
-          { userId: req.user.id, imdbId: id },
-          { $set: { type: 'series', lastSeason: Number(season), lastEpisode: Number(episode) } },
-          { upsert: true }
-        );
-      }
-
+      const season = req.params.season || '1';
+      const episode = req.params.episode || '1';
       const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
       const canonical = `${res.locals.APP_URL}/view/${id}/${type}/${season}/${episode}`;
       const data = await fetchOmdbData(id, false);
@@ -157,17 +127,7 @@ const appController = {
       });
     }
 
-    let watched = false;
-    if (req.user) {
-      const history = await History.findOneAndUpdate(
-        { userId: req.user.id, imdbId: id },
-        { $set: { type: 'movie', watched: true } },
-        { upsert: true, new: true }
-      );
-      watched = history?.watched || false;
-    }
-
-    const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
+    const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/${t}/${id}`;
     const canonical = `${res.locals.APP_URL}/view/${id}/${type}`;
     const data = await fetchOmdbData(id, false);
     res.render('view', {
@@ -178,7 +138,6 @@ const appController = {
       type,
       canonical,
       user: req.user,
-      watched,
     });
   }),
 

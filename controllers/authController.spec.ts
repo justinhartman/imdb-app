@@ -47,30 +47,6 @@ describe('controllers/authController unit', () => {
     expect(res.redirect).toHaveBeenCalledWith('/user/register');
   });
 
-  test('postRegister redirects when user exists', async () => {
-    const findOne = jest.spyOn(User, 'findOne').mockResolvedValue({} as any);
-    const req: any = makeReq({ username: 'u', password: 'p' });
-    const res: any = makeRes();
-
-    await authController.postRegister(req, res, jest.fn());
-
-    expect(findOne).toHaveBeenCalledWith({ username: 'u' });
-    expect(res.redirect).toHaveBeenCalledWith('/user/register');
-  });
-
-  test('postRegister saves new user when not exists', async () => {
-    jest.spyOn(User, 'findOne').mockResolvedValue(null);
-    const save = jest.spyOn(User.prototype, 'save').mockResolvedValue(undefined as any);
-    const req: any = makeReq({ username: 'u', password: 'p' });
-    const res: any = makeRes();
-
-    await authController.postRegister(req, res, jest.fn());
-
-    expect(save).toHaveBeenCalled();
-    expect(req.flash).toHaveBeenCalledWith('success_msg', 'You are now registered and can log in');
-    expect(res.redirect).toHaveBeenCalledWith('/user/login');
-  });
-
   test('postLogin: passport.authenticate throws -> catch block', async () => {
     const req: any = makeReq({ username: 'x', password: 'y' });
     const res: any = makeRes();

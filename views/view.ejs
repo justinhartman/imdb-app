@@ -32,12 +32,8 @@
     </div>
 <% } %>
     <div class="ratio ratio-16x9">
-        <iframe src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" sandbox="allow-scripts" class="w-100" allowfullscreen></iframe>
+        <iframe src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" class="w-100"></iframe>
     </div>
-    <script>
-        // Block popup windows initiated by the embedded player
-        window.open = () => null;
-    </script>
     <% if (data.Type === 'series') { -%>
     <div class="hstack gap-3">
         <div class="pt-3">
