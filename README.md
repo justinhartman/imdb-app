@@ -179,7 +179,7 @@ OMDb API used in this project. Open the file and begin testing the API to see re
 
 **Would love some help on these...**
 
-- [ ] Work out a way to stop the video player from adding popups when watching[^1].
+- [x] Automatically block video player popups to stop embedded ads[^1].
 - [ ] Change layout to include all episodes on the view screen.
 - [ ] Add personalised recommendations. _(not so easy to do)_
 - [ ] Implement a proper logging mechanism to track errors and user interactions.
