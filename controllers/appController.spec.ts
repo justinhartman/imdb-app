@@ -1,11 +1,17 @@
 import appController from './appController';
 import axios from 'axios';
 import { fetchOmdbData, fetchAndUpdatePosters } from '../helpers/appHelper';
+import History from '../models/History';
 
 jest.mock('axios');
 jest.mock('../helpers/appHelper', () => ({
   fetchOmdbData: jest.fn(),
   fetchAndUpdatePosters: jest.fn(),
+}));
+
+jest.mock('../models/History', () => ({
+  findOne: jest.fn(),
+  findOneAndUpdate: jest.fn(),
 }));
 
 jest.mock('../config/app', () => ({

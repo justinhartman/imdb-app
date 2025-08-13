@@ -9,6 +9,7 @@ import {Request, Response} from 'express';
 
 import appConfig from '../config/app';
 import {fetchOmdbData, fetchAndUpdatePosters} from '../helpers/appHelper';
+import History from '../models/History';
 
 /**
  * Extended Express Request interface with optional user property.
