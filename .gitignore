@@ -1,6 +1,10 @@
 # Configuration
 CHANGELOG.md
 
+# Tests that need to be completed still
+# TODO: The view.template.spec,ts tests are based on the non-functional PR #27 which I like but needs reworking.
+tests/integration/todo/*
+
 # Logs
 logs
 *.log
