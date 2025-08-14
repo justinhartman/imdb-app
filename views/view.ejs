@@ -21,7 +21,7 @@
 <% if (data.Response !== 'False') { -%>
     <div class="text-white my-4">
         <div class="d-flex flex-column flex-sm-row justify-content-between">
-            <h1 class="display-6 text-warning mb-2 mb-sm-0">
+            <h1 class="display-6 text-warning mb-2 mb-sm-0 w-auto">
             <% if (data.Type === 'series') { -%>
                 <i class="bi-collection-play-fill px-1"></i>
             <% } else if (data.Type === 'movie') { -%>
@@ -30,17 +30,17 @@
                 <%= data.Title %> (<%= data.Year %>)
             </h1>
             <% if (data.Type === 'series' && season > 0) { %>
-            <div id="series-buttons" class="btn p-0 ps-2 m-0 m-sm-n1 w-100 w-sm-auto">
-                <button type="button" class="btn btn-dark btn-lg mb-1" disabled>
+            <div id="series-buttons" class="d-absolute p-0 ps-2 m-0 m-sm-n1 end-0">
+                <button type="button" class="btn btn-dark btn-md mb-1" disabled>
                      Season <span class="badge bg-warning text-dark"><%= season %></span>
                 </button>
-                <button type="button" class="btn btn-dark btn-lg mb-1" disabled>
+                <button type="button" class="btn btn-dark btn-md mb-1" disabled>
                     Episode <span class="badge bg-info text-dark"><%= episode %></span>
                 </button>
                 <div class="mb-2 w-auto">
-                    <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${Number(episode) - 1}` %>" class="btn text-primary bg-primary-subtle border border-primary-subtle btn-sm float-start p-2"><i class="bi bi-caret-left-square"></i> Previous</a>
+                    <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${Number(episode) - 1}` %>" class="btn text-primary bg-primary-subtle border border-primary-subtle btn-sm p-2"><i class="bi bi-caret-left-square"></i> Previous</a>
                     <a href="<%= APP_URL %>/watchlist" class="btn text-secondary bg-secondary-subtle border border-secondary-subtle btn-sm p-2"><i class="bi bi-view-list"></i> Watchlist</a>
-                    <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${Number(episode) + 1}` %>" class="btn text-success bg-success-subtle border border-success-subtle btn-sm float-end p-2">Next <i class="bi bi-caret-right-square"></i></a>
+                    <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${Number(episode) + 1}` %>" class="btn text-success bg-success-subtle border border-success-subtle btn-sm p-2">Next <i class="bi bi-caret-right-square"></i></a>
                 </div>
             </div>
             <% } %>
