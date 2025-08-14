@@ -28,7 +28,7 @@ const watchlistController = {
         req.flash('error_msg', 'No watchlist found.');
         res.redirect('/watchlist');
       }
-      res.render('watchlist', { watchlist, canonical, query: '', type: 'movie' });
+      res.render('watchlist', { watchlist, canonical, query: '', type: 'movie', user: req.user });
     } catch (error: any) {
       req.flash('error_msg', `Failed to retrieve watchlist. ${error.message}`);
       res.redirect('/watchlist');

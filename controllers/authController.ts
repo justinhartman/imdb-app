@@ -47,7 +47,7 @@ const authController = {
    */
   getRegister: asyncHandler(async (req: any, res: Response) => {
     const canonical = `${res.locals.APP_URL}/user/register`;
-    res.render('register', { canonical, query: '', type: 'movie' });
+    res.render('register', { canonical, query: '', type: 'movie', user: req.user });
   }),
 
   /**
@@ -79,7 +79,7 @@ const authController = {
    */
   getLogin: asyncHandler(async (req: any, res: Response) => {
     const canonical = `${res.locals.APP_URL}/user/login`;
-    res.render('login', { canonical, query: '', type: 'movie' });
+    res.render('login', { canonical, query: '', type: 'movie', user: req.user });
   }),
 
   /**
