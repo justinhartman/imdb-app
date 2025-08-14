@@ -21,6 +21,13 @@ a.btn-primary:hover {
     flex-grow: 1;
 }
 
+/* Styles that apply at the 'sm' breakpoint and above */
+@media (min-width: 576px) {
+    #series-buttons {
+        margin: -3.1em 0 0 0 !important;
+    }
+}
+
 /* Styles that apply at the 'md' breakpoint and above */
 @media (min-width: 768px) {
     .card-img-top {
