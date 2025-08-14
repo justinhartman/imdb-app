@@ -1,33 +1,60 @@
 /**
  * Configuration for migrate-mongo package.
- * @module config
+ * @module migrate-mongo/config
  * @description This module contains the configuration for the application.
  */
 
 /**
- * Application configuration.
- * @description This function imports the application configuration from the 'helpers/appHelper' module.
- * @returns {Object} The application configuration object.
+ * Load environment variables from .env file
  */
-const appConfig = require('./config/app');
+require('dotenv').config();
+
+/**
+ * Environment variables for MongoDB connection
+ * @type {Object}
+ * @property {string} MONGO_HOST - MongoDB host address
+ * @property {string} MONGO_PORT - MongoDB port number
+ * @property {string} MONGO_USERNAME - MongoDB username
+ * @property {string} MONGO_PASSWORD - MongoDB password
+ * @property {string} MONGO_URI - Complete MongoDB URI string (optional)
+ * @property {string} MONGO_DATABASE - MongoDB database name
+ */
+const {
+  MONGO_HOST,
+  MONGO_PORT,
+  MONGO_USERNAME,
+  MONGO_PASSWORD,
+  MONGO_URI = '',
+  MONGO_DATABASE,
+} = process.env;
+
+/**
+ * Constructs MongoDB connection URI
+ * Uses basic authentication if username and password are provided,
+ * otherwise uses the MONGO_URI environment variable
+ * @type {string}
+ */
+const mongoUri = (MONGO_USERNAME && MONGO_PASSWORD)
+  ? `mongodb://${encodeURIComponent(MONGO_USERNAME)}:${encodeURIComponent(MONGO_PASSWORD)}@${MONGO_HOST}:${MONGO_PORT}`
+  : `${MONGO_URI}`;
 
 /**
  * The MongoDB configuration object.
- * @description This object contains the configuration for the application.
  * @type {Object}
- * @property {string} mongodb.url - The MongoDB URI.
- * @property {string} mongodb.databaseName - The name of the MongoDB database.
- * @property {Object} mongodb.options - The options for the MongoDB connection.
- * @property {string} migrationsDir - The directory where the migrations are stored.
- * @property {string} changelogCollectionName - The name of the MongoDB collection where the applied changes are stored.
- * @property {string} migrationFileExtension - The file extension for the migrations.
- * @property {boolean} useFileHash - Whether to use a checksum of the file contents to determine if the file should be run.
- * @property {string} moduleSystem - The module system to use.
+ * @property {Object} mongodb - MongoDB specific configuration
+ * @property {string} mongodb.url - MongoDB connection URI
+ * @property {string} mongodb.databaseName - Database name to connect to
+ * @property {Object} mongodb.options - Additional MongoDB connection options
+ * @property {string} migrationsDir - Directory containing migration files
+ * @property {string} changelogCollectionName - Collection name for storing migration history
+ * @property {string} migrationFileExtension - File extension for migration files
+ * @property {boolean} useFileHash - Whether to use file content checksums for migration tracking
+ * @property {string} moduleSystem - Module system used for migrations
  */
 const config = {
   mongodb: {
-    url: appConfig.MONGO_DB_URI,
-    databaseName: appConfig.MONGO_DB_NAME,
+    url: mongoUri,
+    databaseName: MONGO_DATABASE,
     options: {
       // connectTimeoutMS: 3600000, // increase connection timeout to 1 hour
       // socketTimeoutMS: 3600000, // increase socket timeout to 1 hour
@@ -46,8 +73,4 @@ const config = {
   moduleSystem: 'commonjs',
 };
 
-/**
- * @description This exports the configuration object.
- * @returns {Object} The configuration object.
- */
 module.exports = config;

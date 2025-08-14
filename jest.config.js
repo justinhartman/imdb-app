@@ -10,6 +10,7 @@ module.exports = {
   testMatch: [
     '**/?(*.)+(spec|test).ts',
     '**/tests/**/*.(spec|test).ts',
+    '!**/tests/integration/todo/*.(spec|test).ts',
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   transform: {

@@ -5,8 +5,11 @@
 
 import { Router } from 'express';
 import appController from '../controllers/appController';
+import dbSessionMiddleware from '../middleware/dbSession';
 
 const router = Router();
+
+dbSessionMiddleware(router);
 
 /**
  * @route GET /

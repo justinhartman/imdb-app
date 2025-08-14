@@ -13,9 +13,8 @@
     "url": "https://github.com/justinhartman/imdb-app/issues"
   },
   "homepage": "https://binger.uk",
-  "main": "index.ts",
   "scripts": {
-    "start": "node api/index.ts",
+    "start": "tsx api/index.ts",
     "lint": "yarn lint:ts && yarn lint:ejs",
     "lint:ejs": "npx ejslint ./views/*.ejs ./views/**/*.ejs",
     "lint:ts": "npx tsc -p tsconfig.json --noEmit",
@@ -63,6 +62,7 @@
     "migrate-mongo": "^11.0.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.4.1",
+    "tsx": "^4.20.4",
     "typescript": "^5.9.2"
   }
 }
