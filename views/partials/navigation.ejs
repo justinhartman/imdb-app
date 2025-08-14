@@ -5,7 +5,7 @@
             <div class="row">
                 <form action="<%= APP_URL %>/search" class="d-md-flex justify-content-center text-center" method="get" name="search">
                     <div class="col-sm-12 col-md-3">
-                        <a href="<%= APP_URL %>/" class="display-5 text-decoration-none me-2 me-md-0 ms-0 ms-lg-2 d-inline-flex d-md-relative" for="q">
+                        <a href="<%= (typeof user !== 'undefined' && user) ? APP_URL + '/watchlist' : APP_URL + '/' %>" class="display-5 text-decoration-none me-2 me-md-0 ms-0 ms-lg-2 d-inline-flex d-md-relative" for="q">
                             <img src="<%= APP_URL %>/images/favicons/apple-touch-icon.png" style="width:64px" class="d-none d-md-inline me-2" alt="<%= APP_DESCRIPTION %>>">
                             <img src="<%= APP_URL %>/images/favicons/apple-touch-icon.png" style="width:80px" class="d-inline d-md-none" alt="<%= APP_DESCRIPTION %>>">
                             <div class="d-md-none d-lg-inline-flex position-relative pt-4 pt-md-0 ps-2 ps-md-0 text-white">
