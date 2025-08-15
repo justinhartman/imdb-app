@@ -3,12 +3,12 @@
  * @description Application controller module handling main application routes and views.
  */
 
-import axios from 'axios';
 import asyncHandler from 'express-async-handler';
 import { Response } from 'express';
 
 import appConfig from '../config/app';
-import {fetchOmdbData, fetchAndUpdatePosters, getSeriesDetail} from '../helpers/appHelper';
+import { fetchOmdbData, fetchAndUpdatePosters, getSeriesDetail } from '../helpers/appHelper';
+import http from '../helpers/httpClient';
 import History from '../models/History';
 import type { AuthRequest } from '../types/interfaces';
 
@@ -59,15 +59,16 @@ const appController = {
     const type = (req.query.type as string) || 'movie';
     const canonical = res.locals.APP_URL;
 
-    const axiosMovieResponse = await axios.get(
+    const axiosMovieResponse = await http.get(
       `https://${appConfig.VIDSRC_DOMAIN}/movies/latest/page-1.json`
     );
     let newMovies = axiosMovieResponse.data.result || [];
     await fetchAndUpdatePosters(newMovies);
 
-    const axiosSeriesResponse = await axios.get(
+    const axiosSeriesResponse = await http.get(
       `https://${appConfig.VIDSRC_DOMAIN}/tvshows/latest/page-1.json`
     );
+
     let newSeries = axiosSeriesResponse.data.result || [];
     await fetchAndUpdatePosters(newSeries);
 
