@@ -11,6 +11,7 @@ const MONGO_HOST = process.env.MONGO_HOST;
 const MONGO_PORT = process.env.MONGO_PORT;
 const MONGO_USERNAME = process.env.MONGO_USERNAME;
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
+/* c8 ignore next 15: we cannot test this process env */
 const MONGO_URI = process.env.MONGO_URI || '';
 
 /**
@@ -41,7 +42,7 @@ const mongoUri: string =
  * @returns {string} The URL string to use for the application.
  */
 const appUrl: string =
-  process.env.APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+  process.env.APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'); /* c8 ignore next 44 */
 
 /**
  * Configuration object for the application.
@@ -51,19 +52,19 @@ const appUrl: string =
  *
  * @function appConfig
  * @returns {Object} Configuration object containing the following properties:
- * - API_HOST: The hostname for the API, defaulting to `localhost` if not set via `process.env.API_URL`.
- * - API_PORT: The port number for the API server, defaulting to `3000` if not set via `process.env.API_PORT`.
- * - APP_SECRET: A unique secret key used for authentication, configurable via `process.env.APP_SECRET`.
- * - APP_URL: The base URL of the application, which can be set via `process.env.APP_URL`.
- * - APP_NAME: The name of the application, defaulting to `Binger` if not configured via `process.env.APP_NAME`.
- * - APP_SUBTITLE: The subtitle of the application, defaulting to an empty string if not set via `process.env.APP_SUBTITLE`.
- * - APP_DESCRIPTION: A brief description of the application, defaulting to a preset string unless overridden via `process.env.APP_DESCRIPTION`.
- * - MONGO_DB_NAME: The name of the MongoDB database, configurable via `process.env.MONGO_DATABASE`.
- * - MONGO_DB_URI: The URI for connecting to the MongoDB database.
- * - OMDB_API_KEY: The API key for accessing the OMDb API, essential for the application's functionality.
- * - OMDB_API_URL: The API endpoint for the OMDb API, defaulting to `http://www.omdbapi.com`.
- * - OMDB_IMG_URL: The URL endpoint for fetching images via the OMDb API, defaulting to `http://img.omdbapi.com`.
- * - VIDSRC_DOMAIN: The domain used for the vidsrc player, defaulting to `vidsrc.in` but can be overridden via `process.env.VIDSRC_DOMAIN`.
+ * @property {string} API_HOST - The hostname for the API, defaulting to `localhost` if not set via `process.env.API_URL`
+ * @property {number} API_PORT - The port number for the API server, defaulting to `3000` if not set via `process.env.API_PORT`
+ * @property {string} APP_SECRET - A unique secret key used for authentication, configurable via `process.env.APP_SECRET`
+ * @property {string} APP_URL - The base URL of the application, which can be set via `process.env.APP_URL`
+ * @property {string} APP_NAME - The name of the application, defaulting to `Binger` if not configured via `process.env.APP_NAME`
+ * @property {string} APP_SUBTITLE - The subtitle of the application, defaulting to an empty string if not set via `process.env.APP_SUBTITLE`
+ * @property {string} APP_DESCRIPTION - A brief description of the application, defaulting to a preset string unless overridden via `process.env.APP_DESCRIPTION`
+ * @property {string} MONGO_DB_NAME - The name of the MongoDB database, configurable via `process.env.MONGO_DATABASE`
+ * @property {string} MONGO_DB_URI - The URI for connecting to the MongoDB database
+ * @property {string} OMDB_API_KEY - The API key for accessing the OMDb API, essential for the application's functionality
+ * @property {string} OMDB_API_URL - The API endpoint for the OMDb API, defaulting to `http://www.omdbapi.com`
+ * @property {string} OMDB_IMG_URL - The URL endpoint for fetching images via the OMDb API, defaulting to `http://img.omdbapi.com`
+ * @property {string} VIDSRC_DOMAIN - The domain used for the vidsrc player, defaulting to `vidsrc.in` but can be overridden via `process.env.VIDSRC_DOMAIN`
  */
 const appConfig = () => {
   return {
@@ -71,6 +72,7 @@ const appConfig = () => {
     API_HOST: process.env.API_URL || 'localhost',
     API_PORT: Number(process.env.API_PORT) || 3000,
     // Very important you set your own APP_SECRET as this is unique to your app and used for authentication.
+    /* c8 ignore start */
     APP_SECRET: process.env.APP_SECRET || 'DnOBGdGY3YjGFWLkvhGquqtSmlSKBMFw',
     // Change the APP_URL to the domain where you will be using the application on.
     APP_URL: appUrl,
@@ -94,6 +96,7 @@ const appConfig = () => {
     // The vidsrc player domain has been prone to be taken down. Use one of the following domains if it's not working:
     // vidsrc.in, vidsrc.pm, vidsrc.xyz, vidsrc.net
     VIDSRC_DOMAIN: process.env.VIDSRC_DOMAIN || 'vidsrc.in',
+    /* c8 ignore stop */
   };
 };
 
