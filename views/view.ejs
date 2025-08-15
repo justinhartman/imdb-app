@@ -37,7 +37,7 @@
     </div>
 <% } %>
     <div class="row">
-        <div class="col-12 col-md-8">
+        <div class="<%= type === 'series' && seriesDetail ? 'col-12 col-md-8' : 'col-12' %>">
             <div class="ratio ratio-16x9">
                 <iframe src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" class="w-100"></iframe>
             </div>
@@ -48,6 +48,26 @@
                 <% } %>
             </div>
             <% } %>
+            <% if (data.Response !== 'False') { -%>
+            <div class="row text-white my-4">
+                <div class="col-12 col-md-6">
+                    <p>Cast: <%= data.Actors %></p>
+                    <p>Runtime: <%= data.Runtime %></p>
+                    <p>Genre: <%= data.Genre %></p>
+                <% if (Array.isArray(data.Ratings)) { -%>
+                    <% data.Ratings.forEach(rating => { -%>
+                        <p><%= rating.Source %> - <%= rating.Value %></p>
+                    <% }); -%>
+                <% } -%>
+                </div>
+                <div class="col-12 col-md-6">
+                    <p>Director: <%= data.Director %></p>
+                    <p>Rated: <%= data.Rated %></p>
+                    <p>Country: <%= data.Country %></p>
+                    <p>Language: <%= data.Language %></p>
+                </div>
+            </div>
+            <% } -%>
         </div>
         <% if (type === 'series' && seriesDetail) { %>
         <div class="col-12 col-md-4">
@@ -60,26 +80,6 @@
         </div>
         <% } %>
     </div>
-<% if (data.Response !== 'False') { -%>
-    <div class="row text-white my-4">
-        <div class="col-12 col-md-6">
-            <p>Cast: <%= data.Actors %></p>
-            <p>Runtime: <%= data.Runtime %></p>
-            <p>Genre: <%= data.Genre %></p>
-        <% if (Array.isArray(data.Ratings)) { -%>
-            <% data.Ratings.forEach(rating => { -%>
-                <p><%= rating.Source %> - <%= rating.Value %></p>
-            <% }); -%>
-        <% } -%>
-        </div>
-        <div class="col-12 col-md-6">
-            <p>Director: <%= data.Director %></p>
-            <p>Rated: <%= data.Rated %></p>
-            <p>Country: <%= data.Country %></p>
-            <p>Language: <%= data.Language %></p>
-        </div>
-    </div>
-<% } %>
     <div class="row mt-2">
         <div class="text-center">
             <a href="<%= APP_URL %>/" class="btn btn-outline-info btn-md-lg"><i class="bi-house"></i> Home</a>
