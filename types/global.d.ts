@@ -1,5 +1,12 @@
-declare module 'passport';
-declare module 'passport-local';
-declare module 'express-session';
-declare module 'connect-flash';
-declare module 'bcryptjs';
+declare global {
+  /**
+   * Represents a user object for verification purposes.
+   * Used primarily in authentication and password validation contexts.
+   */
+  type VerifyUser = {
+    id: string;
+    matchPassword: (plain: string) => Promise<boolean>;
+  };
+}
+
+export {};
