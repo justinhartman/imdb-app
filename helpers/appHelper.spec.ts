@@ -72,6 +72,39 @@ describe('helpers/appHelper', () => {
     expect(shows[2].poster).toBe(`${appConfig.APP_URL}/images/no-binger.jpg`);
   });
 
+  test('getSeriesDetail retrieves seasons and episodes', async () => {
+    (axios.request as jest.Mock)
+      .mockResolvedValueOnce({ data: { totalSeasons: '2', Episodes: [{ Episode: '1', Title: 'E1' }] } })
+      .mockResolvedValueOnce({ data: { Episodes: [{ Episode: '1', Title: 'E2' }, { Episode: '2', Title: 'E3' }] } });
+    const detail = await helper.getSeriesDetail('tt1');
+    expect(axios.request).toHaveBeenCalledTimes(2);
+    expect(detail.totalSeasons).toBe(2);
+    expect(detail.totalEpisodes).toBe(3);
+    expect(detail.seasons[1].episodes[1].title).toBe('E3');
+  });
+
+  test('getSeriesDetail handles missing titles and episode arrays', async () => {
+    (axios.request as jest.Mock)
+      .mockResolvedValueOnce({ data: { totalSeasons: '2', Episodes: [{ Episode: '1', Title: 'N/A' }] } })
+      .mockResolvedValueOnce({ data: { Episodes: 'N/A' } });
+    const detail = await helper.getSeriesDetail('tt2');
+    expect(detail.seasons[0].episodes[0].title).toBeUndefined();
+    expect(detail.seasons[1].episodes).toEqual([]);
+  });
+
+  test('getSeriesDetail defaults when totalSeasons missing', async () => {
+    (axios.request as jest.Mock).mockResolvedValueOnce({ data: {} });
+    const detail = await helper.getSeriesDetail('tt3');
+    expect(detail.totalSeasons).toBe(0);
+    expect(detail.seasons).toEqual([]);
+  });
+
+  test('getSeriesDetail returns empty when id missing', async () => {
+    const detail = await helper.getSeriesDetail('');
+    expect(detail).toEqual({ totalSeasons: 0, totalEpisodes: 0, seasons: [] });
+    expect(axios.request).not.toHaveBeenCalled();
+  });
+
   test('useAuth is false when no mongo uri', () => {
     expect(helper.useAuth).toBe(false);
   });
