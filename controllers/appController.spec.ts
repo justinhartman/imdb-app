@@ -1,12 +1,13 @@
 import appController from './appController';
 import axios from 'axios';
-import { fetchOmdbData, fetchAndUpdatePosters } from '../helpers/appHelper';
+import { fetchOmdbData, fetchAndUpdatePosters, getSeriesDetail } from '../helpers/appHelper';
 import History from '../models/History';
 
 jest.mock('axios');
 jest.mock('../helpers/appHelper', () => ({
   fetchOmdbData: jest.fn(),
   fetchAndUpdatePosters: jest.fn(),
+  getSeriesDetail: jest.fn(),
 }));
 
 jest.mock('../models/History', () => ({
@@ -25,6 +26,11 @@ jest.mock('../config/app', () => ({
 describe('controllers/appController', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (getSeriesDetail as jest.Mock).mockResolvedValue({
+      totalSeasons: 1,
+      totalEpisodes: 1,
+      seasons: [{ season: 1, episodes: [{ episode: 1, title: 'E1' }] }],
+    });
   });
 
   test('getHome renders index with movies and series', async () => {
@@ -79,6 +85,7 @@ describe('controllers/appController', () => {
       { $set: { type: 'series', lastSeason: 1, lastEpisode: 2 } },
       { upsert: true }
     );
+    expect(getSeriesDetail).toHaveBeenCalledWith('tt');
     expect(res.render).toHaveBeenCalledWith('view', expect.objectContaining({
       season: '1',
       episode: '2',

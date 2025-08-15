@@ -5,20 +5,12 @@
 
 import axios from 'axios';
 import asyncHandler from 'express-async-handler';
-import {Request, Response} from 'express';
+import { Response } from 'express';
 
 import appConfig from '../config/app';
-import {fetchOmdbData, fetchAndUpdatePosters} from '../helpers/appHelper';
+import {fetchOmdbData, fetchAndUpdatePosters, getSeriesDetail} from '../helpers/appHelper';
 import History from '../models/History';
-
-/**
- * Extended Express Request interface with optional user property.
- * @interface AuthRequest
- * @extends {Request}
- */
-interface AuthRequest extends Request {
-  user?: any;
-}
+import type { AuthRequest } from '../types/interfaces';
 
 /**
  * @namespace appController
@@ -144,6 +136,7 @@ const appController = {
       const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
       const canonical = `${res.locals.APP_URL}/view/${id}/${type}/${season}/${episode}`;
       const data = await fetchOmdbData(id, false);
+      const seriesDetail = await getSeriesDetail(id);
       return res.render('view', {
         data,
         iframeSrc,
@@ -152,6 +145,7 @@ const appController = {
         type,
         season,
         episode,
+        seriesDetail,
         canonical,
         user: req.user,
       });

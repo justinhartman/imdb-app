@@ -10,6 +10,7 @@
 
 import axios, { AxiosRequestConfig } from 'axios';
 import appConfig from '../config/app';
+import type { EpisodeInfo, SeasonDetail, SeriesDetail } from '../types/interfaces';
 
 /**
  * Constructs parameters object for OMDB API requests.
@@ -75,6 +76,46 @@ export const fetchAndUpdatePosters = async (show: any[]): Promise<void> => {
       else x.poster = `${appConfig.APP_URL}/images/no-binger.jpg`;
     })
   );
+};
+
+/**
+ * Retrieves detailed information for a series including seasons and episodes.
+ * @param id - IMDB ID of the series
+ * @returns {Promise<SeriesDetail>} Object containing total seasons, total episodes and per-season breakdown
+ */
+export const getSeriesDetail = async (id: string): Promise<SeriesDetail> => {
+  if (!id) return { totalSeasons: 0, totalEpisodes: 0, seasons: [] };
+
+  const buildOptions = (season: number): AxiosRequestConfig => ({
+    method: 'GET',
+    url: appConfig.OMDB_API_URL,
+    params: {
+      apikey: appConfig.OMDB_API_KEY,
+      i: id,
+      Season: season,
+    },
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const firstResponse = await axios.request(buildOptions(1));
+  const totalSeasons = Number(firstResponse.data.totalSeasons || 0);
+
+  const seasons: SeasonDetail[] = [];
+  let totalEpisodes = 0;
+
+  for (let s = 1; s <= totalSeasons; s++) {
+    const seasonData = s === 1 ? firstResponse.data : (await axios.request(buildOptions(s))).data;
+    const episodes: EpisodeInfo[] = Array.isArray(seasonData.Episodes)
+      ? seasonData.Episodes.map((ep: any) => ({
+          episode: Number(ep.Episode),
+          title: ep.Title !== 'N/A' ? ep.Title : undefined,
+        }))
+      : [];
+    seasons.push({ season: s, episodes });
+    totalEpisodes += episodes.length;
+  }
+
+  return { totalSeasons, totalEpisodes, seasons };
 };
 
 /**

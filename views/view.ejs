@@ -30,47 +30,82 @@
                 <%= data.Title %> (<%= data.Year %>)
             </h1>
             <% if (data.Type === 'series' && season > 0) { %>
-            <div id="series-buttons" class="d-absolute p-0 ps-2 m-0 m-sm-n1 end-0">
-                <button type="button" class="btn btn-dark btn-md mb-1" disabled>
-                     Season <span class="badge bg-warning text-dark"><%= season %></span>
-                </button>
-                <button type="button" class="btn btn-dark btn-md mb-1" disabled>
-                    Episode <span class="badge bg-info text-dark"><%= episode %></span>
-                </button>
-                <div class="mb-2 w-auto">
-                    <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${Number(episode) - 1}` %>" class="btn text-primary bg-primary-subtle border border-primary-subtle btn-sm p-2"><i class="bi bi-caret-left-square"></i> Previous</a>
-                    <a href="<%= APP_URL %>/watchlist" class="btn text-secondary bg-secondary-subtle border border-secondary-subtle btn-sm p-2"><i class="bi bi-view-list"></i> Watchlist</a>
-                    <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${Number(episode) + 1}` %>" class="btn text-success bg-success-subtle border border-success-subtle btn-sm p-2">Next <i class="bi bi-caret-right-square"></i></a>
-                </div>
-            </div>
+            <%- include('./partials/series-buttons.ejs') -%>
             <% } %>
         </div>
         <h5 class="card-subtitle mt-2"><%= data.Plot %></h5>
     </div>
 <% } %>
-    <div class="ratio ratio-16x9">
-        <iframe src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" class="w-100"></iframe>
-    </div>
-<% if (data.Response !== 'False') { -%>
-    <div class="row text-white my-4">
-        <div class="col-12 col-md-6">
-            <p>Cast: <%= data.Actors %></p>
-            <p>Runtime: <%= data.Runtime %></p>
-            <p>Genre: <%= data.Genre %></p>
-        <% if (Array.isArray(data.Ratings)) { -%>
-            <% data.Ratings.forEach(rating => { -%>
-                <p><%= rating.Source %> - <%= rating.Value %></p>
-            <% }); -%>
+    <% if (type === 'series' && seriesDetail) { %>
+    <div class="series-layout">
+        <div class="series-player">
+            <div class="ratio ratio-16x9">
+                <iframe src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" class="w-100"></iframe>
+            </div>
+        </div>
+        <div class="series-episodes d-flex flex-wrap flex-md-column mt-2 mt-md-0">
+            <% const currentSeason = seriesDetail.seasons.find(se => se.season === Number(season)) || { episodes: [] }; %>
+            <% currentSeason.episodes.forEach(ep => { %>
+                <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${ep.episode}` %>" class="btn btn-outline-info btn-sm text-start m-1 <%= Number(episode) === ep.episode ? 'active' : '' %>"><%= ep.episode %>. <%= ep.title || `Episode ${ep.episode}` %></a>
+            <% }) %>
+        </div>
+        <div class="series-seasons d-flex flex-wrap mt-2">
+            <% for (let s = 1; s <= seriesDetail.totalSeasons; s++) { %>
+                <a href="<%= `${APP_URL}/view/${id}/${type}/${s}/1` %>" class="btn btn-outline-light btn-sm m-1 <%= Number(season) === s ? 'active' : '' %>">Season <%= s %></a>
+            <% } %>
+        </div>
+        <% if (data.Response !== 'False') { -%>
+        <div class="series-info">
+            <div class="row text-white my-4">
+                <div class="col-12 col-md-6">
+                    <p>Cast: <%= data.Actors %></p>
+                    <p>Runtime: <%= data.Runtime %></p>
+                    <p>Genre: <%= data.Genre %></p>
+                <% if (Array.isArray(data.Ratings)) { -%>
+                    <% data.Ratings.forEach(rating => { -%>
+                        <p><%= rating.Source %> - <%= rating.Value %></p>
+                    <% }); -%>
+                <% } -%>
+                </div>
+                <div class="col-12 col-md-6">
+                    <p>Director: <%= data.Director %></p>
+                    <p>Rated: <%= data.Rated %></p>
+                    <p>Country: <%= data.Country %></p>
+                    <p>Language: <%= data.Language %></p>
+                </div>
+            </div>
+        </div>
         <% } -%>
-        </div>
-        <div class="col-12 col-md-6">
-            <p>Director: <%= data.Director %></p>
-            <p>Rated: <%= data.Rated %></p>
-            <p>Country: <%= data.Country %></p>
-            <p>Language: <%= data.Language %></p>
+    </div>
+    <% } else { %>
+    <div class="row">
+        <div class="col-12">
+            <div class="ratio ratio-16x9">
+                <iframe src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" class="w-100"></iframe>
+            </div>
+            <% if (data.Response !== 'False') { -%>
+            <div class="row text-white my-4">
+                <div class="col-12 col-md-6">
+                    <p>Cast: <%= data.Actors %></p>
+                    <p>Runtime: <%= data.Runtime %></p>
+                    <p>Genre: <%= data.Genre %></p>
+                <% if (Array.isArray(data.Ratings)) { -%>
+                    <% data.Ratings.forEach(rating => { -%>
+                        <p><%= rating.Source %> - <%= rating.Value %></p>
+                    <% }); -%>
+                <% } -%>
+                </div>
+                <div class="col-12 col-md-6">
+                    <p>Director: <%= data.Director %></p>
+                    <p>Rated: <%= data.Rated %></p>
+                    <p>Country: <%= data.Country %></p>
+                    <p>Language: <%= data.Language %></p>
+                </div>
+            </div>
+            <% } -%>
         </div>
     </div>
-<% } %>
+    <% } %>
     <div class="row mt-2">
         <div class="text-center">
             <a href="<%= APP_URL %>/" class="btn btn-outline-info btn-md-lg"><i class="bi-house"></i> Home</a>
