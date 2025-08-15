@@ -7,11 +7,6 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import User from '../models/User';
 
-type VerifyUser = {
-    id: string;
-    matchPassword: (plain: string) => Promise<boolean>;
-};
-
 /**
  * Configures and initializes the Passport.js authentication middleware.
  *
@@ -19,7 +14,7 @@ type VerifyUser = {
  * handles serialization and deserialization of user sessions, and
  * integrates with a user model for authentication logic.
  *
- * @param {type of import(passport)} p - The Passport instance to configure.
+ * @param {typeof import(passport)} p - The Passport instance to configure.
  * @returns {void}
  */
 const passportMiddleware = (p: typeof passport): void => {

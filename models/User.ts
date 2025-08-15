@@ -3,37 +3,47 @@
  * @description Mongoose model for managing users.
  */
 
-import mongoose, { CallbackWithoutResultAndOptionalError, Document, Schema } from 'mongoose';
+import mongoose, { CallbackWithoutResultAndOptionalError, Schema } from 'mongoose';
+import type { IUser } from '../types/interfaces';
 import bcrypt from 'bcryptjs';
 
 /**
- * Interface representing a User document in MongoDB.
- * @interface IUser
- * @extends {Document}
- */
-export interface IUser extends Document {
-  username: string;
-  password: string;
-  matchPassword(password: string): Promise<boolean>;
-}
-
-/**
- * Schema definition for User model.
- * @const {Record<string, any>}
+ * @const definition
+ * @description User schema definition object.
+ * @type {Record<string, any>}
  */
 const definition: Record<string, any> = {
+  /**
+   * User's email address used as username.
+   * @type {String}
+   * @required
+   * @unique
+   * @minlength 8
+   */
   username: {
     type: String,
     required: true,
-    minlength: 5,
+    minlength: 8,
     unique: true,
     match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+    /**
+     * Validates email format.
+     * @param {string} value - Email address to validate
+     * @returns {boolean} True if email format is valid
+     */
     validate: {
       validator: (value: string) =>
         /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value),
       message: 'Not a valid email address.',
     },
   },
+  /**
+   * User's password (stored as hash).
+   * @type {String}
+   * @required
+   * @minlength 8
+   * @maxlength 255
+   */
   password: {
     type: String,
     required: true,
@@ -70,7 +80,17 @@ UserSchema.methods.matchPassword = async function (password: string): Promise<bo
 
 /**
  * Mongoose model for User.
+ * Represents a user in the system with authentication capabilities.
  * @const {Model<IUser>}
+ * @description This model handles user data storage and authentication.
+ * It includes methods for password hashing and verification.
+ * @example
+ * // Create a new user
+ * const user = new User({ username: 'user@example.com', password: 'password123' });
+ * await user.save();
+ *
+ * // Verify password
+ * const isMatch = await user.matchPassword('password123');
  */
 const User = mongoose.model<IUser>('User', UserSchema);
 export default User;

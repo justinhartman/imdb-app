@@ -1,6 +1,9 @@
-import axios from 'axios';
+import http from './httpClient';
 
-jest.mock('axios');
+jest.mock('./httpClient', () => ({
+  __esModule: true,
+  default: { request: jest.fn() },
+}));
 
 jest.mock('../config/app', () => ({
   OMDB_API_KEY: 'key',
@@ -27,13 +30,13 @@ describe('helpers/appHelper', () => {
   test('fetchOmdbData returns empty object when query missing', async () => {
     const result = await helper.fetchOmdbData('', true);
     expect(result).toEqual({});
-    expect(axios.request).not.toHaveBeenCalled();
+    expect(http.request).not.toHaveBeenCalled();
   });
 
-  test('fetchOmdbData calls axios with correct options', async () => {
-    (axios.request as jest.Mock).mockResolvedValue({ data: { Title: 'Test' } });
+  test('fetchOmdbData calls http client with correct options', async () => {
+    (http.request as jest.Mock).mockResolvedValue({ data: { Title: 'Test' } });
     const data = await helper.fetchOmdbData('tt123', false, 'movie');
-    expect(axios.request).toHaveBeenCalledWith({
+    expect(http.request).toHaveBeenCalledWith({
       method: 'GET',
       url: appConfig.OMDB_API_URL,
       params: {
@@ -47,9 +50,9 @@ describe('helpers/appHelper', () => {
   });
 
   test('fetchOmdbData supports search mode and handles missing data', async () => {
-    (axios.request as jest.Mock).mockResolvedValue({});
+    (http.request as jest.Mock).mockResolvedValue({});
     const data = await helper.fetchOmdbData('star', true, '');
-    expect(axios.request).toHaveBeenCalledWith({
+    expect(http.request).toHaveBeenCalledWith({
       method: 'GET',
       url: appConfig.OMDB_API_URL,
       params: { apikey: appConfig.OMDB_API_KEY, s: 'star' },
@@ -73,18 +76,18 @@ describe('helpers/appHelper', () => {
   });
 
   test('getSeriesDetail retrieves seasons and episodes', async () => {
-    (axios.request as jest.Mock)
+    (http.request as jest.Mock)
       .mockResolvedValueOnce({ data: { totalSeasons: '2', Episodes: [{ Episode: '1', Title: 'E1' }] } })
       .mockResolvedValueOnce({ data: { Episodes: [{ Episode: '1', Title: 'E2' }, { Episode: '2', Title: 'E3' }] } });
     const detail = await helper.getSeriesDetail('tt1');
-    expect(axios.request).toHaveBeenCalledTimes(2);
+    expect(http.request).toHaveBeenCalledTimes(2);
     expect(detail.totalSeasons).toBe(2);
     expect(detail.totalEpisodes).toBe(3);
     expect(detail.seasons[1].episodes[1].title).toBe('E3');
   });
 
   test('getSeriesDetail handles missing titles and episode arrays', async () => {
-    (axios.request as jest.Mock)
+    (http.request as jest.Mock)
       .mockResolvedValueOnce({ data: { totalSeasons: '2', Episodes: [{ Episode: '1', Title: 'N/A' }] } })
       .mockResolvedValueOnce({ data: { Episodes: 'N/A' } });
     const detail = await helper.getSeriesDetail('tt2');
@@ -93,7 +96,7 @@ describe('helpers/appHelper', () => {
   });
 
   test('getSeriesDetail defaults when totalSeasons missing', async () => {
-    (axios.request as jest.Mock).mockResolvedValueOnce({ data: {} });
+    (http.request as jest.Mock).mockResolvedValueOnce({ data: {} });
     const detail = await helper.getSeriesDetail('tt3');
     expect(detail.totalSeasons).toBe(0);
     expect(detail.seasons).toEqual([]);
@@ -102,7 +105,7 @@ describe('helpers/appHelper', () => {
   test('getSeriesDetail returns empty when id missing', async () => {
     const detail = await helper.getSeriesDetail('');
     expect(detail).toEqual({ totalSeasons: 0, totalEpisodes: 0, seasons: [] });
-    expect(axios.request).not.toHaveBeenCalled();
+    expect(http.request).not.toHaveBeenCalled();
   });
 
   test('useAuth is false when no mongo uri', () => {

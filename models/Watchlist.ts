@@ -3,53 +3,15 @@
  * @description Mongoose model for managing user watchlists of movies and TV shows.
  */
 
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import type { IWatchlist, IWatchlistItem } from '../types/interfaces';
 
 /**
- * Interface representing a single item in a user's watchlist.
- * @interface IWatchlistItem
- * @property {string} imdbId - The IMDB ID of the movie/show
- * @property {string} title - The title of the movie/show
- * @property {string} poster - URL to the movie/show poster image
- * @property {'movie' | 'series' | 'episode'} type - The type of media
- * @property {string} [plot] - Optional plot summary
- * @property {string} [year] - Optional release year
- * @property {string} [genre] - Optional genre(s)
- * @property {string} [rated] - Optional content rating
- * @property {string} [runtime] - Optional runtime duration
- * @property {string} [imdbRating] - Optional IMDB rating
- * @property {string} [totalSeasons] - Optional number of seasons (for series)
+ * @const definition
+ * @description Schema definition for the Watchlist model
+ * @type {Object} Mongoose schema definition object
  */
-export interface IWatchlistItem {
-  imdbId: string;
-  title: string;
-  poster: string;
-  type: 'movie' | 'series' | 'episode';
-  plot?: string;
-  year?: string;
-  genre?: string;
-  rated?: string;
-  runtime?: string;
-  imdbRating?: string;
-  totalSeasons?: string;
-}
-
-/**
- * Interface for the Watchlist document model.
- * @interface IWatchlist
- * @extends {Document}
- * @property {Types.ObjectId} userId - Reference to the user who owns this watchlist
- * @property {IWatchlistItem[]} items - Array of watchlist items
- */
-export interface IWatchlist extends Document {
-  userId: Types.ObjectId;
-  items: IWatchlistItem[];
-  isInWatchlist(imdbId: string): Promise<boolean>;
-  addToWatchlist(imdbId: string, title: string, poster: string, type: string): Promise<void>;
-  deleteFromWatchlist(imdbId: string): Promise<void>;
-}
-
-const definition = {
+const definition: object = {
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -83,7 +45,7 @@ WatchlistSchema.methods.isInWatchlist = async function (
   this: IWatchlist,
   imdbId: string
 ): Promise<boolean> {
-  return await this.items.some((item) => item.imdbId === imdbId);
+  return this.items.some((item) => item.imdbId === imdbId);
 };
 
 /**

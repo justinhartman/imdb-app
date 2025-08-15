@@ -1,9 +1,12 @@
 import appController from './appController';
-import axios from 'axios';
+import http from '../helpers/httpClient';
 import { fetchOmdbData, fetchAndUpdatePosters, getSeriesDetail } from '../helpers/appHelper';
 import History from '../models/History';
 
-jest.mock('axios');
+jest.mock('../helpers/httpClient', () => ({
+  __esModule: true,
+  default: { get: jest.fn() },
+}));
 jest.mock('../helpers/appHelper', () => ({
   fetchOmdbData: jest.fn(),
   fetchAndUpdatePosters: jest.fn(),
@@ -34,7 +37,7 @@ describe('controllers/appController', () => {
   });
 
   test('getHome renders index with movies and series', async () => {
-    (axios.get as jest.Mock)
+    (http.get as jest.Mock)
       .mockResolvedValueOnce({ data: { result: [{ imdb_id: '1' }] } })
       .mockResolvedValueOnce({ data: { result: [{ imdb_id: '2' }] } });
     (fetchAndUpdatePosters as jest.Mock).mockResolvedValue(undefined);
@@ -44,7 +47,7 @@ describe('controllers/appController', () => {
 
     await appController.getHome(req, res, jest.fn());
 
-    expect(axios.get).toHaveBeenCalledTimes(2);
+    expect(http.get).toHaveBeenCalledTimes(2);
     expect(fetchAndUpdatePosters).toHaveBeenCalledTimes(2);
     expect(res.render).toHaveBeenCalledWith('index', expect.objectContaining({
       newMovies: [{ imdb_id: '1' }],
@@ -55,7 +58,7 @@ describe('controllers/appController', () => {
   });
 
   test('getHome handles empty results', async () => {
-    (axios.get as jest.Mock)
+    (http.get as jest.Mock)
       .mockResolvedValueOnce({ data: {} })
       .mockResolvedValueOnce({ data: {} });
     (fetchAndUpdatePosters as jest.Mock).mockResolvedValue(undefined);

@@ -8,7 +8,8 @@
  * updating poster URLs, and checking authentication status.
  */
 
-import axios, { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig } from 'axios';
+import http from './httpClient';
 import appConfig from '../config/app';
 import type { EpisodeInfo, SeasonDetail, SeriesDetail } from '../types/interfaces';
 
@@ -19,7 +20,7 @@ import type { EpisodeInfo, SeasonDetail, SeriesDetail } from '../types/interface
  * @param type - Optional media type filter ('movie', 'series', 'episode'). Leave empty for all types
  * @returns {Object} Parameters object containing apikey and search/lookup parameters for OMDB API
  */
-const constructOmdbParams = (query: string, search: boolean, type: string) => {
+const constructOmdbParams = (query: string, search: boolean, type: string): object => {
   return {
     apikey: appConfig.OMDB_API_KEY,
     ...(type && { type: type }),
@@ -52,7 +53,7 @@ export const fetchOmdbData = async (
       'Content-Type': 'application/json',
     },
   };
-  const response = await axios.request(options);
+  const response = await http.request(options);
   return response.data || {};
 };
 
@@ -97,14 +98,14 @@ export const getSeriesDetail = async (id: string): Promise<SeriesDetail> => {
     headers: { 'Content-Type': 'application/json' },
   });
 
-  const firstResponse = await axios.request(buildOptions(1));
+  const firstResponse = await http.request(buildOptions(1));
   const totalSeasons = Number(firstResponse.data.totalSeasons || 0);
 
   const seasons: SeasonDetail[] = [];
   let totalEpisodes = 0;
 
   for (let s = 1; s <= totalSeasons; s++) {
-    const seasonData = s === 1 ? firstResponse.data : (await axios.request(buildOptions(s))).data;
+    const seasonData = s === 1 ? firstResponse.data : (await http.request(buildOptions(s))).data;
     const episodes: EpisodeInfo[] = Array.isArray(seasonData.Episodes)
       ? seasonData.Episodes.map((ep: any) => ({
           episode: Number(ep.Episode),
