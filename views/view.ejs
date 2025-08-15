@@ -49,7 +49,7 @@
                 <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${ep.episode}` %>" class="btn btn-outline-info btn-sm text-start m-1 <%= Number(episode) === ep.episode ? 'active' : '' %>"><%= ep.episode %>. <%= ep.title || `Episode ${ep.episode}` %></a>
             <% }) %>
         </div>
-        <div class="series-seasons d-flex flex-wrap mt-2">
+        <div class="series-seasons d-flex flex-wrap mt-2 h-25">
             <% for (let s = 1; s <= seriesDetail.totalSeasons; s++) { %>
                 <a href="<%= `${APP_URL}/view/${id}/${type}/${s}/1` %>" class="btn btn-outline-light btn-sm m-1 <%= Number(season) === s ? 'active' : '' %>">Season <%= s %></a>
             <% } %>
