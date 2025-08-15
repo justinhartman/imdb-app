@@ -1,0 +1,43 @@
+<%
+const seasonNum = Number(season);
+const episodeNum = Number(episode);
+const totalSeasons = seriesDetail?.totalSeasons || 0;
+const currentSeason = seriesDetail?.seasons?.find(s => s.season === seasonNum) || { episodes: [] };
+const maxEpisodes = currentSeason.episodes.length;
+let prevDisabled = false;
+let nextDisabled = false;
+let prevLink = `${APP_URL}/view/${id}/${type}/${seasonNum}/${episodeNum - 1}`;
+let nextLink = `${APP_URL}/view/${id}/${type}/${seasonNum}/${episodeNum + 1}`;
+if (episodeNum <= 1) {
+  if (seasonNum > 1) {
+    const prevSeason = seasonNum - 1;
+    const prevSeasonEpisodes = seriesDetail.seasons.find(s => s.season === prevSeason)?.episodes.length || 0;
+    prevLink = `${APP_URL}/view/${id}/${type}/${prevSeason}/${prevSeasonEpisodes}`;
+  } else {
+    prevDisabled = true;
+    prevLink = '#';
+  }
+}
+if (episodeNum >= maxEpisodes) {
+  if (seasonNum < totalSeasons) {
+    const nextSeason = seasonNum + 1;
+    nextLink = `${APP_URL}/view/${id}/${type}/${nextSeason}/1`;
+  } else {
+    nextDisabled = true;
+    nextLink = '#';
+  }
+}
+%>
+<div id="series-buttons" class="d-absolute p-0 ps-2 m-0 m-sm-n1 end-0">
+    <button type="button" class="btn btn-dark btn-md mb-1" disabled>
+        Season <span class="badge bg-warning text-dark"><%= season %></span>
+    </button>
+    <button type="button" class="btn btn-dark btn-md mb-1" disabled>
+        Episode <span class="badge bg-info text-dark"><%= episode %></span>
+    </button>
+    <div class="mb-2 w-auto">
+        <a href="<%= prevLink %>" class="btn text-primary bg-primary-subtle border border-primary-subtle btn-sm p-2 <%= prevDisabled ? 'disabled' : '' %>"><i class="bi bi-caret-left-square"></i> Previous</a>
+        <a href="<%= APP_URL %>/watchlist" class="btn text-secondary bg-secondary-subtle border border-secondary-subtle btn-sm p-2"><i class="bi bi-view-list"></i> Watchlist</a>
+        <a href="<%= nextLink %>" class="btn text-success bg-success-subtle border border-success-subtle btn-sm p-2 <%= nextDisabled ? 'disabled' : '' %>">Next <i class="bi bi-caret-right-square"></i></a>
+    </div>
+</div>

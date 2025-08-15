@@ -21,6 +21,11 @@ a.btn-primary:hover {
     flex-grow: 1;
 }
 
+.series-layout {
+    display: flex;
+    flex-direction: column;
+}
+
 /* Styles that apply at the 'sm' breakpoint and above */
 @media (min-width: 576px) {
     #series-buttons {
@@ -34,4 +39,17 @@ a.btn-primary:hover {
         height: 360px;
         object-fit: cover;
     }
+    .series-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-areas:
+            "player episodes"
+            "seasons episodes"
+            "info episodes";
+        column-gap: 1rem;
+    }
+    .series-player { grid-area: player; }
+    .series-episodes { grid-area: episodes; }
+    .series-seasons { grid-area: seasons; }
+    .series-info { grid-area: info; }
 }
