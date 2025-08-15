@@ -12,28 +12,6 @@ import User from '../models/User';
 passportConfig(passport);
 
 /**
- * @interface RegistrationRequest
- * @description This interface defines the structure for the data required when a user attempts to register.
- * @property {string} username - The desired username of the user
- * @property {string} password - The password chosen by the user
- */
-export interface RegistrationRequest {
-  username: string;
-  password: string;
-}
-
-/**
- * @interface LoginRequest
- * @description This interface encapsulates the necessary credentials required for a user to authenticate.
- * @property {string} username - The username for authentication
- * @property {string} password - The password for authentication
- */
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-/**
  * @namespace authController
  * @description The authController contains methods for handling user authentication and authorisation
  * including registration, login, profile rendering, and logout functionality.
@@ -41,7 +19,7 @@ export interface LoginRequest {
 const authController = {
   /**
    * Renders the user registration page.
-   * @param {Express.Request} req - Express request object
+   * @param {Express.Request & {user: any}} req - Express request object
    * @param {Response} res - Express response object
    * @returns {Promise<void>} Renders registration page
    */
@@ -73,7 +51,7 @@ const authController = {
 
   /**
    * Renders the user login page.
-   * @param {Express.Request} req - Express request object
+   * @param {Express.Request & {user: any}} req - Express request object
    * @param {Response} res - Express response object
    * @returns {Promise<void>} Renders login page
    */
@@ -103,11 +81,6 @@ const authController = {
 
   /**
    * Renders the user profile page.
-   * @param req - Express request object containing authenticated user
-   * @param res - Express response object
-   * @returns Rendered profile page with user data
-   */
-  /**
    * @param {Express.Request & {user: any}} req - Express request object with authenticated user
    * @param {Response} res - Express response object
    * @returns {Promise<void>} Renders profile page with user data
@@ -119,12 +92,6 @@ const authController = {
 
   /**
    * Logs out the current user.
-   * @param req - Express request object
-   * @param res - Express response object
-   * @param next - Express next middleware function
-   * @returns Redirects to home page after logout
-   */
-  /**
    * @param {Express.Request} req - Express request object
    * @param {Response} res - Express response object
    * @param {NextFunction} next - Express next middleware function
