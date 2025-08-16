@@ -18,10 +18,12 @@ jest.mock('../config/db', () => connectMock);
 const appRouter = 'appRouter';
 const authRouter = 'authRouter';
 const watchlistRouter = 'watchlistRouter';
+const proxyRouter = 'proxyRouter';
 
 jest.mock('../routes/app', () => appRouter);
 jest.mock('../routes/auth', () => authRouter);
 jest.mock('../routes/watchlist', () => watchlistRouter);
+jest.mock('../routes/proxy', () => proxyRouter);
 
 const baseConfig = {
   APP_NAME: 'name',

@@ -17,6 +17,7 @@ import { useAuth } from '../helpers/appHelper';
 import appRouter from '../routes/app';
 import authRouter from '../routes/auth';
 import watchlistRouter from '../routes/watchlist';
+import proxyRouter from '../routes/proxy';
 
 /**
  * Express application instance.
@@ -59,6 +60,7 @@ app.use(express.static('public'));
  * The method checks if MONGO_DB_URI is true then connects to MongoDB and uses additional middleware.
  */
 app.use('/', appRouter);
+app.use('/proxy', proxyRouter);
 // Test if MONGO_DB_URI is set.
 if (useAuth) {
   // Connect to MongoDB instance.

@@ -134,7 +134,8 @@ const appController = {
         );
       }
 
-      const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
+      const embedUrl = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
+      const iframeSrc = `/proxy?url=${encodeURIComponent(embedUrl)}`;
       const canonical = `${res.locals.APP_URL}/view/${id}/${type}/${season}/${episode}`;
       const data = await fetchOmdbData(id, false);
       const seriesDetail = await getSeriesDetail(id);
@@ -162,7 +163,8 @@ const appController = {
       watched = history?.watched || false;
     }
 
-    const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
+    const embedUrl = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
+    const iframeSrc = `/proxy?url=${encodeURIComponent(embedUrl)}`;
     const canonical = `${res.locals.APP_URL}/view/${id}/${type}`;
     const data = await fetchOmdbData(id, false);
     res.render('view', {
