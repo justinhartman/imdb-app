@@ -20,11 +20,40 @@ export const fetchSanitized = async (req: Request, res: Response): Promise<void>
 
   try {
     const { data } = await axios.get<string>(target);
-    const { window } = new JSDOM('');
-    const DOMPurify = createDOMPurify(window as any);
-    const sanitized = DOMPurify.sanitize(data, {
+    const dom = new JSDOM(data);
+    const DOMPurify = createDOMPurify(dom.window as any);
+
+    const playerIframe = dom.window.document.querySelector(
+      '#player_iframe'
+    ) as HTMLIFrameElement | null;
+
+    if (playerIframe) {
+      const sanitizedIframe = DOMPurify.sanitize(playerIframe.outerHTML, {
+        ADD_TAGS: ['iframe'],
+        ADD_ATTR: [
+          'allow',
+          'allowfullscreen',
+          'frameborder',
+          'scrolling',
+          'src',
+          'style',
+        ],
+      });
+      res.setHeader('Content-Type', 'text/html');
+      res.send(`<!DOCTYPE html><html><head></head><body>${sanitizedIframe}</body></html>`);
+      return;
+    }
+
+    const sanitized = DOMPurify.sanitize(dom.serialize(), {
       ADD_TAGS: ['iframe'],
-      ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'],
+      ADD_ATTR: [
+        'allow',
+        'allowfullscreen',
+        'frameborder',
+        'scrolling',
+        'src',
+        'style',
+      ],
     });
     res.setHeader('Content-Type', 'text/html');
     res.send(sanitized);
