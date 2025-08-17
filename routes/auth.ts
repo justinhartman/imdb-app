@@ -1,5 +1,5 @@
 /**
- * @module authRoutes
+ * @module routes/auth
  * @description Express router configuration for authentication routes including login, registration,
  * logout, and profile management. All routes are prefixed with '/user'.
  */
@@ -13,17 +13,40 @@ const router = Router();
 
 dbSessionMiddleware(router);
 
-/** @route GET /user/login - Displays the login form */
+/** 
+ * @route GET /user/login
+ * @description Displays the login form 
+ */
 router.get('/login', authController.getLogin);
-/** @route POST /user/login - Processes the login request */
+
+/** 
+ * @route POST /user/login
+ * @description Processes the login request.
+ */
 router.post('/login', authController.postLogin);
-/** @route GET /user/register - Displays the registration form */
+
+/** 
+ * @route GET /user/register
+ * @description Displays the registration form.
+ */
 router.get('/register', authController.getRegister);
-/** @route POST /user/register - Processes the registration request */
+
+/** 
+ * @route POST /user/register
+ * @description Processes the registration request.
+ */
 router.post('/register', authController.postRegister);
-/** @route GET /user/logout - Handles user logout (requires authentication) */
+
+/** 
+ * @route GET /user/logout
+ * @description Handles user logout (requires authentication).
+ */
 router.get('/logout', ensureAuthenticated, authController.logout);
-/** @route GET /user/profile - Displays user profile (requires authentication) */
+
+/** 
+ * @route GET /user/profile
+ * @description Displays user profile (requires authentication).
+ */
 router.get('/profile', ensureAuthenticated, authController.getProfile);
 
 export default router;
