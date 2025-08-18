@@ -104,6 +104,7 @@ const appController = {
     if (type === 'series') {
       let season = req.params.season;
       let episode = req.params.episode;
+      const autoplay = req.params.autoplay === '1' ? 1 : 0;
 
       if ((!season || !episode) && req.user) {
         const history = await History.findOne({
@@ -126,18 +127,32 @@ const appController = {
       season = season || '1';
       episode = episode || '1';
 
+      const seriesDetail = await getSeriesDetail(id);
+
+      let updateSeason = Number(season);
+      let updateEpisode = Number(episode);
+      if (autoplay === 1) {
+        const currentSeasonDetail = seriesDetail.seasons.find((s: any) => s.season === updateSeason);
+        const seasonMax = currentSeasonDetail?.episodes?.length || 0;
+        if (updateEpisode < seasonMax) {
+          updateEpisode += 1;
+        } else if (updateSeason < seriesDetail.totalSeasons) {
+          updateSeason += 1;
+          updateEpisode = 1;
+        }
+      }
+
       if (req.user) {
         await History.findOneAndUpdate(
           { userId: req.user.id, imdbId: id },
-          { $set: { type: 'series', lastSeason: Number(season), lastEpisode: Number(episode) } },
+          { $set: { type: 'series', lastSeason: updateSeason, lastEpisode: updateEpisode } },
           { upsert: true }
         );
       }
 
-      const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
-      const canonical = `${res.locals.APP_URL}/view/${id}/${type}/${season}/${episode}`;
+      const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}&autonext=${autoplay}`;
+      const canonical = `${res.locals.APP_URL}/view/${id}/${type}/${season}/${episode}/${autoplay}`;
       const data = await fetchOmdbData(id, false);
-      const seriesDetail = await getSeriesDetail(id);
       return res.render('view', {
         data,
         iframeSrc,
@@ -148,6 +163,7 @@ const appController = {
         episode,
         seriesDetail,
         canonical,
+        autoplay,
         user: req.user,
       });
     }

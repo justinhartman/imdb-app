@@ -26,14 +26,15 @@ router.get('/', appController.getHome);
 router.get('/view/:id/:type', appController.getView);
 
 /**
- * @route GET /view/:id/:type/:season/:episode
+ * @route GET /view/:id/:type/:season/:episode/:autoplay?
  * @description Renders the view page for a specific TV show episode.
  * @param {string} id - IMDB ID of the show
  * @param {string} type - Type of media (series)
  * @param {string} season - Season number
  * @param {string} episode - Episode number
+ * @param {string} [autoplay] - Autoplay flag ("1" to enable)
  */
-router.get('/view/:id/:type/:season/:episode', appController.getView);
+router.get('/view/:id/:type/:season/:episode/:autoplay?', appController.getView);
 
 /**
  * @route GET /search

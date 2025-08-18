@@ -25,15 +25,29 @@
     </svg>
     <div class="row alert alert-danger alert-dismissible fade show" role="alert">
         <div class="d-none d-sm-inline col-auto mx-auto my-auto py-0">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg> 
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
         </div>
         <div class="col">
-            <strong>Before clicking Play</strong> on the video below you should install a popup blocker extension. We recommend 
-            <a href="https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm" class="alert-link" target="_blank">uBlock Origin for Chrome</a> 
+            <strong>Before clicking Play</strong> on the video below you should install a popup blocker extension. We recommend
+            <a href="https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm" class="alert-link" target="_blank">uBlock Origin for Chrome</a>
             as this has proven to block popups and ads successfully. We don't control the video player, else we'd block them ourselves for you!
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const alertEl = document.querySelector('[role="alert"]');
+        if (!alertEl) return;
+        if (document.cookie.split('; ').some(c => c.startsWith('dismiss-plugin=true'))) {
+          alertEl.remove();
+          return;
+        }
+        const btn = alertEl.querySelector('.btn-close');
+        btn && btn.addEventListener('click', function () {
+          document.cookie = 'dismiss-plugin=true; path=/; max-age=31536000';
+        });
+      });
+    </script>
 <% if (data.Response !== 'False') { -%>
     <div class="text-white my-4">
         <div class="d-flex flex-column flex-sm-row justify-content-between">
