@@ -96,6 +96,8 @@ const appConfig = () => {
     // The vidsrc player domain has been prone to be taken down. Use one of the following domains if it's not working:
     // vidsrc.in, vidsrc.pm, vidsrc.xyz, vidsrc.net
     VIDSRC_DOMAIN: process.env.VIDSRC_DOMAIN || 'vidsrc.in',
+    // Optional multi-server domain for alternate embeds.
+    MULTI_DOMAIN: process.env.MULTI_DOMAIN,
     /* c8 ignore stop */
   };
 };

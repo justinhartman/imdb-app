@@ -12,6 +12,7 @@ describe('config/app', () => {
     delete process.env.APP_URL;
     delete process.env.VERCEL_URL;
     delete process.env.NODE_ENV;
+    delete process.env.MULTI_DOMAIN;
   };
 
   const loadConfig = () => {
@@ -92,5 +93,11 @@ describe('config/app', () => {
   test('falls back to localhost when nothing is set', () => {
     const config = loadConfig();
     expect(config.APP_URL).toBe('http://localhost:3000');
+  });
+
+  test('exposes MULTI_DOMAIN when provided', () => {
+    process.env.MULTI_DOMAIN = 'multi';
+    const config = loadConfig();
+    expect(config.MULTI_DOMAIN).toBe('multi');
   });
 });

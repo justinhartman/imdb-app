@@ -134,13 +134,22 @@ const appController = {
         );
       }
 
-      const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
+      const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
+      const server2Src = appConfig.MULTI_DOMAIN
+        ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}&s=${season}&e=${episode}`
+        : '';
+      const useMulti = Boolean(appConfig.MULTI_DOMAIN);
+      const iframeSrc = useMulti ? server2Src : server1Src;
+      const currentServer = useMulti ? '2' : '1';
       const canonical = `${res.locals.APP_URL}/view/${id}/${type}/${season}/${episode}`;
       const data = await fetchOmdbData(id, false);
       const seriesDetail = await getSeriesDetail(id);
       return res.render('view', {
         data,
         iframeSrc,
+        server1Src,
+        server2Src,
+        currentServer,
         query,
         id,
         type,
@@ -162,12 +171,19 @@ const appController = {
       watched = history?.watched || false;
     }
 
-    const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
+    const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
+    const server2Src = appConfig.MULTI_DOMAIN ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}` : '';
+    const useMulti = Boolean(appConfig.MULTI_DOMAIN);
+    const iframeSrc = useMulti ? server2Src : server1Src;
+    const currentServer = useMulti ? '2' : '1';
     const canonical = `${res.locals.APP_URL}/view/${id}/${type}`;
     const data = await fetchOmdbData(id, false);
     res.render('view', {
       data,
       iframeSrc,
+      server1Src,
+      server2Src,
+      currentServer,
       query,
       id,
       type,
