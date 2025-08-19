@@ -1,0 +1,14 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const alertEl = document.querySelector('[role="alert"]');
+    if (!alertEl) return;
+    if (document.cookie.split('; ').some(c => c.startsWith('dismiss-plugin=true'))) {
+      alertEl.remove();
+      return;
+    }
+    const btn = alertEl.querySelector('.btn-close');
+    btn && btn.addEventListener('click', function () {
+      document.cookie = 'dismiss-plugin=true; path=/; max-age=2592000';
+    });
+  });
+</script>
