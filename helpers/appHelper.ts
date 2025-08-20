@@ -66,15 +66,20 @@ export const fetchOmdbData = async (
  *              Updates are performed in parallel using Promise.all
  */
 export const fetchAndUpdatePosters = async (show: any[]): Promise<void> => {
+  const fallback = `${appConfig.APP_URL}/images/no-binger.jpg`;
   await Promise.all(
     show.map(async (x: any) => {
       const data = await fetchOmdbData(x.imdb_id, false);
-      if (data.Response === 'True')
-        x.poster =
-          data.Poster !== 'N/A'
-            ? data.Poster
-            : `${appConfig.APP_URL}/images/no-binger.jpg`;
-      else x.poster = `${appConfig.APP_URL}/images/no-binger.jpg`;
+      if (data.Response === 'True' && data.Poster !== 'N/A') {
+        try {
+          await http.head(data.Poster);
+          x.poster = data.Poster;
+        } catch {
+          x.poster = fallback;
+        }
+      } else {
+        x.poster = fallback;
+      }
     })
   );
 };

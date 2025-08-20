@@ -15,6 +15,7 @@
   "homepage": "https://binger.uk",
   "scripts": {
     "start": "tsx api/index.ts",
+    "start:dev": "tsx api/index.ts --enable-source-maps --watch",
     "lint": "yarn lint:ts && yarn lint:ejs",
     "lint:ejs": "npx ejslint ./views/*.ejs ./views/**/*.ejs",
     "lint:ts": "npx tsc -p tsconfig.json --noEmit",

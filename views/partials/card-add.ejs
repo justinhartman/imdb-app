@@ -1,7 +1,7 @@
 <div class="col-md-3 col-sm-6 mb-4">
     <div class="card bg-dark bg-gradient mb-3 shadow-lg border border-0">
         <a href="<%- url %>">
-            <img class="card-img-top" src="<%- poster %>" alt="<%- title %>">
+            <img class="card-img-top" src="<%- poster %>" alt="<%- title %>" onerror="this.onerror=null;this.src='<%= APP_URL %>/images/no-binger.jpg';">
         </a>
         <div class="card-body">
             <h5 class="card-title text-nowrap text-truncate text-warning"><%- title %></h5>
