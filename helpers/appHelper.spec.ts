@@ -2,10 +2,10 @@ import http from './httpClient';
 
 jest.mock('./httpClient', () => ({
   __esModule: true,
-  default: { request: jest.fn() },
+  default: { request: jest.fn(), head: jest.fn() },
 }));
 
-jest.mock('../config/app', () => ({
+const mockAppConfig = {
   OMDB_API_KEY: 'key',
   OMDB_API_URL: 'http://omdb',
   APP_URL: 'http://app',
@@ -17,7 +17,9 @@ jest.mock('../config/app', () => ({
   API_HOST: 'localhost',
   API_PORT: 3000,
   VIDSRC_DOMAIN: 'domain',
-}));
+};
+
+jest.mock('../config/app', () => mockAppConfig);
 
 import appConfig from '../config/app';
 import * as helper from './appHelper';
@@ -61,18 +63,33 @@ describe('helpers/appHelper', () => {
     expect(data).toEqual({});
   });
 
-  test('fetchAndUpdatePosters updates posters and defaults', async () => {
-    const shows: any[] = [{ imdb_id: '1' }, { imdb_id: '2' }, { imdb_id: '3' }];
+  test('fetchAndUpdatePosters validates poster availability', async () => {
+    const shows: any[] = [
+      { imdb_id: '1' },
+      { imdb_id: '2' },
+      { imdb_id: '3' },
+      { imdb_id: '4' },
+    ];
     const spy = jest
       .spyOn(helper, 'fetchOmdbData')
       .mockResolvedValueOnce({ Response: 'True', Poster: 'p1' })
+      .mockResolvedValueOnce({ Response: 'True', Poster: 'p2' })
       .mockResolvedValueOnce({ Response: 'True', Poster: 'N/A' })
       .mockResolvedValueOnce({ Response: 'False' });
+    (http.head as jest.Mock)
+      .mockResolvedValueOnce({})
+      .mockRejectedValueOnce(new Error('404'));
+
     await helper.fetchAndUpdatePosters(shows);
-    expect(spy).toHaveBeenCalledTimes(3);
+    expect(spy).toHaveBeenCalledTimes(4);
+    expect(http.head).toHaveBeenCalledTimes(2);
+    expect(http.head).toHaveBeenNthCalledWith(1, 'p1');
+    expect(http.head).toHaveBeenNthCalledWith(2, 'p2');
+    const fallback = `${appConfig.APP_URL}/images/no-binger.jpg`;
     expect(shows[0].poster).toBe('p1');
-    expect(shows[1].poster).toBe(`${appConfig.APP_URL}/images/no-binger.jpg`);
-    expect(shows[2].poster).toBe(`${appConfig.APP_URL}/images/no-binger.jpg`);
+    expect(shows[1].poster).toBe(fallback);
+    expect(shows[2].poster).toBe(fallback);
+    expect(shows[3].poster).toBe(fallback);
   });
 
   test('getSeriesDetail retrieves seasons and episodes', async () => {
@@ -113,21 +130,11 @@ describe('helpers/appHelper', () => {
   });
 
   test('useAuth is true when mongo uri provided', () => {
-    jest.resetModules();
-    jest.doMock('../config/app', () => ({
-      OMDB_API_KEY: 'key',
-      OMDB_API_URL: 'http://omdb',
-      APP_URL: 'http://app',
-      MONGO_DB_URI: 'mongodb://db',
-      MONGO_DB_NAME: '',
-      APP_NAME: '',
-      APP_SUBTITLE: '',
-      APP_DESCRIPTION: '',
-      API_HOST: 'localhost',
-      API_PORT: 3000,
-      VIDSRC_DOMAIN: 'domain',
-    }));
-    const mod = require('./appHelper');
-    expect(mod.useAuth).toBe(true);
+    jest.isolateModules(() => {
+      mockAppConfig.MONGO_DB_URI = 'mongodb://db';
+      const mod = require('./appHelper');
+      expect(mod.useAuth).toBe(true);
+    });
+    mockAppConfig.MONGO_DB_URI = '';
   });
 });
