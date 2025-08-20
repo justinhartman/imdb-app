@@ -15,7 +15,7 @@
         <%- include('./partials/alerts.ejs') -%>
         <h1 class="display-4 my-4 text-warning">New Movies</h1>
         <div class="d-none d-md-block position-relative">
-            <button class="scroll-button left" data-target="#movies-row"><i class="bi-chevron-left"></i></button>
+            <button class="scroll-button left h-25 rounded-3" data-target="#movies-row"><i class="bi-chevron-left"></i></button>
             <div id="movies-row" class="row flex-nowrap scroll-row">
                 <% newMovies.forEach(movie => { %>
                     <%-include(`./partials/${card}.ejs`, {
@@ -27,7 +27,7 @@
                     })%>
                 <% }); %>
             </div>
-            <button class="scroll-button right" data-target="#movies-row"><i class="bi-chevron-right"></i></button>
+            <button class="scroll-button right h-25 rounded-3" data-target="#movies-row"><i class="bi-chevron-right"></i></button>
         </div>
         <div class="d-block d-md-none">
             <div class="row">
@@ -50,7 +50,7 @@
     <div class="container mb-4">
         <h1 class="display-4 my-4 text-warning">New TV Shows</h1>
         <div class="d-none d-md-block position-relative">
-            <button class="scroll-button left" data-target="#series-row"><i class="bi-chevron-left"></i></button>
+            <button class="scroll-button left h-25 rounded-3" data-target="#series-row"><i class="bi-chevron-left"></i></button>
             <div id="series-row" class="row flex-nowrap scroll-row">
                 <% newSeries.forEach(series => { %>
                     <%-include(`./partials/${card}.ejs`, {
@@ -62,7 +62,7 @@
                     })%>
                 <% }); %>
             </div>
-            <button class="scroll-button right" data-target="#series-row"><i class="bi-chevron-right"></i></button>
+            <button class="scroll-button right h-25 rounded-3" data-target="#series-row"><i class="bi-chevron-right"></i></button>
         </div>
         <div class="d-block d-md-none">
             <div class="row">
@@ -81,7 +81,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.scroll-button').forEach(btn => {
+            document.querySelectorAll('.scroll-button' h-25 rounded-3).forEach(btn => {
                 btn.addEventListener('click', function() {
                     const container = document.querySelector(this.dataset.target);
                     const amount = container.clientWidth;
