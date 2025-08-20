@@ -26,6 +26,26 @@ a.btn-primary:hover {
     flex-direction: column;
 }
 
+.scroll-row {
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+.scroll-row::-webkit-scrollbar {
+    display: none;
+}
+.scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    border: none;
+    color: #fff;
+    padding: 0.5rem;
+    z-index: 10;
+}
+.scroll-button.left { left: 0; }
+.scroll-button.right { right: 0; }
+
 /* Styles that apply at the 'md' breakpoint and above */
 @media (min-width: 768px) {
     .card-img-top {
