@@ -11,37 +11,83 @@
 </head>
 <%- include('./partials/navigation.ejs') -%>
     <!-- New Movies -->
-    <div class="container">
-        <div class="row">
-            <%- include('./partials/alerts.ejs') -%>
-            <h1 class="display-4 my-4 text-warning">New Movies</h1>
-            <% newMovies.forEach(movie => { %>
-                <%-include(`./partials/${card}.ejs`, {
-                    url: `${APP_URL}/view/${movie.imdb_id}/movie`,
-                    poster: movie.poster,
-                    title: movie.title,
-                    id: movie.imdb_id,
-                    type: 'movie'
-                })%>
-            <% }); %>
+    <div class="container mb-4">
+        <%- include('./partials/alerts.ejs') -%>
+        <h1 class="display-4 my-4 text-warning">New Movies</h1>
+        <div class="d-none d-md-block position-relative">
+            <button class="scroll-button left h-25 rounded-3" data-target="#movies-row"><i class="bi-chevron-left"></i></button>
+            <div id="movies-row" class="row flex-nowrap scroll-row">
+                <% newMovies.forEach(movie => { %>
+                    <%-include(`./partials/${card}.ejs`, {
+                        url: `${APP_URL}/view/${movie.imdb_id}/movie`,
+                        poster: movie.poster,
+                        title: movie.title,
+                        id: movie.imdb_id,
+                        type: 'movie'
+                    })%>
+                <% }); %>
+            </div>
+            <button class="scroll-button right h-25 rounded-3" data-target="#movies-row"><i class="bi-chevron-right"></i></button>
+        </div>
+        <div class="d-block d-md-none">
+            <div class="row">
+                <% newMovies.slice(0,4).forEach(movie => { %>
+                    <%-include(`./partials/${card}.ejs`, {
+                        url: `${APP_URL}/view/${movie.imdb_id}/movie`,
+                        poster: movie.poster,
+                        title: movie.title,
+                        id: movie.imdb_id,
+                        type: 'movie'
+                    })%>
+                <% }); %>
+            </div>
         </div>
     </div>
 
     <hr class="border border-secondary border-2 opacity-50">
 
     <!-- New TV Shows -->
-    <div class="container">
-        <div class="row">
-            <h1 class="display-4 my-4 text-warning">New TV Shows</h1>
-            <% newSeries.forEach(series => { %>
-                <%-include(`./partials/${card}.ejs`, {
-                    url: `${APP_URL}/view/${series.imdb_id}/series`,
-                    poster: series.poster,
-                    title: series.title,
-                    id: series.imdb_id,
-                    type: 'series'
-                })%>
-            <% }); %>
+    <div class="container mb-4">
+        <h1 class="display-4 my-4 text-warning">New TV Shows</h1>
+        <div class="d-none d-md-block position-relative">
+            <button class="scroll-button left h-25 rounded-3" data-target="#series-row"><i class="bi-chevron-left"></i></button>
+            <div id="series-row" class="row flex-nowrap scroll-row">
+                <% newSeries.forEach(series => { %>
+                    <%-include(`./partials/${card}.ejs`, {
+                        url: `${APP_URL}/view/${series.imdb_id}/series`,
+                        poster: series.poster,
+                        title: series.title,
+                        id: series.imdb_id,
+                        type: 'series'
+                    })%>
+                <% }); %>
+            </div>
+            <button class="scroll-button right h-25 rounded-3" data-target="#series-row"><i class="bi-chevron-right"></i></button>
+        </div>
+        <div class="d-block d-md-none">
+            <div class="row">
+                <% newSeries.slice(0,4).forEach(series => { %>
+                    <%-include(`./partials/${card}.ejs`, {
+                        url: `${APP_URL}/view/${series.imdb_id}/series`,
+                        poster: series.poster,
+                        title: series.title,
+                        id: series.imdb_id,
+                        type: 'series'
+                    })%>
+                <% }); %>
+            </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.scroll-button' h-25 rounded-3).forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const container = document.querySelector(this.dataset.target);
+                    const amount = container.clientWidth;
+                    container.scrollBy({ left: this.classList.contains('left') ? -amount : amount, behavior: 'smooth' });
+                });
+            });
+        });
+    </script>
 <%- include('./partials/footer.ejs') -%>
