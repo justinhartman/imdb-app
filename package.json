@@ -45,6 +45,7 @@
     "express-session": "^1.18.2",
     "mongodb": "^6.18.0",
     "mongoose": "^8.17.1",
+    "node-cache": "^5.1.2",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0"
   },
