@@ -1,0 +1,23 @@
+# NOTICE: The collection of content and other data on
+# this site through automated means, including any
+# device, tool, or process designed to data mine or
+# scrape content, is prohibited except (1) as provided by
+# the below Content Usage directives or (2) with express
+# written permission from this website's owner.
+
+# To request permission to license our intellectual
+# property and/or other materials, please contact us at
+# hello@binger.uk
+
+User-Agent: AhrefsBot
+Disallow: /
+
+User-Agent: AhrefsSiteAudit
+Disallow: /
+
+User-agent: CensysInspect
+Disallow: /
+
+User-Agent: *
+Content-Usage: tdm=n, search=y, inference=y
+Allow: /
