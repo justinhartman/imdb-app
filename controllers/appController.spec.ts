@@ -2,6 +2,7 @@ import appController from './appController';
 import http from '../helpers/httpClient';
 import { fetchOmdbData, fetchAndUpdatePosters, getSeriesDetail } from '../helpers/appHelper';
 import History from '../models/History';
+import { getLatest, setLatest, invalidateLatest } from '../helpers/cache';
 
 jest.mock('../helpers/httpClient', () => ({
   __esModule: true,
@@ -11,6 +12,12 @@ jest.mock('../helpers/appHelper', () => ({
   fetchOmdbData: jest.fn(),
   fetchAndUpdatePosters: jest.fn(),
   getSeriesDetail: jest.fn(),
+}));
+
+jest.mock('../helpers/cache', () => ({
+  getLatest: jest.fn(),
+  setLatest: jest.fn(),
+  invalidateLatest: jest.fn(),
 }));
 
 jest.mock('../models/History', () => ({
@@ -41,6 +48,7 @@ describe('controllers/appController', () => {
       .mockResolvedValueOnce({ data: { result: [{ imdb_id: '1' }] } })
       .mockResolvedValueOnce({ data: { result: [{ imdb_id: '2' }] } });
     (fetchAndUpdatePosters as jest.Mock).mockResolvedValue(undefined);
+    (getLatest as jest.Mock).mockReturnValue(undefined);
 
     const req: any = { query: {}, user: { id: 1 } };
     const res: any = { locals: { APP_URL: 'http://app', CARD_TYPE: 'card' }, render: jest.fn() };
@@ -49,6 +57,7 @@ describe('controllers/appController', () => {
 
     expect(http.get).toHaveBeenCalledTimes(2);
     expect(fetchAndUpdatePosters).toHaveBeenCalledTimes(2);
+    expect(setLatest).toHaveBeenCalledWith({ movies: [{ imdb_id: '1' }], series: [{ imdb_id: '2' }] });
     expect(res.render).toHaveBeenCalledWith('index', expect.objectContaining({
       newMovies: [{ imdb_id: '1' }],
       newSeries: [{ imdb_id: '2' }],
@@ -62,6 +71,7 @@ describe('controllers/appController', () => {
       .mockResolvedValueOnce({ data: {} })
       .mockResolvedValueOnce({ data: {} });
     (fetchAndUpdatePosters as jest.Mock).mockResolvedValue(undefined);
+    (getLatest as jest.Mock).mockReturnValue(undefined);
 
     const req: any = { query: {}, user: {} };
     const res: any = {
@@ -75,6 +85,34 @@ describe('controllers/appController', () => {
       newMovies: [],
       newSeries: [],
     }));
+  });
+
+  test('getHome returns cached results when available', async () => {
+    (getLatest as jest.Mock).mockReturnValue({
+      movies: [{ imdb_id: 'm1' }],
+      series: [{ imdb_id: 's1' }],
+    });
+    const req: any = { query: {}, user: {} };
+    const res: any = { locals: { APP_URL: 'http://app', CARD_TYPE: 'card' }, render: jest.fn() };
+
+    await appController.getHome(req, res, jest.fn());
+
+    expect(http.get).not.toHaveBeenCalled();
+    expect(fetchAndUpdatePosters).not.toHaveBeenCalled();
+    expect(res.render).toHaveBeenCalledWith('index', expect.objectContaining({
+      newMovies: [{ imdb_id: 'm1' }],
+      newSeries: [{ imdb_id: 's1' }],
+    }));
+  });
+
+  test('clearCache invalidates cache', async () => {
+    const req: any = {};
+    const res: any = { json: jest.fn() };
+
+    await appController.clearCache(req, res, jest.fn());
+
+    expect(invalidateLatest).toHaveBeenCalled();
+    expect(res.json).toHaveBeenCalledWith({ cleared: true });
   });
 
   test('getView renders series view', async () => {
