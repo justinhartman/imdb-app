@@ -137,6 +137,15 @@ describe('helpers/appHelper', () => {
     expect(detail.currentSeason.episodes).toEqual([]);
   });
 
+  test('getSeriesDetail handles missing response data', async () => {
+    (http.request as jest.Mock).mockResolvedValueOnce({});
+    const detail = await helper.getSeriesDetail('tt4', 1);
+    expect(detail).toEqual({
+      totalSeasons: 0,
+      currentSeason: { season: 1, episodes: [] },
+    });
+  });
+
   test('getSeriesDetail returns empty when id missing', async () => {
     const detail = await helper.getSeriesDetail('', 1);
     expect(detail).toEqual({ totalSeasons: 0, currentSeason: { season: 0, episodes: [] } });
