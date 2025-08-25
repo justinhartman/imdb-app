@@ -59,7 +59,7 @@
         </div>
         <div class="series-episodes d-flex flex-wrap flex-md-column mt-2 mt-md-0">
             <%- include('./partials/series-buttons.ejs') -%>
-            <% const currentSeason = seriesDetail.seasons.find(se => se.season === Number(season)) || { episodes: [] }; %>
+            <% const currentSeason = seriesDetail.currentSeason || { episodes: [] }; %>
             <% currentSeason.episodes.forEach(ep => { %>
                 <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${ep.episode}` %>" class="btn btn-outline-info btn-sm text-start m-1 <%= Number(episode) === ep.episode ? 'active' : '' %>"><%= ep.episode %>. <%= ep.title || `Episode ${ep.episode}` %></a>
             <% }) %>

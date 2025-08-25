@@ -107,13 +107,15 @@ export interface SeasonDetail {
  * @interface SeriesDetail
  * @description Interface representing complete details about a TV series.
  * @property {number} totalSeasons - Total number of seasons in the series
- * @property {number} totalEpisodes - Total number of episodes across all seasons
- * @property {SeasonDetail[]} seasons - Array containing details of each season
+ * @property {SeasonDetail} currentSeason - Details for the currently viewed season
+ * @property {SeasonDetail} [prevSeason] - Optional details for the previous season
+ * @property {SeasonDetail} [nextSeason] - Optional details for the next season
  */
 export interface SeriesDetail {
   totalSeasons: number;
-  totalEpisodes: number;
-  seasons: SeasonDetail[];
+  currentSeason: SeasonDetail;
+  prevSeason?: SeasonDetail;
+  nextSeason?: SeasonDetail;
 }
 
 /**

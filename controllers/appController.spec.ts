@@ -38,8 +38,7 @@ describe('controllers/appController', () => {
     jest.clearAllMocks();
     (getSeriesDetail as jest.Mock).mockResolvedValue({
       totalSeasons: 1,
-      totalEpisodes: 1,
-      seasons: [{ season: 1, episodes: [{ episode: 1, title: 'E1' }] }],
+      currentSeason: { season: 1, episodes: [{ episode: 1, title: 'E1' }] },
     });
   });
 
@@ -126,7 +125,7 @@ describe('controllers/appController', () => {
       { $set: { type: 'series', lastSeason: 1, lastEpisode: 2 } },
       { upsert: true }
     );
-    expect(getSeriesDetail).toHaveBeenCalledWith('tt');
+    expect(getSeriesDetail).toHaveBeenCalledWith('tt', 1);
     expect(res.render).toHaveBeenCalledWith('view', expect.objectContaining({
       season: '1',
       episode: '2',
