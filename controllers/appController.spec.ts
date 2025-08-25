@@ -20,6 +20,7 @@ jest.mock('../models/History', () => ({
 
 jest.mock('../config/app', () => ({
   VIDSRC_DOMAIN: 'domain',
+  MULTI_DOMAIN: undefined,
   APP_URL: 'http://app',
   APP_NAME: 'name',
   APP_SUBTITLE: '',
@@ -93,6 +94,10 @@ describe('controllers/appController', () => {
       season: '1',
       episode: '2',
       type: 'series',
+      iframeSrc: 'https://domain/embed/tv?imdb=tt&season=1&episode=2',
+      server1Src: 'https://domain/embed/tv?imdb=tt&season=1&episode=2',
+      server2Src: '',
+      currentServer: '1',
     }));
   });
 
@@ -128,7 +133,17 @@ describe('controllers/appController', () => {
       { $set: { type: 'movie', watched: true } },
       { upsert: true, new: true }
     );
-    expect(res.render).toHaveBeenCalledWith('view', expect.objectContaining({ type: 'movie', watched: true }));
+    expect(res.render).toHaveBeenCalledWith(
+      'view',
+      expect.objectContaining({
+        type: 'movie',
+        watched: true,
+        iframeSrc: 'https://domain/embed/movie/tt',
+        server1Src: 'https://domain/embed/movie/tt',
+        server2Src: '',
+        currentServer: '1',
+      })
+    );
   });
 
   test('getView handles missing history on movie view', async () => {
