@@ -81,7 +81,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.scroll-button' h-25 rounded-3).forEach(btn => {
+            document.querySelectorAll('.scroll-button').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const container = document.querySelector(this.dataset.target);
                     const amount = container.clientWidth;
