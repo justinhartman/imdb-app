@@ -180,11 +180,9 @@ OMDb API used in this project. Open the file and begin testing the API to see re
 **Would love some help on these...**
 
 - [ ] Work out a way to stop the video player from adding popups when watching[^1].
-- [ ] Change layout to include all episodes on the view screen.
 - [ ] Add personalised recommendations. _(not so easy to do)_
 - [ ] Implement a proper logging mechanism to track errors and user interactions.
 - [ ] Improve the error handling mechanism to provide better feedback to the user when an error occurs.
-- [ ] Complete test suite.
 
 [^1]: This is a product of not hosting your own video content and the video feed providers try monetise through popups. 
 I want a way to kill this because there's known malware in these popups!
@@ -203,6 +201,8 @@ I want a way to kill this because there's known malware in these popups!
   - [x] Bookmarks to save items to profile
 - [x] Add test suite so we can code better.
 - [x] Add code coverage reporting
+- [x] Change layout to include all episodes on the view screen.
+- [x] Complete test suite.
 
 ## License
 

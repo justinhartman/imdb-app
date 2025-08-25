@@ -22,6 +22,7 @@
     "db:status": "npx migrate-mongo status",
     "db:migrate": "npx migrate-mongo up",
     "db:rollback": "npx migrate-mongo down",
+    "db:create": "npx migrate-mongo create",
     "publish:patch": "npx grunt",
     "publish:minor": "npx grunt minor",
     "publish:major": "npx grunt major",
