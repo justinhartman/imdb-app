@@ -161,7 +161,7 @@ const appController = {
       const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
       const canonical = `${res.locals.APP_URL}/view/${id}/${type}/${season}/${episode}`;
       const data = await fetchOmdbData(id, false);
-      const seriesDetail = await getSeriesDetail(id);
+      const seriesDetail = await getSeriesDetail(id, Number(season));
       return res.render('view', {
         data,
         iframeSrc,

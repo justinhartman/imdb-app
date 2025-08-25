@@ -561,7 +561,7 @@
   resolved "https://registry.yarnpkg.com/@jest/get-type/-/get-type-30.0.1.tgz#0d32f1bbfba511948ad247ab01b9007724fc9f52"
   integrity sha512-AyYdemXCptSRFirI5EPazNxyPwAL0jXt3zceFjaj8NFiKP9pOi0bfXonf6qkf82z2t3QWPeLCWWw4stPBzctLw==
 
-"@jest/globals@30.0.5":
+"@jest/globals@30.0.5", "@jest/globals@^30.0.5":
   version "30.0.5"
   resolved "https://registry.yarnpkg.com/@jest/globals/-/globals-30.0.5.tgz#ca70e0ac08ab40417cf8cd92bcb76116c2ccca63"
   integrity sha512-7oEJT19WW4oe6HR7oLRvHxwlJk2gev0U9px3ufs8sX9PoD1Eza68KF0/tlN7X0dq/WVsBScXQGgCldA1V9Y/jA==
@@ -832,7 +832,7 @@
   dependencies:
     "@babel/types" "^7.28.2"
 
-"@types/body-parser@*":
+"@types/body-parser@*", "@types/body-parser@^1.19.6":
   version "1.19.6"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.6.tgz#1859bebb8fd7dac9918a45d54c1971ab8b5af474"
   integrity sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==
@@ -2981,7 +2981,7 @@ jest-snapshot@30.0.5:
     semver "^7.7.2"
     synckit "^0.11.8"
 
-jest-util@30.0.5:
+jest-util@30.0.5, jest-util@^30.0.5:
   version "30.0.5"
   resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-30.0.5.tgz#035d380c660ad5f1748dff71c4105338e05f8669"
   integrity sha512-pvyPWssDZR0FlfMxCBoc0tvM8iUEskaRFALUtGQYzVEAqisAztmy+R8LnU14KT4XA0H/a5HMVTXat1jLne010g==
