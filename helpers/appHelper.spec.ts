@@ -17,6 +17,7 @@ const mockAppConfig = {
   API_HOST: 'localhost',
   API_PORT: 3000,
   VIDSRC_DOMAIN: 'domain',
+  MULTI_DOMAIN: '',
 };
 
 jest.mock('../config/app', () => mockAppConfig);
@@ -88,8 +89,8 @@ describe('helpers/appHelper', () => {
       { imdb_id: '3' },
       { imdb_id: '4' },
     ];
-    const spy = jest
-      .spyOn(helper, 'fetchOmdbData')
+    const fetchMock = jest
+      .fn<ReturnType<typeof helper.fetchOmdbData>, Parameters<typeof helper.fetchOmdbData>>()
       .mockResolvedValueOnce({ Response: 'True', Poster: 'p1' })
       .mockResolvedValueOnce({ Response: 'True', Poster: 'p2' })
       .mockResolvedValueOnce({ Response: 'True', Poster: 'N/A' })
@@ -98,8 +99,8 @@ describe('helpers/appHelper', () => {
       .mockResolvedValueOnce({})
       .mockRejectedValueOnce(new Error('404'));
 
-    await helper.fetchAndUpdatePosters(shows);
-    expect(spy).toHaveBeenCalledTimes(4);
+    await helper.fetchAndUpdatePosters(shows, fetchMock);
+    expect(fetchMock).toHaveBeenCalledTimes(4);
     expect(http.head).toHaveBeenCalledTimes(2);
     expect(http.head).toHaveBeenNthCalledWith(1, 'p1');
     expect(http.head).toHaveBeenNthCalledWith(2, 'p2');
@@ -177,6 +178,27 @@ describe('helpers/appHelper', () => {
     await helper.getSeriesDetail('tt1', 1);
     await helper.getSeriesDetail('tt1', 2);
     expect(http.request).toHaveBeenCalledTimes(3);
+  });
+
+  test('buildSources returns single-domain movie sources by default', () => {
+    const sources = helper.buildSources('tt1', 'movie');
+    expect(sources.server1Src).toBe('https://domain/embed/movie/tt1');
+    expect(sources.server2Src).toBe('');
+    expect(sources.currentServer).toBe('1');
+  });
+
+  test('buildSources prefers MULTI_DOMAIN sources when configured', () => {
+    jest.isolateModules(() => {
+      mockAppConfig.MULTI_DOMAIN = 'multi.example';
+      const mod = require('./appHelper');
+      const seriesSources = mod.buildSources('tt2', 'series', '1', '3');
+      expect(seriesSources.server2Src).toBe('https://multi.example/?video_id=tt2&s=1&e=3');
+      expect(seriesSources.currentServer).toBe('2');
+      const movieSources = mod.buildSources('tt2', 'movie');
+      expect(movieSources.server2Src).toBe('https://multi.example/?video_id=tt2');
+      expect(movieSources.currentServer).toBe('2');
+    });
+    mockAppConfig.MULTI_DOMAIN = '';
   });
 
   test('useAuth is false when no mongo uri', () => {

@@ -8,11 +8,15 @@ jest.mock('../helpers/httpClient', () => ({
   __esModule: true,
   default: { get: jest.fn() },
 }));
-jest.mock('../helpers/appHelper', () => ({
-  fetchOmdbData: jest.fn(),
-  fetchAndUpdatePosters: jest.fn(),
-  getSeriesDetail: jest.fn(),
-}));
+jest.mock('../helpers/appHelper', () => {
+  const actual = jest.requireActual('../helpers/appHelper');
+  return {
+    ...actual,
+    fetchOmdbData: jest.fn(),
+    fetchAndUpdatePosters: jest.fn(),
+    getSeriesDetail: jest.fn(),
+  };
+});
 
 jest.mock('../helpers/cache', () => ({
   getLatest: jest.fn(),
@@ -21,8 +25,11 @@ jest.mock('../helpers/cache', () => ({
 }));
 
 jest.mock('../models/History', () => ({
-  findOne: jest.fn(),
-  findOneAndUpdate: jest.fn(),
+  __esModule: true,
+  default: {
+    findOne: jest.fn(),
+    findOneAndUpdate: jest.fn(),
+  },
 }));
 
 jest.mock('../config/app', () => ({

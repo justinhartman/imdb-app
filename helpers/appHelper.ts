@@ -89,11 +89,14 @@ const fetchOmdbData = async (
  *              If poster isn't available or request fails, sets default 'no-binger' image.
  *              Updates are performed in parallel using Promise.all
  */
-const fetchAndUpdatePosters = async (show: any[]): Promise<void> => {
+const fetchAndUpdatePosters = async (
+  show: any[],
+  fetchFn: typeof fetchOmdbData = fetchOmdbData
+): Promise<void> => {
   const fallback = `${appConfig.APP_URL}/images/no-binger.jpg`;
   await Promise.all(
     show.map(async (x: any) => {
-      const data = await fetchOmdbData(x.imdb_id, false);
+      const data = await fetchFn(x.imdb_id, false);
       if (data.Response === 'True' && data.Poster !== 'N/A') {
         try {
           await http.head(data.Poster);

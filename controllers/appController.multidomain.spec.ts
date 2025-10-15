@@ -1,14 +1,20 @@
 import { fetchOmdbData, getSeriesDetail } from '../helpers/appHelper';
 import History from '../models/History';
 
-jest.mock('../helpers/appHelper', () => ({
-  fetchOmdbData: jest.fn(),
-  fetchAndUpdatePosters: jest.fn(),
-  getSeriesDetail: jest.fn(),
-}));
+jest.mock('../helpers/appHelper', () => {
+  const actual = jest.requireActual('../helpers/appHelper');
+  return {
+    ...actual,
+    fetchOmdbData: jest.fn(),
+    getSeriesDetail: jest.fn(),
+  };
+});
 
 jest.mock('../models/History', () => ({
-  findOneAndUpdate: jest.fn(),
+  __esModule: true,
+  default: {
+    findOneAndUpdate: jest.fn(),
+  },
 }));
 
 describe('controllers/appController with MULTI_DOMAIN', () => {
