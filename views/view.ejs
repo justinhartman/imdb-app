@@ -1,3 +1,4 @@
+<% const hasMultiServer = !!server2Src; %>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
@@ -41,10 +42,11 @@
             <h1 class="display-6 text-warning mb-2 mb-sm-0 w-auto">
             <% if (data.Type === 'series') { -%>
                 <i class="bi-collection-play-fill px-1"></i>
+                <%= data.Title %> <i class="badge bg-primary fs-6 align-middle fst-normal">Season: <%= Number(season) %> ☆ Episode: <%= Number(episode) %></i>
             <% } else if (data.Type === 'movie') { -%>
                 <i class="bi-play-btn-fill px-1"></i>
-            <% } -%>
                 <%= data.Title %> (<%= data.Year %>)
+            <% } -%>
             </h1>
         </div>
         <h5 class="card-subtitle mt-2"><%= data.Plot %></h5>
@@ -98,6 +100,18 @@
             <div class="ratio ratio-16x9">
                 <iframe id="player" src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" class="w-100"></iframe>
             </div>
+            <div class="row mt-2">
+                <div class="text-center">
+                    <a href="<%= APP_URL %>/" class="btn btn-outline-info btn-md-lg"><i class="bi-house"></i> Home</a>
+                    <a href="<%= APP_URL %>/watchlist" class="btn btn-outline-success btn-md-lg"><i class="bi-view-list"></i> Watchlist</a>
+                <% if (hasMultiServer && type !== 'series') { %>
+                    <a href="#" id="server-toggle" data-current="<%= currentServer %>" data-server1="<%= server1Src %>" data-server2="<%= server2Src %>" class="btn btn-outline-primary btn-md-lg">
+                        <i class="bi bi-hdd-stack"></i> Server <%= currentServer === '1' ? '2' : '1' %>
+                    </a>
+                <% } %>
+                    <a href="javascript:history.back()" class="btn btn-warning btn-md-lg"><i class="bi-search"></i> Back</a>
+                </div>
+            </div>
             <% if (data.Response !== 'False') { -%>
             <div class="row text-white my-4">
                 <div class="col-12 col-md-6">
@@ -121,13 +135,6 @@
         </div>
     </div>
     <% } %>
-    <div class="row mt-2">
-        <div class="text-center">
-            <a href="<%= APP_URL %>/" class="btn btn-outline-info btn-md-lg"><i class="bi-house"></i> Home</a>
-            <a href="<%= APP_URL %>/watchlist" class="btn btn-outline-success btn-md-lg"><i class="bi-view-list"></i> Watchlist</a>
-            <a href="javascript:history.back()" class="btn btn-warning btn-md-lg"><i class="bi-search"></i> Back to Search</a>
-        </div>
-    </div>
 <%- include('./partials/disqus.ejs') -%>
 </div>
 <%- include('./partials/footer.ejs') -%>

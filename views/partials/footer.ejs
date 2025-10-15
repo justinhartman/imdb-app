@@ -1,2 +1,21 @@
 </body>
+<script>
+  (function() {
+    const btn = document.getElementById('server-toggle');
+    const player = document.getElementById('player');
+    if (!btn || !player) return;
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (this.dataset.current === '1') {
+        player.src = this.dataset.server2;
+        this.dataset.current = '2';
+        this.innerHTML = '<i class="bi bi-hdd-stack"></i> Server 1';
+      } else {
+        player.src = this.dataset.server1;
+        this.dataset.current = '1';
+        this.innerHTML = '<i class="bi bi-hdd-stack"></i> Server 2';
+      }
+    });
+  })();
+</script>
 </html>

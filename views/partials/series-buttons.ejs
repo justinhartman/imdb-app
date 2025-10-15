@@ -28,26 +28,13 @@ if (episodeNum >= maxEpisodes) {
 <div id="series-buttons" class="px-1 w-100">
     <div class="btn-group mb-2 w-100">
         <a href="<%= prevLink %>" class="btn bg-primary border border-primary-subtle btn-sm p-2 <%= prevDisabled ? 'disabled' : '' %>"><i class="bi bi-caret-left-square"></i> Previous</a>
-        <a href="#" id="server-toggle" data-current="<%= currentServer %>" data-server1="<%= server1Src %>" data-server2="<%= server2Src %>" class="btn text-secondary bg-secondary-subtle border border-secondary-subtle btn-sm p-2"><i class="bi bi-hdd-stack"></i> Server <%= currentServer === '1' ? '2' : '1' %></a>
+    <% if (server2Src && server2Src.trim() !== '') { -%>
+        <a href="#" id="server-toggle" data-current="<%= currentServer %>" data-server1="<%= server1Src %>" data-server2="<%= server2Src %>" class="btn text-secondary bg-secondary-subtle border border-secondary-subtle btn-sm p-2">
+            <i class="bi bi-hdd-stack"></i> Server <%= currentServer === '1' ? '2' : '1' %>
+        </a>
+    <% } else { -%>
+        <a href="<%= APP_URL %>/watchlist" class="btn text-secondary bg-secondary-subtle border border-secondary-subtle btn-sm p-2"><i class="bi bi-view-list"></i> Watchlist</a>
+    <% } %>
         <a href="<%= nextLink %>" class="btn bg-success border border-success-subtle btn-sm p-2 <%= nextDisabled ? 'disabled' : '' %>">Next <i class="bi bi-caret-right-square"></i></a>
     </div>
 </div>
-<script>
-  (function() {
-    const btn = document.getElementById('server-toggle');
-    const player = document.getElementById('player');
-    if (!btn || !player) return;
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      if (this.dataset.current === '1') {
-        player.src = this.dataset.server2;
-        this.dataset.current = '2';
-        this.innerHTML = '<i class="bi bi-hdd-stack"></i> Server 1';
-      } else {
-        player.src = this.dataset.server1;
-        this.dataset.current = '1';
-        this.innerHTML = '<i class="bi bi-hdd-stack"></i> Server 2';
-      }
-    });
-  })();
-</script>
