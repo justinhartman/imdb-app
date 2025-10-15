@@ -13,6 +13,9 @@
     <meta property="video:release_date" content="<%= data.Released _%>"/>
     <meta property="video:duration" content="<%= data.Runtime _%>"/>
     <meta property="video:tag" content="<%= data.Genre _%>"/>
+<% if (data.Type === 'series') { -%>
+    <meta property="video:series" content="<%= data.Title _%>"/>
+<% } -%>
 <% if (data.imdbRating !== 'N/A') { -%>
     <meta property="video:rating" content="<%= data.imdbRating %>"/>
     <meta property="video:rating:count" content="<%= data.imdbVotes.replace(/,/g,'') %>"/>

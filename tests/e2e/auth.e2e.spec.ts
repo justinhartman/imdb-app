@@ -8,10 +8,8 @@
  * - Logout
  */
 
-import express from 'express';
-import bodyParser from 'body-parser';
-import request from 'supertest';
 import passport from 'passport';
+import { createRouterAgent } from '../utils/routerAgent';
 
 /**
  * Mock Setup:
@@ -46,19 +44,18 @@ jest.mock('../../models/User', () => ({
 jest.mock('../../middleware/dbSession', () => ({
   __esModule: true,
   default: (router: any) => {
-    router.use(bodyParser.urlencoded({ extended: false }));
     router.use((req: any, res: any, next: any) => {
       req.flash = jest.fn();
-      // emulate session via cookie
-      const cookie = String(req.headers.cookie || '');
+      const cookie = String(req.headers?.cookie || '');
       req._authed = cookie.includes('sid=1');
       req.isAuthenticated = () => !!req._authed;
       req.logout = (cb: any) => {
-        // clear fake session cookie
         res.setHeader('Set-Cookie', 'sid=; Max-Age=0');
         req._authed = false;
         cb();
       };
+      res.locals = res.locals || {};
+      res.locals.APP_URL = 'http://app.test';
       next();
     });
   },
@@ -95,85 +92,65 @@ jest.spyOn(passport, 'authenticate').mockImplementation((...args: unknown[]) => 
 import authRouter from '../../routes/auth';
 
 /**
- * Creates an Express application instance for testing
- * - Mocks view rendering to return JSON
- * - Configures authentication routes
- * @returns Express application
- */
-const buildApp = () => {
-  const app = express();
-  app.use((req: any, res: any, next: any) => {
-    res.render = (view: string, data?: any) => res.status(200).json({ view, data });
-    next();
-  });
-  app.use('/user', authRouter);
-  return app;
-};
-
-/**
  * Authentication Flow Test Suite
  */
 describe('auth end to end', () => {
+  beforeEach(() => {
+    for (const key of Object.keys(memUsers)) {
+      delete memUsers[key];
+    }
+  });
+
   test('unauthenticated → register → login → profile redirect and profile view', async () => {
-    const app = buildApp();
-    const agent = request.agent(app);
+    const agent = createRouterAgent(authRouter, '/user');
 
     // Unauthenticated profile should redirect to login
     const r1 = await agent.get('/user/profile');
-    expect(r1.status).toBe(302);
+    expect(r1.statusCode).toBe(302);
     expect(r1.headers.location).toBe('/user/login');
 
     // Visit register page
     const r2 = await agent.get('/user/register');
-    expect(r2.status).toBe(200);
+    expect(r2.statusCode).toBe(200);
     expect(r2.body.view).toBe('register');
 
     // Register user "good"
-    const r3 = await agent
-      .post('/user/register')
-      .type('form')
-      .send({ username: 'good', password: 'secret' });
-    expect(r3.status).toBe(302);
+    const r3 = await agent.post('/user/register', { username: 'good', password: 'secret' });
+    expect(r3.statusCode).toBe(302);
     expect(r3.headers.location).toBe('/user/login');
 
     // Login
-    const r4 = await agent
-      .post('/user/login')
-      .type('form')
-      .send({ username: 'good', password: 'secret' });
-    expect(r4.status).toBe(302);
+    const r4 = await agent.post('/user/login', { username: 'good', password: 'secret' });
+    expect(r4.statusCode).toBe(302);
     expect(r4.headers.location).toBe('/user/profile');
 
     // Access profile after login
     const r5 = await agent.get('/user/profile');
-    expect(r5.status).toBe(200);
+    expect(r5.statusCode).toBe(200);
     expect(r5.body.view).toBe('profile');
   });
 
   test('register → login → profile → logout flow', async () => {
-    const app = buildApp();
-    const agent = request.agent(app);
+    const agent = createRouterAgent(authRouter, '/user');
 
     // Register and login
-    await agent.post('/user/register').type('form').send({ username: 'good', password: 'x' });
-    await agent
-      .post('/user/login')
-      .type('form')
-      .send({ username: 'good', password: 'x' })
-      .expect(302)
-      .expect('Location', '/user/profile');
+    await agent.post('/user/register', { username: 'good', password: 'x' });
+    const loginRes = await agent.post('/user/login', { username: 'good', password: 'x' });
+    expect(loginRes.statusCode).toBe(302);
+    expect(loginRes.headers.location).toBe('/user/profile');
 
     // Confirm profile
-    await agent.get('/user/profile').expect(200);
+    const profileRes = await agent.get('/user/profile');
+    expect(profileRes.statusCode).toBe(200);
 
     // Logout
     const r6 = await agent.get('/user/logout');
-    expect(r6.status).toBe(302);
+    expect(r6.statusCode).toBe(302);
     expect(r6.headers.location).toBe('/');
 
     // After logout, profile should redirect to login
     const r7 = await agent.get('/user/profile');
-    expect(r7.status).toBe(302);
+    expect(r7.statusCode).toBe(302);
     expect(r7.headers.location).toBe('/user/login');
   });
 });

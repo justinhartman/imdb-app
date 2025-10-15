@@ -7,11 +7,19 @@ import asyncHandler from 'express-async-handler';
 import { Response } from 'express';
 
 import appConfig from '../config/app';
-import { fetchOmdbData, fetchAndUpdatePosters, getSeriesDetail } from '../helpers/appHelper';
+import {
+  buildCanonical,
+  buildSources,
+  fetchAndUpdatePosters,
+  fetchOmdbData,
+  getResumeRedirect,
+  getSeriesDetail,
+  upsertSeriesProgress,
+  upsertMovieWatched,
+} from '../helpers/appHelper';
+import { getLatest, invalidateLatest, setLatest } from '../helpers/cache';
 import http from '../helpers/httpClient';
-import History from '../models/History';
 import type { AuthRequest } from '../types/interfaces';
-import { getLatest, setLatest, invalidateLatest } from '../helpers/cache';
 
 /**
  * @namespace appController
@@ -123,27 +131,16 @@ const appController = {
   getView: asyncHandler(async (req: AuthRequest, res: Response) => {
     const query = req.params.q || '';
     const id = req.params.id;
-    const type = req.params.type;
+    const type = req.params.type as 'movie' | 'series';
 
     if (type === 'series') {
       let season = req.params.season;
       let episode = req.params.episode;
 
       if ((!season || !episode) && req.user) {
-        const history = await History.findOne({
-          userId: req.user.id,
-          imdbId: id,
-        });
-        if (history) {
-          const { lastSeason, lastEpisode } = history as any;
-          if (
-            Number.isInteger(lastSeason) &&
-            Number.isInteger(lastEpisode) &&
-            lastSeason > 0 &&
-            lastEpisode > 0
-          ) {
-            return res.redirect(`/view/${id}/series/${lastSeason}/${lastEpisode}`);
-          }
+        const redirectTo = await getResumeRedirect(req.user.id, id);
+        if (redirectTo) {
+          return res.redirect(redirectTo);
         }
       }
 
@@ -151,20 +148,25 @@ const appController = {
       episode = episode || '1';
 
       if (req.user) {
-        await History.findOneAndUpdate(
-          { userId: req.user.id, imdbId: id },
-          { $set: { type: 'series', lastSeason: Number(season), lastEpisode: Number(episode) } },
-          { upsert: true }
-        );
+        await upsertSeriesProgress(req.user.id, id, season, episode);
       }
 
-      const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
-      const canonical = `${res.locals.APP_URL}/view/${id}/${type}/${season}/${episode}`;
+      const { server1Src, server2Src, iframeSrc, currentServer } = buildSources(
+        id,
+        'series',
+        season,
+        episode
+      );
+      const canonical = buildCanonical(res.locals.APP_URL, id, type, season, episode);
       const data = await fetchOmdbData(id, false);
       const seriesDetail = await getSeriesDetail(id, Number(season));
+
       return res.render('view', {
         data,
         iframeSrc,
+        server1Src,
+        server2Src,
+        currentServer,
         query,
         id,
         type,
@@ -176,22 +178,23 @@ const appController = {
       });
     }
 
+    // movie branch
     let watched = false;
     if (req.user) {
-      const history = await History.findOneAndUpdate(
-        { userId: req.user.id, imdbId: id },
-        { $set: { type: 'movie', watched: true } },
-        { upsert: true, new: true }
-      );
+      const history = await upsertMovieWatched(req.user.id, id);
       watched = history?.watched || false;
     }
 
-    const iframeSrc = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
-    const canonical = `${res.locals.APP_URL}/view/${id}/${type}`;
+    const { server1Src, server2Src, iframeSrc, currentServer } = buildSources(id, 'movie');
+    const canonical = buildCanonical(res.locals.APP_URL, id, type);
     const data = await fetchOmdbData(id, false);
+
     res.render('view', {
       data,
       iframeSrc,
+      server1Src,
+      server2Src,
+      currentServer,
       query,
       id,
       type,
