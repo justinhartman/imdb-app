@@ -21,7 +21,7 @@ const httpsAgent = new https.Agent({ keepAlive: false });
  * @property {https.Agent} httpsAgent - HTTPS agent with keep-alive disabled
  */
 const client: AxiosInstance = axios.create({
-  timeout: 10_000,
+  timeout: 10000,
   maxRedirects: 5,
   httpAgent,
   httpsAgent,

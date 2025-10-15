@@ -11,6 +11,7 @@ import { fetchOmdbData, fetchAndUpdatePosters, getSeriesDetail } from '../helper
 import http from '../helpers/httpClient';
 import History from '../models/History';
 import type { AuthRequest } from '../types/interfaces';
+import { getLatest, setLatest, invalidateLatest } from '../helpers/cache';
 
 /**
  * @namespace appController
@@ -58,19 +59,33 @@ const appController = {
     const query = (req.query.q as string) || '';
     const type = (req.query.type as string) || 'movie';
     const canonical = res.locals.APP_URL;
+    const cached = getLatest();
+    if (cached) {
+      return res.render('index', {
+        newMovies: cached.movies,
+        newSeries: cached.series,
+        query,
+        type,
+        canonical,
+        card: res.locals.CARD_TYPE,
+        user: req.user,
+      });
+    }
 
-    const axiosMovieResponse = await http.get(
-      `https://${appConfig.VIDSRC_DOMAIN}/movies/latest/page-1.json`
-    );
+    const [axiosMovieResponse, axiosSeriesResponse] = await Promise.all([
+      http.get(`https://${appConfig.VIDSRC_DOMAIN}/movies/latest/page-1.json`),
+      http.get(`https://${appConfig.VIDSRC_DOMAIN}/tvshows/latest/page-1.json`),
+    ]);
+
     let newMovies = axiosMovieResponse.data.result || [];
-    await fetchAndUpdatePosters(newMovies);
-
-    const axiosSeriesResponse = await http.get(
-      `https://${appConfig.VIDSRC_DOMAIN}/tvshows/latest/page-1.json`
-    );
-
     let newSeries = axiosSeriesResponse.data.result || [];
-    await fetchAndUpdatePosters(newSeries);
+
+    await Promise.all([
+      fetchAndUpdatePosters(newMovies),
+      fetchAndUpdatePosters(newSeries),
+    ]);
+
+    setLatest({ movies: newMovies, series: newSeries });
 
     res.render('index', {
       newMovies,
@@ -81,6 +96,15 @@ const appController = {
       card: res.locals.CARD_TYPE,
       user: req.user,
     });
+  }),
+
+  /**
+   * Invalidates the cached latest movies and series.
+   * Useful for deployments or scheduled cache refreshes.
+   */
+  clearCache: asyncHandler(async (_req: AuthRequest, res: Response) => {
+    invalidateLatest();
+    res.json({ cleared: true });
   }),
 
   /**
@@ -143,7 +167,7 @@ const appController = {
       const currentServer = useMulti ? '2' : '1';
       const canonical = `${res.locals.APP_URL}/view/${id}/${type}/${season}/${episode}`;
       const data = await fetchOmdbData(id, false);
-      const seriesDetail = await getSeriesDetail(id);
+      const seriesDetail = await getSeriesDetail(id, Number(season));
       return res.render('view', {
         data,
         iframeSrc,

@@ -1,27 +1,24 @@
 <%
 const seasonNum = Number(season);
 const episodeNum = Number(episode);
-const totalSeasons = seriesDetail?.totalSeasons || 0;
-const currentSeason = seriesDetail?.seasons?.find(s => s.season === seasonNum) || { episodes: [] };
+const currentSeason = seriesDetail?.currentSeason || { episodes: [] };
 const maxEpisodes = currentSeason.episodes.length;
 let prevDisabled = false;
 let nextDisabled = false;
 let prevLink = `${APP_URL}/view/${id}/${type}/${seasonNum}/${episodeNum - 1}`;
 let nextLink = `${APP_URL}/view/${id}/${type}/${seasonNum}/${episodeNum + 1}`;
 if (episodeNum <= 1) {
-  if (seasonNum > 1) {
-    const prevSeason = seasonNum - 1;
-    const prevSeasonEpisodes = seriesDetail.seasons.find(s => s.season === prevSeason)?.episodes.length || 0;
-    prevLink = `${APP_URL}/view/${id}/${type}/${prevSeason}/${prevSeasonEpisodes}`;
+  if (seriesDetail?.prevSeason) {
+    const prevSeasonEpisodes = seriesDetail.prevSeason.episodes.length || 0;
+    prevLink = `${APP_URL}/view/${id}/${type}/${seriesDetail.prevSeason.season}/${prevSeasonEpisodes}`;
   } else {
     prevDisabled = true;
     prevLink = '#';
   }
 }
 if (episodeNum >= maxEpisodes) {
-  if (seasonNum < totalSeasons) {
-    const nextSeason = seasonNum + 1;
-    nextLink = `${APP_URL}/view/${id}/${type}/${nextSeason}/1`;
+  if (seriesDetail?.nextSeason) {
+    nextLink = `${APP_URL}/view/${id}/${type}/${seriesDetail.nextSeason.season}/1`;
   } else {
     nextDisabled = true;
     nextLink = '#';
