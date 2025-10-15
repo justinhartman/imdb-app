@@ -4,12 +4,12 @@
             <!-- Header Search -->
             <div class="row">
                 <form action="<%= APP_URL %>/search" class="d-md-flex justify-content-center text-center" method="get" name="search">
-                    <div class="col-sm-12 col-md-3">
-                        <a href="<%= (typeof user !== 'undefined' && user) ? APP_URL + '/watchlist' : APP_URL + '/' %>" class="display-5 text-decoration-none me-2 me-md-0 ms-0 ms-lg-2 d-inline-flex d-md-relative" for="q">
+                    <div class="col-sm-12 col-md-3 pt-md-1">
+                        <a href="<%= APP_URL + '/' %>" class="display-5 text-decoration-none me-2 me-md-0 ms-0 ms-lg-2 d-inline-flex d-md-relative" for="q">
                             <img src="<%= APP_URL %>/images/favicons/apple-touch-icon.png" style="width:64px" class="d-none d-md-inline me-2" alt="<%= APP_DESCRIPTION %>>">
                             <img src="<%= APP_URL %>/images/favicons/apple-touch-icon.png" style="width:80px" class="d-inline d-md-none" alt="<%= APP_DESCRIPTION %>>">
-                            <div class="d-md-none d-lg-inline-flex position-relative pt-4 pt-md-0 ps-2 ps-md-0 text-white">
-                                Bin<i class="text-warning fst-normal opacity-50">ger</i>
+                            <div class="d-md-none d-lg-inline-flex position-relative pt-4 pt-md-1 ps-2 ps-md-0 text-white">
+                                <i class="text-warning fst-normal opacity-75">B</i>inger
                                 <h2 class="d-none"><%= APP_NAME %> - <%= APP_DESCRIPTION %></h2>
                             </div>
                         </a>
@@ -18,16 +18,25 @@
                         <div class="row">
                             <div class="col-sm-12 d-inline-flex">
                                 <div class="w-100 btn-group pe-2" role="group" aria-label="Search type selection">
-                                    <input type="text" class="w-100 border border-secondary border-end-0 rounded-start" name="q" id="q"
+                                    <input type="text" class="w-100 border border-secondary border-end-0 rounded-start fs-5" name="q" id="q"
                                        aria-label="Search for your next binge..."
                                        placeholder="Search for your next binge..."
                                        value="<%= query _%>" required>
                                     <input type="radio" class="btn-check" name="type" id="movie" autocomplete="off" value="movie" <%= type === 'movie' ? 'checked' : '' %>>
-                                    <label class="btn btn-outline-warning opacity-75 border border-secondary border-end-0 border-end-0" for="movie">Movie</label>
+                                    <label class="btn btn-outline-warning opacity-75 border border-secondary border-end-0 border-end-0 fs-5" for="movie">
+                                        <i class="d-none d-sm-inline fst-normal">Movie</i>
+                                        <i class="d-inline d-sm-none fst-normal"><i class="bi bi-film"></i></i>
+                                    </label>
                                     <input type="radio" class="btn-check" name="type" id="series" autocomplete="off" value="series" <%= type === 'series' ? 'checked' : '' %>>
-                                    <label class="btn btn-outline-warning opacity-75 border border-secondary border-start-0 rounded-end" for="series">Series</label>
+                                    <label class="btn btn-outline-warning opacity-75 border border-secondary border-start-0 rounded-end fs-5" for="series">
+                                        <i class="d-none d-sm-inline fst-normal">Series</i>
+                                        <i class="d-inline d-sm-none fst-normal"><i class="bi bi-tv"></i></i>
+                                    </label>
                                 </div>
-                                <button type="submit" class="d-inline btn btn-warning opacity-75"><i class="bi-search"></i></button>
+                                <button type="submit" class="d-inline btn bg-warning opacity-75"><i class="bi-search fs-5"></i></button>
+                            <% if (typeof user !== 'undefined' && user) { %>
+                                <a href="<%= APP_URL %>/watchlist" class="btn bg-primary opacity-75 ms-2"><i class="bi-eye-fill fs-5 text-warning"></i></a>
+                            <% } %>
                             </div>
                         </div>
                     </div>
