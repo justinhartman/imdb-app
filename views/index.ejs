@@ -31,7 +31,7 @@
         </div>
         <div class="d-block d-md-none">
             <div class="row">
-                <% newMovies.slice(0,4).forEach(movie => { %>
+                <% newMovies.slice(0,12).forEach(movie => { %>
                     <%-include(`./partials/${card}.ejs`, {
                         url: `${APP_URL}/view/${movie.imdb_id}/movie`,
                         poster: movie.poster,
@@ -66,7 +66,7 @@
         </div>
         <div class="d-block d-md-none">
             <div class="row">
-                <% newSeries.slice(0,4).forEach(series => { %>
+                <% newSeries.slice(0,12).forEach(series => { %>
                     <%-include(`./partials/${card}.ejs`, {
                         url: `${APP_URL}/view/${series.imdb_id}/series`,
                         poster: series.poster,
