@@ -1,25 +1,82 @@
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "<%= data.Type === 'movie' ? 'Movie' : 'TVSeries' -%>",
-          "name": "<%= data.Title %>",
-          "url": "<%= canonical -%>",
-          "image": "<%= data.Poster !== 'N/A' ? data.Poster : `${APP_URL}/images/no-binger.jpg` -%>",
-          "description": "<%= data.Plot -%>",
-          "director": "<%= data.Director -%>",
-          "actor": [<% data.Actors.split(', ').forEach((actor, index, array) => { %>
-              {
-                  "@type": "Person",
-                  "name": "<%= actor -%>"
-              }<% if (index < array.length - 1) { %>,<% } -%>
-        <% }); %>
-            ],
-            "datePublished": "<%= data.Released -%>",
-            "genre": "<%= data.Genre -%>"<% if (data.imdbRating !== 'N/A') { %>,
-            "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "<%= data.imdbRating -%>",
-                "ratingCount": "<%= data.imdbVotes.replace(/,/g, '') -%>"
-            }<% } %>
+<%
+  // ---- Safe helpers ----
+  const isNA = v => !v || v === 'N/A';
+  const splitPeople = v => isNA(v) ? [] : String(v).split(', ').map(n => ({ '@type': 'Person', name: n }));
+  const safeText = v => isNA(v) ? undefined : v;
+  const safeNum  = v => (v === undefined || v === null || v === '' || v === 'N/A') ? undefined : v;
+
+  // ---- Normalised inputs for series (handle movie pages gracefully) ----
+  const seasonParam  = (typeof season  !== 'undefined' && season  !== null) ? Number(season)  : null;
+  const episodeParam = (typeof episode !== 'undefined' && episode !== null) ? Number(episode) : null;
+  const seriesInfo   = (typeof seriesDetail !== 'undefined' && Array.isArray(seriesDetail.seasons)) ? seriesDetail : { seasons: [] };
+
+  const isMovie   = data && data.Type === 'movie';
+  const isEpisode = !isMovie && seasonParam !== null && episodeParam !== null;
+  const isSeries  = !isMovie && !isEpisode;
+
+  const img = !isNA(data.Poster) ? data.Poster : `${APP_URL}/images/no-binger.jpg`;
+
+  // Resolve season/episode objects if present
+  const currentSeason  = isEpisode ? (seriesInfo.seasons.find(se => se.season === seasonParam) || { episodes: [] }) : { episodes: [] };
+  const currentEpisode = isEpisode ? (currentSeason.episodes.find(ep => ep.episode === episodeParam) || {}) : {};
+
+  let node;
+  if (isMovie) {
+    node = {
+      '@context': 'https://schema.org',
+      '@type': 'Movie',
+      name: safeText(data.Title),
+      url: canonical,
+      image: img,
+      description: safeText(data.Plot),
+      director: splitPeople(data.Director),
+      actor: splitPeople(data.Actors),
+      datePublished: safeText(data.Released),
+      genre: safeText(data.Genre)
+    };
+  } else if (isEpisode) {
+    node = {
+      '@context': 'https://schema.org',
+      '@type': 'TVEpisode',
+      name: safeText(currentEpisode.title) || `Episode ${episodeParam}`,
+      url: canonical,
+      image: img,
+      description: safeText(data.Plot),
+      episodeNumber: safeNum(episodeParam),
+      datePublished: safeText(data.Released),
+      actor: splitPeople(data.Actors),
+      director: splitPeople(data.Director),
+      partOfSeason: {
+        '@type': 'TVSeason',
+        seasonNumber: safeNum(seasonParam),
+        url: `${APP_URL}/view/${id}/${type}/${seasonParam}`,
+        partOfSeries: {
+          '@type': 'TVSeries',
+          name: safeText(data.Title),
+          url: `${APP_URL}/view/${id}/${type}`
         }
-    </script>
+        }
+    };
+  } else {
+    node = {
+      '@context': 'https://schema.org',
+      '@type': 'TVSeries',
+      name: safeText(data.Title),
+      url: canonical,
+      image: img,
+      description: safeText(data.Plot),
+      actor: splitPeople(data.Actors),
+      creator: splitPeople(data.Director), // swap to Writer/Creator if you have it
+      genre: safeText(data.Genre)
+    };
+  }
+
+  if ((isMovie || isSeries) && !isNA(data.imdbRating) && !isNA(data.imdbVotes)) {
+    node.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: String(data.imdbRating),
+      ratingCount: String(data.imdbVotes).replace(/,/g, '')
+    };
+  }
+%>
+    <script type="application/ld+json"><%- JSON.stringify(node) %></script>
