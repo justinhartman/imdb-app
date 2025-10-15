@@ -64,7 +64,7 @@ const appUrl: string =
  * @property {string} OMDB_API_KEY - The API key for accessing the OMDb API, essential for the application's functionality
  * @property {string} OMDB_API_URL - The API endpoint for the OMDb API, defaulting to `http://www.omdbapi.com`
  * @property {string} OMDB_IMG_URL - The URL endpoint for fetching images via the OMDb API, defaulting to `http://img.omdbapi.com`
- * @property {string} VIDSRC_DOMAIN - The domain used for the vidsrc player, defaulting to `vidsrc.in` but can be overridden via `process.env.VIDSRC_DOMAIN`
+ * @property {string} VIDSRC_DOMAIN - The domain used for the vidsrc player, defaulting to `vidsrcme.su` but can be overridden via `process.env.VIDSRC_DOMAIN`
  */
 const appConfig = () => {
   return {
@@ -94,8 +94,8 @@ const appConfig = () => {
     OMDB_API_URL: process.env.OMDB_API_URL || 'http://www.omdbapi.com',
     OMDB_IMG_URL: process.env.OMDB_IMG_URL || 'http://img.omdbapi.com',
     // The vidsrc player domain has been prone to be taken down. Use one of the following domains if it's not working:
-    // vidsrc.in, vidsrc.pm, vidsrc.xyz, vidsrc.net
-    VIDSRC_DOMAIN: process.env.VIDSRC_DOMAIN || 'vidsrc.in',
+    // vidsrc-embed.ru, vidsrc-embed.su, vidsrcme.su, vsrc.su
+    VIDSRC_DOMAIN: process.env.VIDSRC_DOMAIN || 'vidsrcme.su',
     // Optional multi-server domain for alternate embeds.
     MULTI_DOMAIN: process.env.MULTI_DOMAIN,
     /* c8 ignore stop */
