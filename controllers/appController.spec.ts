@@ -142,6 +142,7 @@ describe('controllers/appController', () => {
       server1Src: 'https://domain/embed/tv?imdb=tt&season=1&episode=2',
       server2Src: '',
       currentServer: '1',
+      serverPreferenceKey: 'preferredServer',
     }));
   });
 
@@ -162,6 +163,7 @@ describe('controllers/appController', () => {
     expect(res.render).toHaveBeenCalledWith('view', expect.objectContaining({
       season: '1',
       episode: '1',
+      serverPreferenceKey: 'preferredServer',
     }));
   });
 
@@ -186,6 +188,7 @@ describe('controllers/appController', () => {
         server1Src: 'https://domain/embed/movie/tt',
         server2Src: '',
         currentServer: '1',
+        serverPreferenceKey: 'preferredServer',
       })
     );
   });
@@ -200,7 +203,7 @@ describe('controllers/appController', () => {
 
     expect(res.render).toHaveBeenCalledWith(
       'view',
-      expect.objectContaining({ type: 'movie', watched: false })
+      expect.objectContaining({ type: 'movie', watched: false, serverPreferenceKey: 'preferredServer' })
     );
   });
 
@@ -231,7 +234,7 @@ describe('controllers/appController', () => {
     );
     expect(res.render).toHaveBeenCalledWith(
       'view',
-      expect.objectContaining({ season: '1', episode: '1' })
+      expect.objectContaining({ season: '1', episode: '1', serverPreferenceKey: 'preferredServer' })
     );
   });
 
@@ -246,7 +249,7 @@ describe('controllers/appController', () => {
     expect(History.findOneAndUpdate).not.toHaveBeenCalled();
     expect(res.render).toHaveBeenCalledWith(
       'view',
-      expect.objectContaining({ season: '1', episode: '1' })
+      expect.objectContaining({ season: '1', episode: '1', serverPreferenceKey: 'preferredServer' })
     );
   });
 

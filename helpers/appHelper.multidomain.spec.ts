@@ -39,7 +39,7 @@ import { buildSources } from './appHelper';
 
 describe('appHelper buildSources with MULTI_DOMAIN', () => {
   test('series sources prefer multi domain', () => {
-    const result = buildSources('tt123', 'series', '1', '5');
+    const result = buildSources('tt123', 'series', {season: '1', episode: '5'});
     expect(result.server2Src).toBe('https://multi.example/?video_id=tt123&s=1&e=5');
     expect(result.currentServer).toBe('2');
   });
@@ -48,5 +48,15 @@ describe('appHelper buildSources with MULTI_DOMAIN', () => {
     const result = buildSources('tt123', 'movie');
     expect(result.server2Src).toBe('https://multi.example/?video_id=tt123');
     expect(result.currentServer).toBe('2');
+  });
+
+  test('preferred server overrides default when available', () => {
+    const result = buildSources('tt123', 'series', {
+      season: '1',
+      episode: '5',
+      preferredServer: '1',
+    });
+    expect(result.currentServer).toBe('1');
+    expect(result.iframeSrc).toBe('https://domain/embed/tv?imdb=tt123&season=1&episode=5');
   });
 });

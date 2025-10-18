@@ -27,7 +27,6 @@ export const __clearCaches = (): void => {
   seriesCache.clear();
 };
 
-const useMulti = Boolean(appConfig.MULTI_DOMAIN);
 
 /**
  * Constructs parameters object for OMDB API requests.
@@ -206,26 +205,39 @@ const buildCanonical = (
  * @param {string} [episode] - Episode number (required for series)
  * @returns {Object} Object containing source URLs and current server
  */
+export type BuildSourcesOptions = {
+  season?: string;
+  episode?: string;
+  preferredServer?: '1' | '2';
+};
+
 const buildSources = (
   id: string,
   kind: 'movie' | 'series',
-  season?: string,
-  episode?: string
+  options: BuildSourcesOptions = {}
 ) => {
+  const {season, episode, preferredServer} = options;
+
   if (kind === 'series') {
-    const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
-    const server2Src = useMulti
-      ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}&s=${season}&e=${episode}`
+    const seasonParam = season ?? '';
+    const episodeParam = episode ?? '';
+    const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${seasonParam}&episode=${episodeParam}`;
+    const multiDomain = Boolean(appConfig.MULTI_DOMAIN);
+    const server2Src = multiDomain
+      ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}&s=${seasonParam}&e=${episodeParam}`
       : '';
-    const iframeSrc = useMulti ? server2Src : server1Src;
-    const currentServer = useMulti ? '2' : '1';
+    const useSecond = Boolean(server2Src) && preferredServer !== '1';
+    const currentServer = useSecond ? '2' : '1';
+    const iframeSrc = currentServer === '2' && server2Src ? server2Src : server1Src;
     return {server1Src, server2Src, iframeSrc, currentServer};
   }
 
+  const multiDomain = Boolean(appConfig.MULTI_DOMAIN);
   const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
-  const server2Src = useMulti ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}` : '';
-  const iframeSrc = useMulti ? server2Src : server1Src;
-  const currentServer = useMulti ? '2' : '1';
+  const server2Src = multiDomain ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}` : '';
+  const useSecond = Boolean(server2Src) && preferredServer !== '1';
+  const currentServer = useSecond ? '2' : '1';
+  const iframeSrc = currentServer === '2' && server2Src ? server2Src : server1Src;
   return {server1Src, server2Src, iframeSrc, currentServer};
 };
 

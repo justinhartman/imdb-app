@@ -54,6 +54,7 @@ describe('controllers/appController with MULTI_DOMAIN', () => {
         server1Src: 'https://domain/embed/tv?imdb=tt&season=1&episode=1',
         server2Src: 'https://multi/?video_id=tt&s=1&e=1',
         currentServer: '2',
+        serverPreferenceKey: 'preferredServer',
       })
     );
   });
@@ -71,6 +72,47 @@ describe('controllers/appController with MULTI_DOMAIN', () => {
         server1Src: 'https://domain/embed/movie/tt',
         server2Src: 'https://multi/?video_id=tt',
         currentServer: '2',
+        serverPreferenceKey: 'preferredServer',
+      })
+    );
+  });
+
+  test('getView honours preferred server cookie', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    (History.findOneAndUpdate as jest.Mock).mockResolvedValue({ watched: false });
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'movie' },
+      user: { id: 'u1' },
+      headers: { cookie: 'preferredServer=1' },
+    };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
+    await appController.getView(req, res, jest.fn());
+    expect(res.render).toHaveBeenCalledWith(
+      'view',
+      expect.objectContaining({
+        currentServer: '1',
+        iframeSrc: 'https://domain/embed/movie/tt',
+        serverPreferenceKey: 'preferredServer',
+      })
+    );
+  });
+
+  test('getView parses cookie with additional entries', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    (History.findOneAndUpdate as jest.Mock).mockResolvedValue({ watched: false });
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'movie' },
+      user: { id: 'u1' },
+      headers: { cookie: 'foo=bar; preferredServer=2' },
+    };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
+    await appController.getView(req, res, jest.fn());
+    expect(res.render).toHaveBeenCalledWith(
+      'view',
+      expect.objectContaining({
+        currentServer: '2',
+        iframeSrc: 'https://multi/?video_id=tt',
+        serverPreferenceKey: 'preferredServer',
       })
     );
   });
