@@ -4,17 +4,49 @@
     const btn = document.getElementById('server-toggle');
     const player = document.getElementById('player');
     if (!btn || !player) return;
+    const cookieName = btn.dataset.cookieName;
+    const hasServer2 = Boolean(btn.dataset.server2 && btn.dataset.server2.trim());
+
+    const setCookie = (value) => {
+      if (!cookieName) return;
+      document.cookie = `${cookieName}=${value};path=/;max-age=31536000;samesite=lax`;
+    };
+
+    const getCookie = () => {
+      if (!cookieName || !document.cookie) return undefined;
+      const parts = document.cookie.split(';');
+      for (const part of parts) {
+        const [name, val] = part.trim().split('=');
+        if (name === cookieName) {
+          return val === '1' || val === '2' ? val : undefined;
+        }
+      }
+      return undefined;
+    };
+
+    const setServer = (server) => {
+      if (server === '2' && !hasServer2) return;
+      if (server === '2') {
+        player.src = btn.dataset.server2;
+        btn.dataset.current = '2';
+        btn.innerHTML = '<i class="bi bi-hdd-stack"></i> Server 1';
+      } else {
+        player.src = btn.dataset.server1;
+        btn.dataset.current = '1';
+        btn.innerHTML = '<i class="bi bi-hdd-stack"></i> Server 2';
+      }
+    };
+
+    const preferred = getCookie();
+    if (preferred && preferred !== btn.dataset.current) {
+      setServer(preferred);
+    }
+
     btn.addEventListener('click', function(e) {
       e.preventDefault();
-      if (this.dataset.current === '1') {
-        player.src = this.dataset.server2;
-        this.dataset.current = '2';
-        this.innerHTML = '<i class="bi bi-hdd-stack"></i> Server 1';
-      } else {
-        player.src = this.dataset.server1;
-        this.dataset.current = '1';
-        this.innerHTML = '<i class="bi bi-hdd-stack"></i> Server 2';
-      }
+      const next = this.dataset.current === '1' && hasServer2 ? '2' : '1';
+      setServer(next);
+      setCookie(next);
     });
   })();
 </script>

@@ -1,6 +1,11 @@
 import appController from './appController';
 import http from '../helpers/httpClient';
-import { fetchOmdbData, fetchAndUpdatePosters, getSeriesDetail } from '../helpers/appHelper';
+import {
+  fetchOmdbData,
+  fetchAndUpdatePosters,
+  getSeriesDetail,
+  PREFERRED_SERVER_COOKIE,
+} from '../helpers/appHelper';
 import History from '../models/History';
 import { getLatest, setLatest, invalidateLatest } from '../helpers/cache';
 
@@ -124,7 +129,11 @@ describe('controllers/appController', () => {
 
   test('getView renders series view', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
-    const req: any = { params: { q: '', id: 'tt', type: 'series', season: '1', episode: '2' }, user: { id: 'u1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'series', season: '1', episode: '2' },
+      user: { id: 'u1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
 
     await appController.getView(req, res, jest.fn());
@@ -142,13 +151,18 @@ describe('controllers/appController', () => {
       server1Src: 'https://domain/embed/tv?imdb=tt&season=1&episode=2',
       server2Src: '',
       currentServer: '1',
+      preferredServerCookie: PREFERRED_SERVER_COOKIE,
     }));
   });
 
   test('getView defaults season and episode when missing', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
     (History.findOne as jest.Mock).mockResolvedValue(undefined);
-    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: { id: 'u1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'series' },
+      user: { id: 'u1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
 
     await appController.getView(req, res, jest.fn());
@@ -168,7 +182,11 @@ describe('controllers/appController', () => {
   test('getView renders movie view', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
     (History.findOneAndUpdate as jest.Mock).mockResolvedValue({ watched: true });
-    const req: any = { params: { q: '', id: 'tt', type: 'movie' }, user: { id: 'u1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'movie' },
+      user: { id: 'u1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
 
     await appController.getView(req, res, jest.fn());
@@ -186,6 +204,7 @@ describe('controllers/appController', () => {
         server1Src: 'https://domain/embed/movie/tt',
         server2Src: '',
         currentServer: '1',
+        preferredServerCookie: PREFERRED_SERVER_COOKIE,
       })
     );
   });
@@ -193,7 +212,11 @@ describe('controllers/appController', () => {
   test('getView handles missing history on movie view', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
     (History.findOneAndUpdate as jest.Mock).mockResolvedValue(null);
-    const req: any = { params: { q: '', id: 'tt', type: 'movie' }, user: { id: 'u1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'movie' },
+      user: { id: 'u1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
 
     await appController.getView(req, res, jest.fn());
@@ -207,7 +230,11 @@ describe('controllers/appController', () => {
   test('getView redirects to history position for series', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
     (History.findOne as jest.Mock).mockResolvedValue({ lastSeason: 5, lastEpisode: 11 });
-    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: { id: 'u1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'series' },
+      user: { id: 'u1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
 
     await appController.getView(req, res, jest.fn());
@@ -218,7 +245,11 @@ describe('controllers/appController', () => {
   test('getView ignores malformed history and uses defaults', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
     (History.findOne as jest.Mock).mockResolvedValue({ lastSeason: 'abc', lastEpisode: null });
-    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: { id: 'u1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'series' },
+      user: { id: 'u1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
 
     await appController.getView(req, res, jest.fn());
@@ -237,7 +268,10 @@ describe('controllers/appController', () => {
 
   test('getView series without user does not query history', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
-    const req: any = { params: { q: '', id: 'tt', type: 'series' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'series' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
 
     await appController.getView(req, res, jest.fn());
@@ -253,7 +287,11 @@ describe('controllers/appController', () => {
   test('getView propagates errors from History.findOne', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
     (History.findOne as jest.Mock).mockRejectedValue(new Error('fail'));
-    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: { id: 'u1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'series' },
+      user: { id: 'u1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
     const next = jest.fn();
 
@@ -265,7 +303,11 @@ describe('controllers/appController', () => {
   test('getView propagates errors from History.findOneAndUpdate', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
     (History.findOneAndUpdate as jest.Mock).mockRejectedValue(new Error('fail'));
-    const req: any = { params: { q: '', id: 'tt', type: 'movie' }, user: { id: 'u1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'movie' },
+      user: { id: 'u1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
     const next = jest.fn();
 
@@ -276,7 +318,10 @@ describe('controllers/appController', () => {
 
   test('getView movie without user skips history', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
-    const req: any = { params: { q: '', id: 'tt', type: 'movie' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'movie' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
 
     await appController.getView(req, res, jest.fn());

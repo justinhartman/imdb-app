@@ -12,10 +12,12 @@ import {
   buildSources,
   fetchAndUpdatePosters,
   fetchOmdbData,
+  getPreferredServer,
   getResumeRedirect,
   getSeriesDetail,
   upsertSeriesProgress,
   upsertMovieWatched,
+  PREFERRED_SERVER_COOKIE,
 } from '../helpers/appHelper';
 import { getLatest, invalidateLatest, setLatest } from '../helpers/cache';
 import http from '../helpers/httpClient';
@@ -133,6 +135,8 @@ const appController = {
     const id = req.params.id;
     const type = req.params.type as 'movie' | 'series';
 
+    const preferredServer = getPreferredServer(req.headers.cookie);
+
     if (type === 'series') {
       let season = req.params.season;
       let episode = req.params.episode;
@@ -155,7 +159,8 @@ const appController = {
         id,
         'series',
         season,
-        episode
+        episode,
+        preferredServer
       );
       const canonical = buildCanonical(res.locals.APP_URL, id, type, season, episode);
       const data = await fetchOmdbData(id, false);
@@ -175,6 +180,7 @@ const appController = {
         seriesDetail,
         canonical,
         user: req.user,
+        preferredServerCookie: PREFERRED_SERVER_COOKIE,
       });
     }
 
@@ -185,7 +191,13 @@ const appController = {
       watched = history?.watched || false;
     }
 
-    const { server1Src, server2Src, iframeSrc, currentServer } = buildSources(id, 'movie');
+    const { server1Src, server2Src, iframeSrc, currentServer } = buildSources(
+      id,
+      'movie',
+      undefined,
+      undefined,
+      preferredServer
+    );
     const canonical = buildCanonical(res.locals.APP_URL, id, type);
     const data = await fetchOmdbData(id, false);
 
@@ -201,6 +213,7 @@ const appController = {
       canonical,
       user: req.user,
       watched,
+      preferredServerCookie: PREFERRED_SERVER_COOKIE,
     });
   }),
 

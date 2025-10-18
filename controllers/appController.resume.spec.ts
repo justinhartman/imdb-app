@@ -27,7 +27,11 @@ describe('appController getView resume redirect', () => {
   });
 
   test('redirects to resume location when available', async () => {
-    const req: any = { params: { q: '', id: 'tt', type: 'series' }, user: { id: 'user-1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'series' },
+      user: { id: 'user-1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn(), redirect: jest.fn() };
 
     (getResumeRedirect as jest.Mock).mockResolvedValue('/view/tt/series/5/11');

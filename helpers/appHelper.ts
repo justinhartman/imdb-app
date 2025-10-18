@@ -29,6 +29,34 @@ export const __clearCaches = (): void => {
 
 const useMulti = Boolean(appConfig.MULTI_DOMAIN);
 
+export type ServerChoice = '1' | '2';
+
+export const PREFERRED_SERVER_COOKIE = 'preferredServer';
+
+const sanitizeServerChoice = (value?: string): ServerChoice | undefined => {
+  return value === '1' || value === '2' ? value : undefined;
+};
+
+const extractCookieValue = (cookieHeader: string, key: string): string | undefined => {
+  return cookieHeader
+    .split(';')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => part.split('='))
+    .find(([name]) => name === key)?.[1];
+};
+
+const getPreferredServer = (cookieHeader?: string): ServerChoice | undefined => {
+  if (!cookieHeader) return undefined;
+  const value = extractCookieValue(cookieHeader, PREFERRED_SERVER_COOKIE);
+  return sanitizeServerChoice(value);
+};
+
+const determineInitialServer = (preferred?: ServerChoice): ServerChoice => {
+  if (!useMulti) return '1';
+  return preferred ? preferred : '2';
+};
+
 /**
  * Constructs parameters object for OMDB API requests.
  * @param query - Search term for title search or IMDB ID for specific item lookup
@@ -210,22 +238,23 @@ const buildSources = (
   id: string,
   kind: 'movie' | 'series',
   season?: string,
-  episode?: string
+  episode?: string,
+  preferredServer?: ServerChoice
 ) => {
   if (kind === 'series') {
     const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${season}&episode=${episode}`;
     const server2Src = useMulti
       ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}&s=${season}&e=${episode}`
       : '';
-    const iframeSrc = useMulti ? server2Src : server1Src;
-    const currentServer = useMulti ? '2' : '1';
+    const currentServer = determineInitialServer(preferredServer);
+    const iframeSrc = currentServer === '2' && server2Src ? server2Src : server1Src;
     return {server1Src, server2Src, iframeSrc, currentServer};
   }
 
   const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
   const server2Src = useMulti ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}` : '';
-  const iframeSrc = useMulti ? server2Src : server1Src;
-  const currentServer = useMulti ? '2' : '1';
+  const currentServer = determineInitialServer(preferredServer);
+  const iframeSrc = currentServer === '2' && server2Src ? server2Src : server1Src;
   return {server1Src, server2Src, iframeSrc, currentServer};
 };
 
@@ -302,6 +331,7 @@ export {
   buildSources,
   fetchAndUpdatePosters,
   fetchOmdbData,
+  getPreferredServer,
   getResumeRedirect,
   getSeriesDetail,
   upsertMovieWatched,

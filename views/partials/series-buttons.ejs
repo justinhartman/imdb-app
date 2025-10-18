@@ -29,7 +29,7 @@ if (episodeNum >= maxEpisodes) {
     <div class="btn-group mb-2 w-100">
         <a href="<%= prevLink %>" class="btn bg-primary border border-primary-subtle btn-sm p-2 <%= prevDisabled ? 'disabled' : '' %>"><i class="bi bi-caret-left-square"></i> Previous</a>
     <% if (server2Src && server2Src.trim() !== '') { -%>
-        <a href="#" id="server-toggle" data-current="<%= currentServer %>" data-server1="<%= server1Src %>" data-server2="<%= server2Src %>" class="btn text-secondary bg-secondary-subtle border border-secondary-subtle btn-sm p-2">
+        <a href="#" id="server-toggle" data-current="<%= currentServer %>" data-server1="<%= server1Src %>" data-server2="<%= server2Src %>" data-cookie-name="<%= preferredServerCookie %>" class="btn text-secondary bg-secondary-subtle border border-secondary-subtle btn-sm p-2">
             <i class="bi bi-hdd-stack"></i> Server <%= currentServer === '1' ? '2' : '1' %>
         </a>
     <% } else { -%>

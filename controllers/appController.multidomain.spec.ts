@@ -1,4 +1,4 @@
-import { fetchOmdbData, getSeriesDetail } from '../helpers/appHelper';
+import { fetchOmdbData, getSeriesDetail, PREFERRED_SERVER_COOKIE } from '../helpers/appHelper';
 import History from '../models/History';
 
 jest.mock('../helpers/appHelper', () => {
@@ -44,7 +44,11 @@ describe('controllers/appController with MULTI_DOMAIN', () => {
 
   test('getView uses multiembed for series', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
-    const req: any = { params: { q: '', id: 'tt', type: 'series', season: '1', episode: '1' }, user: { id: 'u1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'series', season: '1', episode: '1' },
+      user: { id: 'u1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
     await appController.getView(req, res, jest.fn());
     expect(res.render).toHaveBeenCalledWith(
@@ -54,6 +58,7 @@ describe('controllers/appController with MULTI_DOMAIN', () => {
         server1Src: 'https://domain/embed/tv?imdb=tt&season=1&episode=1',
         server2Src: 'https://multi/?video_id=tt&s=1&e=1',
         currentServer: '2',
+        preferredServerCookie: PREFERRED_SERVER_COOKIE,
       })
     );
   });
@@ -61,7 +66,11 @@ describe('controllers/appController with MULTI_DOMAIN', () => {
   test('getView uses multiembed for movie', async () => {
     (fetchOmdbData as jest.Mock).mockResolvedValue({});
     (History.findOneAndUpdate as jest.Mock).mockResolvedValue({ watched: false });
-    const req: any = { params: { q: '', id: 'tt', type: 'movie' }, user: { id: 'u1' } };
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'movie' },
+      user: { id: 'u1' },
+      headers: { cookie: '' },
+    };
     const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
     await appController.getView(req, res, jest.fn());
     expect(res.render).toHaveBeenCalledWith(
@@ -71,6 +80,29 @@ describe('controllers/appController with MULTI_DOMAIN', () => {
         server1Src: 'https://domain/embed/movie/tt',
         server2Src: 'https://multi/?video_id=tt',
         currentServer: '2',
+        preferredServerCookie: PREFERRED_SERVER_COOKIE,
+      })
+    );
+  });
+
+  test('getView honours preferred server cookie', async () => {
+    (fetchOmdbData as jest.Mock).mockResolvedValue({});
+    (History.findOneAndUpdate as jest.Mock).mockResolvedValue({ watched: false });
+    const req: any = {
+      params: { q: '', id: 'tt', type: 'movie' },
+      user: { id: 'u1' },
+      headers: { cookie: `${PREFERRED_SERVER_COOKIE}=1` },
+    };
+    const res: any = { locals: { APP_URL: 'http://app' }, render: jest.fn() };
+    await appController.getView(req, res, jest.fn());
+    expect(res.render).toHaveBeenCalledWith(
+      'view',
+      expect.objectContaining({
+        iframeSrc: 'https://domain/embed/movie/tt',
+        server1Src: 'https://domain/embed/movie/tt',
+        server2Src: 'https://multi/?video_id=tt',
+        currentServer: '1',
+        preferredServerCookie: PREFERRED_SERVER_COOKIE,
       })
     );
   });

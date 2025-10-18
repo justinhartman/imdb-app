@@ -197,8 +197,23 @@ describe('helpers/appHelper', () => {
       const movieSources = mod.buildSources('tt2', 'movie');
       expect(movieSources.server2Src).toBe('https://multi.example/?video_id=tt2');
       expect(movieSources.currentServer).toBe('2');
+      const preferredMovie = mod.buildSources('tt2', 'movie', undefined, undefined, '1');
+      expect(preferredMovie.iframeSrc).toBe('https://domain/embed/movie/tt2');
+      expect(preferredMovie.currentServer).toBe('1');
+      const preferredSeries = mod.buildSources('tt2', 'series', '1', '3', '1');
+      expect(preferredSeries.iframeSrc).toBe('https://domain/embed/tv?imdb=tt2&season=1&episode=3');
+      expect(preferredSeries.currentServer).toBe('1');
     });
     mockAppConfig.MULTI_DOMAIN = '';
+  });
+
+  test('getPreferredServer reads cookie values safely', () => {
+    expect(helper.getPreferredServer(undefined)).toBeUndefined();
+    expect(helper.getPreferredServer('foo=bar')).toBeUndefined();
+    const cookie = `foo=bar; ${helper.PREFERRED_SERVER_COOKIE}=1; other=value`;
+    expect(helper.getPreferredServer(cookie)).toBe('1');
+    const invalid = `${helper.PREFERRED_SERVER_COOKIE}=3`;
+    expect(helper.getPreferredServer(invalid)).toBeUndefined();
   });
 
   test('useAuth is false when no mongo uri', () => {
