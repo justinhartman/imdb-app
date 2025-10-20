@@ -77,7 +77,7 @@ const buildSources = (
     const server2Src = multiDomain
       ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}&s=${seasonParam}&e=${episodeParam}`
       : '';
-    const useSecond = Boolean(server2Src) && preferredServer !== '1';
+    const useSecond = Boolean(server2Src) && preferredServer === '2';
     const currentServer = useSecond ? '2' : '1';
     const iframeSrc = currentServer === '2' && server2Src ? server2Src : server1Src;
     return {server1Src, server2Src, iframeSrc, currentServer};
@@ -86,7 +86,7 @@ const buildSources = (
   const multiDomain = Boolean(appConfig.MULTI_DOMAIN);
   const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
   const server2Src = multiDomain ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}` : '';
-  const useSecond = Boolean(server2Src) && preferredServer !== '1';
+  const useSecond = Boolean(server2Src) && preferredServer === '2';
   const currentServer = useSecond ? '2' : '1';
   const iframeSrc = currentServer === '2' && server2Src ? server2Src : server1Src;
   return {server1Src, server2Src, iframeSrc, currentServer};

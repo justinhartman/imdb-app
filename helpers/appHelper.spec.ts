@@ -195,16 +195,18 @@ describe('helpers/appHelper', () => {
     expect(sources.iframeSrc).toBe('https://domain/embed/tv?imdb=tt-series&season=&episode=');
   });
 
-  test('buildSources prefers MULTI_DOMAIN sources when configured', () => {
+  test('buildSources exposes MULTI_DOMAIN sources but defaults to vidsrc', () => {
     jest.isolateModules(() => {
       mockAppConfig.MULTI_DOMAIN = 'multi.example';
       const mod = require('./appHelper');
       const seriesSources = mod.buildSources('tt2', 'series', {season: '1', episode: '3'});
       expect(seriesSources.server2Src).toBe('https://multi.example/?video_id=tt2&s=1&e=3');
-      expect(seriesSources.currentServer).toBe('2');
+      expect(seriesSources.currentServer).toBe('1');
+      expect(seriesSources.iframeSrc).toBe('https://domain/embed/tv?imdb=tt2&season=1&episode=3');
       const movieSources = mod.buildSources('tt2', 'movie');
       expect(movieSources.server2Src).toBe('https://multi.example/?video_id=tt2');
-      expect(movieSources.currentServer).toBe('2');
+      expect(movieSources.currentServer).toBe('1');
+      expect(movieSources.iframeSrc).toBe('https://domain/embed/movie/tt2');
     });
     mockAppConfig.MULTI_DOMAIN = '';
   });
