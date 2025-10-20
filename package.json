@@ -14,6 +14,7 @@
   },
   "homepage": "https://binger.uk",
   "scripts": {
+    "deploy": "bun db:migrate && bun start",
     "start": "npx tsx api/index.ts",
     "start:dev": "npx tsx api/index.ts --enable-source-maps --watch",
     "lint": "bun lint:ts && bun lint:ejs",
@@ -26,9 +27,8 @@
     "publish:patch": "npx grunt",
     "publish:minor": "npx grunt minor",
     "publish:major": "npx grunt major",
-    "deploy": "bun db:migrate && bun start",
-    "test": "jest",
-    "test:coverage": "jest --coverage --reporters=jest-junit"
+    "test": "npx jest",
+    "test:coverage": "npx jest --coverage --reporters=jest-junit"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",
