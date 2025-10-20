@@ -38,15 +38,27 @@ jest.mock('../config/app', () => multiConfig);
 import { buildSources } from './appHelper';
 
 describe('appHelper buildSources with MULTI_DOMAIN', () => {
-  test('series sources prefer multi domain', () => {
-    const result = buildSources('tt123', 'series', '1', '5');
+  test('series sources default to vidsrc when no preference is stored', () => {
+    const result = buildSources('tt123', 'series', {season: '1', episode: '5'});
     expect(result.server2Src).toBe('https://multi.example/?video_id=tt123&s=1&e=5');
-    expect(result.currentServer).toBe('2');
+    expect(result.currentServer).toBe('1');
+    expect(result.iframeSrc).toBe('https://domain/embed/tv?imdb=tt123&season=1&episode=5');
   });
 
-  test('movie sources prefer multi domain', () => {
+  test('movie sources default to vidsrc when no preference is stored', () => {
     const result = buildSources('tt123', 'movie');
     expect(result.server2Src).toBe('https://multi.example/?video_id=tt123');
+    expect(result.currentServer).toBe('1');
+    expect(result.iframeSrc).toBe('https://domain/embed/movie/tt123');
+  });
+
+  test('preferred server overrides default when set to multi domain', () => {
+    const result = buildSources('tt123', 'series', {
+      season: '1',
+      episode: '5',
+      preferredServer: '2',
+    });
     expect(result.currentServer).toBe('2');
+    expect(result.iframeSrc).toBe('https://multi.example/?video_id=tt123&s=1&e=5');
   });
 });

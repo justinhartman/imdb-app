@@ -14,9 +14,10 @@
   },
   "homepage": "https://binger.uk",
   "scripts": {
-    "start": "tsx api/index.ts",
-    "start:dev": "tsx api/index.ts --enable-source-maps --watch",
-    "lint": "yarn lint:ts && yarn lint:ejs",
+    "deploy": "bun run db:migrate && bun run start",
+    "start": "npx tsx api/index.ts",
+    "start:dev": "npx tsx api/index.ts --enable-source-maps --watch",
+    "lint": "bun run lint:ts && bun run lint:ejs",
     "lint:ejs": "npx ejslint ./views/*.ejs ./views/**/*.ejs",
     "lint:ts": "npx tsc -p tsconfig.json --noEmit",
     "db:status": "npx migrate-mongo status",
@@ -26,10 +27,8 @@
     "publish:patch": "npx grunt",
     "publish:minor": "npx grunt minor",
     "publish:major": "npx grunt major",
-    "deploy:yarn": "yarn db:migrate && yarn start",
-    "deploy:npm": "npm run db:migrate && npm start",
-    "test": "jest",
-    "test:coverage": "jest --coverage --reporters=jest-junit"
+    "test": "npx jest",
+    "test:coverage": "npx jest --coverage --reporters=jest-junit"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",

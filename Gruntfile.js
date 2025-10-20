@@ -78,8 +78,8 @@ module.exports = function (grunt) {
               grep: '^yarn',
             },
             {
-              title: 'NPM Package Updates',
-              grep: '^npm',
+              title: 'Bun Package Updates',
+              grep: '^bun',
             },
             {
               title: 'Branches Merged',

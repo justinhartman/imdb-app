@@ -21,6 +21,8 @@ import { getLatest, invalidateLatest, setLatest } from '../helpers/cache';
 import http from '../helpers/httpClient';
 import type { AuthRequest } from '../types/interfaces';
 
+const SERVER_PREF_COOKIE = 'preferredServer';
+
 /**
  * @namespace appController
  * @description Controller object containing methods for handling web application routes and views.
@@ -133,6 +135,13 @@ const appController = {
     const id = req.params.id;
     const type = req.params.type as 'movie' | 'series';
 
+    const cookieHeader =
+      typeof req.headers?.cookie === 'string' ? req.headers.cookie : '';
+    const match = cookieHeader.match(
+      new RegExp(`(?:^|;\\s*)${SERVER_PREF_COOKIE}=(1|2)(?:;|$)`)
+    );
+    const preferredServer = match ? (match[1] as '1' | '2') : undefined;
+
     if (type === 'series') {
       let season = req.params.season;
       let episode = req.params.episode;
@@ -151,12 +160,11 @@ const appController = {
         await upsertSeriesProgress(req.user.id, id, season, episode);
       }
 
-      const { server1Src, server2Src, iframeSrc, currentServer } = buildSources(
-        id,
-        'series',
+      const { server1Src, server2Src, iframeSrc, currentServer } = buildSources(id, 'series', {
         season,
-        episode
-      );
+        episode,
+        preferredServer,
+      });
       const canonical = buildCanonical(res.locals.APP_URL, id, type, season, episode);
       const data = await fetchOmdbData(id, false);
       const seriesDetail = await getSeriesDetail(id, Number(season));
@@ -167,6 +175,7 @@ const appController = {
         server1Src,
         server2Src,
         currentServer,
+        serverPreferenceKey: SERVER_PREF_COOKIE,
         query,
         id,
         type,
@@ -185,7 +194,9 @@ const appController = {
       watched = history?.watched || false;
     }
 
-    const { server1Src, server2Src, iframeSrc, currentServer } = buildSources(id, 'movie');
+    const { server1Src, server2Src, iframeSrc, currentServer } = buildSources(id, 'movie', {
+      preferredServer,
+    });
     const canonical = buildCanonical(res.locals.APP_URL, id, type);
     const data = await fetchOmdbData(id, false);
 
@@ -195,6 +206,7 @@ const appController = {
       server1Src,
       server2Src,
       currentServer,
+      serverPreferenceKey: SERVER_PREF_COOKIE,
       query,
       id,
       type,
