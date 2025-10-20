@@ -14,10 +14,10 @@
   },
   "homepage": "https://binger.uk",
   "scripts": {
-    "deploy": "bun db:migrate && bun start",
+    "deploy": "bun run db:migrate && bun run start",
     "start": "npx tsx api/index.ts",
     "start:dev": "npx tsx api/index.ts --enable-source-maps --watch",
-    "lint": "bun lint:ts && bun lint:ejs",
+    "lint": "bun run lint:ts && bun run lint:ejs",
     "lint:ejs": "npx ejslint ./views/*.ejs ./views/**/*.ejs",
     "lint:ts": "npx tsc -p tsconfig.json --noEmit",
     "db:status": "npx migrate-mongo status",
