@@ -187,16 +187,53 @@ describe('helpers/appHelper', () => {
     expect(sources.currentServer).toBe('1');
   });
 
+  test('buildSources fills blank season and episode for series without params', () => {
+    const sources = helper.buildSources('tt-series', 'series');
+    expect(sources.server1Src).toBe('https://domain/embed/tv?imdb=tt-series&season=&episode=');
+    expect(sources.server2Src).toBe('');
+    expect(sources.currentServer).toBe('1');
+    expect(sources.iframeSrc).toBe('https://domain/embed/tv?imdb=tt-series&season=&episode=');
+  });
+
   test('buildSources prefers MULTI_DOMAIN sources when configured', () => {
     jest.isolateModules(() => {
       mockAppConfig.MULTI_DOMAIN = 'multi.example';
       const mod = require('./appHelper');
-      const seriesSources = mod.buildSources('tt2', 'series', '1', '3');
+      const seriesSources = mod.buildSources('tt2', 'series', {season: '1', episode: '3'});
       expect(seriesSources.server2Src).toBe('https://multi.example/?video_id=tt2&s=1&e=3');
       expect(seriesSources.currentServer).toBe('2');
       const movieSources = mod.buildSources('tt2', 'movie');
       expect(movieSources.server2Src).toBe('https://multi.example/?video_id=tt2');
       expect(movieSources.currentServer).toBe('2');
+    });
+    mockAppConfig.MULTI_DOMAIN = '';
+  });
+
+  test('buildSources honours preferred server when provided', () => {
+    jest.isolateModules(() => {
+      mockAppConfig.MULTI_DOMAIN = 'multi.example';
+      const mod = require('./appHelper');
+      const movieSources = mod.buildSources('tt2', 'movie', {preferredServer: '1'});
+      expect(movieSources.currentServer).toBe('1');
+      expect(movieSources.iframeSrc).toBe('https://domain/embed/movie/tt2');
+      const seriesSources = mod.buildSources('tt2', 'series', {
+        season: '2',
+        episode: '5',
+        preferredServer: '1',
+      });
+      expect(seriesSources.currentServer).toBe('1');
+      expect(seriesSources.iframeSrc).toBe('https://domain/embed/tv?imdb=tt2&season=2&episode=5');
+    });
+    mockAppConfig.MULTI_DOMAIN = '';
+  });
+
+  test('buildSources keeps preferred server 2 when provided', () => {
+    jest.isolateModules(() => {
+      mockAppConfig.MULTI_DOMAIN = 'multi.example';
+      const mod = require('./appHelper');
+      const movieSources = mod.buildSources('tt2', 'movie', {preferredServer: '2'});
+      expect(movieSources.currentServer).toBe('2');
+      expect(movieSources.iframeSrc).toBe('https://multi.example/?video_id=tt2');
     });
     mockAppConfig.MULTI_DOMAIN = '';
   });
