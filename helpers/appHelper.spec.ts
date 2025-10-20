@@ -187,6 +187,14 @@ describe('helpers/appHelper', () => {
     expect(sources.currentServer).toBe('1');
   });
 
+  test('buildSources fills blank season and episode for series without params', () => {
+    const sources = helper.buildSources('tt-series', 'series');
+    expect(sources.server1Src).toBe('https://domain/embed/tv?imdb=tt-series&season=&episode=');
+    expect(sources.server2Src).toBe('');
+    expect(sources.currentServer).toBe('1');
+    expect(sources.iframeSrc).toBe('https://domain/embed/tv?imdb=tt-series&season=&episode=');
+  });
+
   test('buildSources prefers MULTI_DOMAIN sources when configured', () => {
     jest.isolateModules(() => {
       mockAppConfig.MULTI_DOMAIN = 'multi.example';
