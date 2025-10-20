@@ -19,8 +19,8 @@ jobs:
           fetch-depth: 0
       - name: Setup Bun package manager
         uses: oven-sh/setup-bun@v2
-          with:
-            bun-version-file: ".bun-version"
+        with:
+          bun-version-file: ".bun-version"
       - name: Install production dependencies
         run: bun install --production --frozen-lockfile
       - name: Run tests with coverage
