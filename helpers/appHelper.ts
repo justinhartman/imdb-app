@@ -27,6 +27,70 @@ export const __clearCaches = (): void => {
   seriesCache.clear();
 };
 
+export type BuildSourcesOptions = {
+  season?: string;
+  episode?: string;
+  preferredServer?: '1' | '2';
+};
+
+/**
+ * Builds canonical URL for a movie/series.
+ * @param {string} appUrl - Base application URL
+ * @param {string} id - IMDB ID of the movie/show
+ * @param {string} type - Type of content ('movie' or 'series')
+ * @param {string} [season] - Season number (for series)
+ * @param {string} [episode] - Episode number (for series)
+ * @returns {string} Canonical URL for the content
+ */
+const buildCanonical = (
+  appUrl: string,
+  id: string,
+  type: string,
+  season?: string,
+  episode?: string
+) => {
+  return season && episode
+    ? `${appUrl}/view/${id}/${type}/${season}/${episode}`
+    : `${appUrl}/view/${id}/${type}`;
+};
+
+/**
+ * Builds video source URLs for movie/series iframe embedding.
+ * @param {string} id - IMDB ID of the movie/show
+ * @param {'movie' | 'series'} kind - Type of content ('movie' or 'series')
+ * @param {string} [season] - Season number (required for series)
+ * @param {string} [episode] - Episode number (required for series)
+ * @returns {Object} Object containing source URLs and current server
+ */
+const buildSources = (
+  id: string,
+  kind: 'movie' | 'series',
+  options: BuildSourcesOptions = {}
+) => {
+  const {season, episode, preferredServer} = options;
+
+  if (kind === 'series') {
+    const seasonParam = season ?? '';
+    const episodeParam = episode ?? '';
+    const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${seasonParam}&episode=${episodeParam}`;
+    const multiDomain = Boolean(appConfig.MULTI_DOMAIN);
+    const server2Src = multiDomain
+      ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}&s=${seasonParam}&e=${episodeParam}`
+      : '';
+    const useSecond = Boolean(server2Src) && preferredServer !== '1';
+    const currentServer = useSecond ? '2' : '1';
+    const iframeSrc = currentServer === '2' && server2Src ? server2Src : server1Src;
+    return {server1Src, server2Src, iframeSrc, currentServer};
+  }
+
+  const multiDomain = Boolean(appConfig.MULTI_DOMAIN);
+  const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
+  const server2Src = multiDomain ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}` : '';
+  const useSecond = Boolean(server2Src) && preferredServer !== '1';
+  const currentServer = useSecond ? '2' : '1';
+  const iframeSrc = currentServer === '2' && server2Src ? server2Src : server1Src;
+  return {server1Src, server2Src, iframeSrc, currentServer};
+};
 
 /**
  * Constructs parameters object for OMDB API requests.
@@ -174,71 +238,6 @@ const getSeriesDetail = async (id: string, season: number): Promise<SeriesDetail
     ...(prevSeason && { prevSeason }),
     ...(nextSeason && { nextSeason }),
   };
-};
-
-/**
- * Builds canonical URL for a movie/series.
- * @param {string} appUrl - Base application URL
- * @param {string} id - IMDB ID of the movie/show
- * @param {string} type - Type of content ('movie' or 'series')
- * @param {string} [season] - Season number (for series)
- * @param {string} [episode] - Episode number (for series)
- * @returns {string} Canonical URL for the content
- */
-const buildCanonical = (
-  appUrl: string,
-  id: string,
-  type: string,
-  season?: string,
-  episode?: string
-) => {
-  return season && episode
-    ? `${appUrl}/view/${id}/${type}/${season}/${episode}`
-    : `${appUrl}/view/${id}/${type}`;
-};
-
-/**
- * Builds video source URLs for movie/series iframe embedding.
- * @param {string} id - IMDB ID of the movie/show
- * @param {'movie' | 'series'} kind - Type of content ('movie' or 'series')
- * @param {string} [season] - Season number (required for series)
- * @param {string} [episode] - Episode number (required for series)
- * @returns {Object} Object containing source URLs and current server
- */
-export type BuildSourcesOptions = {
-  season?: string;
-  episode?: string;
-  preferredServer?: '1' | '2';
-};
-
-const buildSources = (
-  id: string,
-  kind: 'movie' | 'series',
-  options: BuildSourcesOptions = {}
-) => {
-  const {season, episode, preferredServer} = options;
-
-  if (kind === 'series') {
-    const seasonParam = season ?? '';
-    const episodeParam = episode ?? '';
-    const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/tv?imdb=${id}&season=${seasonParam}&episode=${episodeParam}`;
-    const multiDomain = Boolean(appConfig.MULTI_DOMAIN);
-    const server2Src = multiDomain
-      ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}&s=${seasonParam}&e=${episodeParam}`
-      : '';
-    const useSecond = Boolean(server2Src) && preferredServer !== '1';
-    const currentServer = useSecond ? '2' : '1';
-    const iframeSrc = currentServer === '2' && server2Src ? server2Src : server1Src;
-    return {server1Src, server2Src, iframeSrc, currentServer};
-  }
-
-  const multiDomain = Boolean(appConfig.MULTI_DOMAIN);
-  const server1Src = `https://${appConfig.VIDSRC_DOMAIN}/embed/movie/${id}`;
-  const server2Src = multiDomain ? `https://${appConfig.MULTI_DOMAIN}/?video_id=${id}` : '';
-  const useSecond = Boolean(server2Src) && preferredServer !== '1';
-  const currentServer = useSecond ? '2' : '1';
-  const iframeSrc = currentServer === '2' && server2Src ? server2Src : server1Src;
-  return {server1Src, server2Src, iframeSrc, currentServer};
 };
 
 /**
