@@ -17,10 +17,12 @@ jest.mock('../config/db', () => connectMock);
 
 const appRouter = 'appRouter';
 const authRouter = 'authRouter';
+const healthRouter = 'healthRouter';
 const watchlistRouter = 'watchlistRouter';
 
 jest.mock('../routes/app', () => appRouter);
 jest.mock('../routes/auth', () => authRouter);
+jest.mock('../routes/health', () => healthRouter);
 jest.mock('../routes/watchlist', () => watchlistRouter);
 
 const baseConfig = {
@@ -50,6 +52,7 @@ describe('api/index', () => {
     expect(res.locals.CARD_TYPE).toBe('card-add');
     expect(connectMock).toHaveBeenCalled();
     expect(app.use).toHaveBeenCalledWith('/', appRouter);
+    expect(app.use).toHaveBeenCalledWith('/health', healthRouter);
     expect(app.use).toHaveBeenCalledWith('/user', authRouter);
     expect(app.use).toHaveBeenCalledWith('/watchlist', watchlistRouter);
     expect(app.listen).toHaveBeenCalled();
@@ -65,6 +68,7 @@ describe('api/index', () => {
     expect(res.locals.CARD_TYPE).toBe('card');
     expect(connectMock).not.toHaveBeenCalled();
     expect(app.use).toHaveBeenCalledWith('/', appRouter);
+    expect(app.use).toHaveBeenCalledWith('/health', healthRouter);
     expect(app.use).not.toHaveBeenCalledWith('/user', authRouter);
   });
 });
