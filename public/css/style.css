@@ -26,6 +26,9 @@ a.btn-primary:hover {
     display: flex;
     flex-direction: column;
 }
+.series-layout.cinema-mode {
+    gap: 1rem;
+}
 
 /* Home page scrolling containers with buttons. */
 .scroll-row {
@@ -63,6 +66,10 @@ a.btn-primary:hover {
             "seasons episodes"
             "info episodes";
         column-gap: 1rem;
+    }
+    .series-layout.cinema-mode {
+        display: flex;
+        flex-direction: column;
     }
     .series-player { grid-area: player; }
     .series-episodes { grid-area: episodes; }

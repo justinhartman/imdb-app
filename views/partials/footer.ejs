@@ -91,5 +91,27 @@
       applyServer(next);
     });
   })();
+
+  (function() {
+    const cinemaToggle = document.getElementById('cinema-toggle');
+    const seriesLayout = document.querySelector('.series-layout');
+    if (!cinemaToggle || !seriesLayout) return;
+
+    const updateCinemaToggle = (enabled) => {
+      cinemaToggle.innerHTML = `<i class="bi bi-camera-reels"></i> ${enabled ? 'Cinema Off' : 'Cinema On'}`;
+      cinemaToggle.classList.toggle('btn-warning', enabled);
+      cinemaToggle.classList.toggle('text-dark', enabled);
+      cinemaToggle.classList.toggle('btn-outline-warning', !enabled);
+      seriesLayout.classList.toggle('cinema-mode', enabled);
+    };
+
+    updateCinemaToggle(seriesLayout.classList.contains('cinema-mode'));
+
+    cinemaToggle.addEventListener('click', (event) => {
+      event.preventDefault();
+      const enableCinema = !seriesLayout.classList.contains('cinema-mode');
+      updateCinemaToggle(enableCinema);
+    });
+  })();
 </script>
 </html>
