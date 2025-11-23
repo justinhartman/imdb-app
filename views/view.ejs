@@ -60,12 +60,8 @@
                 <iframe id="player" src="<%= iframeSrc %>" referrerpolicy="origin" allow="autoplay; fullscreen" class="w-100"></iframe>
             </div>
         </div>
-        <div class="series-episodes d-flex flex-wrap flex-md-column mt-2 mt-md-0">
+        <div class="series-controls mt-2 mt-md-0">
             <%- include('./partials/series-buttons.ejs') -%>
-            <% const currentSeason = seriesDetail.currentSeason || { episodes: [] }; %>
-            <% currentSeason.episodes.forEach(ep => { %>
-                <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${ep.episode}` %>" class="btn btn-outline-info btn-sm text-start m-1 <%= Number(episode) === ep.episode ? 'active' : '' %>"><%= ep.episode %>. <%= ep.title || `Episode ${ep.episode}` %></a>
-            <% }) %>
         </div>
         <div class="series-seasons d-flex flex-wrap mt-2 h-25">
             <% for (let s = 1; s <= seriesDetail.totalSeasons; s++) { %>
@@ -94,6 +90,12 @@
             </div>
         </div>
         <% } -%>
+        <div class="series-episodes d-flex flex-wrap flex-md-column mt-2 mt-md-0">
+            <% const currentSeason = seriesDetail.currentSeason || { episodes: [] }; %>
+            <% currentSeason.episodes.forEach(ep => { %>
+                <a href="<%= `${APP_URL}/view/${id}/${type}/${season}/${ep.episode}` %>" class="btn btn-outline-info btn-sm text-start m-1 <%= Number(episode) === ep.episode ? 'active' : '' %>"><%= ep.episode %>. <%= ep.title || `Episode ${ep.episode}` %></a>
+            <% }) %>
+        </div>
     </div>
     <% } else { %>
     <div class="row">

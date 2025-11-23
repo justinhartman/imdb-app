@@ -26,6 +26,9 @@ a.btn-primary:hover {
     display: flex;
     flex-direction: column;
 }
+.series-controls {
+    width: 100%;
+}
 
 /* Home page scrolling containers with buttons. */
 .scroll-row {
@@ -60,11 +63,22 @@ a.btn-primary:hover {
         grid-template-columns: 2fr 1fr;
         grid-template-areas:
             "player episodes"
+            "controls episodes"
             "seasons episodes"
             "info episodes";
         column-gap: 1rem;
     }
+    .series-layout.cinema-mode {
+        grid-template-columns: 3fr 2fr;
+        grid-template-areas:
+            "player player"
+            "controls controls"
+            "seasons episodes"
+            "info episodes";
+        row-gap: 1rem;
+    }
     .series-player { grid-area: player; }
+    .series-controls { grid-area: controls; }
     .series-episodes { grid-area: episodes; }
     .series-seasons { grid-area: seasons; }
     .series-info { grid-area: info; }

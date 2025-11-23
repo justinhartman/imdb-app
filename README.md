@@ -68,12 +68,12 @@ To install and set up the basic project, follow these steps:
 
 1. Clone the repository to your local machine.
 2. Navigate to the project directory in your terminal.
-3. Install the required dependencies by running `yarn install`.
+3. Install the required dependencies by running `bun install`.
 4. Rename `.env.example` to simply `.env` in the project root directory and change the following lines:
    - [ ] `OMDB_API_KEY=your_api_key_here` - replace `your_api_key_here` with your actual OMDB API key.
    - [ ] `API_PORT=3000` - replace `3000` with the port you want the node server to run on. 
    - [ ] `APP_URL=binger.uk` - replace `binger.uk` with your website/app's live URL.
-5. Start the application by running `yarn start`.
+5. Start the application by running `bun start`.
 
 ### Nginx and Systemd Server Setup
 
@@ -98,8 +98,8 @@ To get the authentication and user functionality working, make sure you've follo
 Application and then follow these steps.
 
 1. Install and configure MongoDB. There are detailed instructions here:
-   - [Install for Debian Bookworm](./docs/mongodb/INSTALL_DEBIAN.md) found at `./docs/mongodb/INSTALL_DEBIAN.md`
-   - [Install for Ubuntu 20.04](./docs/mongodb/INSTALL_UBUNTU.md) found at `./docs/mongodb/INSTALL_UBUNTU.md` - note 
+   - [Install for Debian Bookworm][install-bookworm] found at `./docs/mongodb/INSTALL_DEBIAN.md`
+   - [Install for Ubuntu 20.04][install-ubuntu] found at `./docs/mongodb/INSTALL_UBUNTU.md` - note 
      that these instructions come from ChatGPT and I haven't tested them.
      I have a Debian server so please correct the instructions if you find any are incorrect and submit a PR.
 
@@ -127,7 +127,7 @@ Application and then follow these steps.
 3. You need to run the MongoDB migrations once you've added your MongoDB details to your `.env` file. 
    Open up a terminal and in the project root run the following:
    ```bash
-   yarn db:migrate
+   bun db:migrate
    ```
    Or if you are using NPM:
    ```bash
@@ -135,7 +135,7 @@ Application and then follow these steps.
    ```
 
 4. With the MongoDB collection now migrated, you can begin using your app. Simply restart your node server so your 
-   latest configs are loaded. If you've used the [systemd service file](./system/systemd/binger.service) I've supplied 
+   latest configs are loaded. If you've used the [systemd service file][service] I've supplied 
    at `./system/systemd/binger.service` then all you need to do is restart the service with:
    ```bash
    sudo systemctl restart binger.service
@@ -148,21 +148,21 @@ Application and then follow these steps.
 
 [![code coverage][codecov-ice]][codecov-lnk]
 
-- Run `yarn test` to execute the test suite.
-- Run `yarn test:coverage` to generate coverage for the entire project. A summary will be printed to the console and full reports will be written to the `coverage/` folder (HTML, lcov, text).
+- Run `bun run test` to execute the test suite.
+- Run `bun test:coverage` to generate coverage for the entire project. A summary will be printed to the console and full reports will be written to the `coverage/` folder (HTML, lcov, text).
 
 ## Linting
 
-- Run `yarn lint` to type-check all TypeScript files using the TypeScript compiler in no-emit mode and lint EJS templates.
-- Run `yarn lint:ts` to type-check only the TypeScript files.
-- Run `yarn lint:ejs` to lint EJS templates.
+- Run `bun lint` to type-check all TypeScript files using the TypeScript compiler in no-emit mode and lint EJS templates.
+- Run `bun lint:ts` to type-check only the TypeScript files.
+- Run `bun lint:ejs` to lint EJS templates.
 
 ## OMDb API
 
-Included in this repository is a [RapidAPI](https://rapidapi.com) file created by the macOS app RapidAPI which is free.
+Included in this repository is a [RapidAPI][rapidapi] file created by the macOS app RapidAPI which is free.
 There is also a VSCode extension which should be able to work with this file but YMMV.
 
-The file is located at [/docs/api/OMDb_API.paw](/docs/api/OMDb_API.paw) and contains a working implementation of the 
+The file is located at [/docs/api/OMDb_API.paw][pawapi] and contains a working implementation of the 
 OMDb API used in this project. Open the file and begin testing the API to see responses.
 
 ## Known Issues
@@ -223,3 +223,8 @@ I want a way to kill this because there's known malware in these popups!
 [badge-relcom]: https://img.shields.io/github/commits-since/justinhartman/imdb-app/latest
 [badge-tots]: https://img.shields.io/github/commit-activity/t/justinhartman/imdb-app
 [badge-reldate]: https://img.shields.io/github/release-date/justinhartman/imdb-app
+[install-bookworm]: ./docs/mongodb/INSTALL_DEBIAN.md
+[install-ubuntu]: ./docs/mongodb/INSTALL_UBUNTU.md
+[pawapi]: /docs/api/OMDb_API.paw
+[rapidapi]: https://rapidapi.com
+[service]: ./system/systemd/binger.service
