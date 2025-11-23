@@ -31,7 +31,7 @@ if (episodeNum >= maxEpisodes) {
 <div id="series-buttons" class="px-1 w-100">
     <div class="btn-group mb-2 w-100">
         <a href="<%= prevLink %>" class="btn bg-primary border border-primary-subtle btn-sm p-2 <%= prevDisabled ? 'disabled' : '' %>"><i class="bi bi-caret-left-square"></i> Previous</a>
-        <button type="button" id="cinema-toggle" class="btn btn-outline-warning btn-sm p-2">
+        <button type="button" id="cinema-toggle" class="btn btn-sm p-2 bg-info-subtle border border-gray-subtle">
             <i class="bi bi-camera-reels"></i> Cinema On
         </button>
     <% if (server2Src && server2Src.trim() !== '') { -%>

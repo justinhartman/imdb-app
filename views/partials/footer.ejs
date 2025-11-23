@@ -99,9 +99,9 @@
 
     const updateCinemaToggle = (enabled) => {
       cinemaToggle.innerHTML = `<i class="bi bi-camera-reels"></i> ${enabled ? 'Cinema Off' : 'Cinema On'}`;
-      cinemaToggle.classList.toggle('btn-warning', enabled);
+      cinemaToggle.classList.toggle('bg-info', enabled);
       cinemaToggle.classList.toggle('text-dark', enabled);
-      cinemaToggle.classList.toggle('btn-outline-warning', !enabled);
+      cinemaToggle.classList.toggle('bg-info-subtle', !enabled);
       seriesLayout.classList.toggle('cinema-mode', enabled);
     };
 
