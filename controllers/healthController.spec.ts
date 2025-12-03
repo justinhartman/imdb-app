@@ -20,7 +20,7 @@ describe('checkDomainHealth', () => {
   });
 
   test('returns error when domain is not configured', async () => {
-    const result = await checkDomainHealth('VIDSRC_DOMAIN');
+    const result = await checkDomainHealth('VIDSRC_DOMAIN', undefined);
     expect(result).toEqual({
       name: 'VIDSRC_DOMAIN',
       status: 'error',
@@ -67,6 +67,12 @@ describe('checkDomainHealth', () => {
 describe('healthController', () => {
   const createRes = () => {
     const res: Partial<Response> = {};
+    res.statusCode = 200;
+    res.status = jest.fn().mockImplementation((code: number) => {
+      res.statusCode = code;
+      return res;
+    });
+    res.set = jest.fn().mockReturnValue(res);
     res.json = jest.fn().mockReturnValue(res);
     return res as Response;
   };
@@ -84,9 +90,16 @@ describe('healthController', () => {
       .mockResolvedValueOnce({ status: 503 } as any);
 
     const res = createRes();
-    await healthController.getEmbedDomains({} as Request, res);
-
+    await healthController.getEmbedDomains({ query: {} } as unknown as Request, res);
+    expect(res.set).toHaveBeenCalledWith({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+      'Surrogate-Control': 'no-store',
+    });
+    expect(res.status).toHaveBeenCalledWith(503);
     expect(res.json).toHaveBeenCalledWith({
+      status: 'error',
       domains: [
         {
           name: 'VIDSRC_DOMAIN',
@@ -109,6 +122,13 @@ describe('healthController', () => {
     mockedHttpClient.get.mockResolvedValue({ status: 301 } as any);
     const res = createRes();
     await healthController.getAppUrl({} as Request, res);
+    expect(res.set).toHaveBeenCalledWith({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+      'Surrogate-Control': 'no-store',
+    });
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       name: 'APP_URL',
       domain: 'https://app.example',
@@ -122,9 +142,11 @@ describe('healthController', () => {
     mockedHttpClient.get.mockResolvedValue({ status: 200 } as any);
 
     const res = createRes();
-    await healthController.getEmbedDomains({} as Request, res);
+    await healthController.getEmbedDomains({ query: {} } as unknown as Request, res);
 
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
+      status: 'success',
       domains: [
         {
           name: 'VIDSRC_DOMAIN',
@@ -132,12 +154,70 @@ describe('healthController', () => {
           status: 'success',
           httpStatus: 200,
         },
+      ],
+    });
+  });
+
+  test('getEmbedDomains rejects multi target when MULTI_DOMAIN is not configured', async () => {
+    (appConfig as any).MULTI_DOMAIN = undefined;
+    const res = createRes();
+
+    await healthController.getEmbedDomains({ query: { target: 'multi' } } as unknown as Request, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'error',
+      message: 'Target not configured',
+      domains: [],
+    });
+  });
+
+  test('getEmbedDomains filters by target query and returns 200 when healthy', async () => {
+    mockedHttpClient.get.mockResolvedValue({ status: 200 } as any);
+
+    const res = createRes();
+    await healthController.getEmbedDomains({ query: { target: 'vidsrc' } } as unknown as Request, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'success',
+      domains: [
         {
-          name: 'MULTI_DOMAIN',
-          status: 'error',
-          message: 'Domain not configured',
+          name: 'VIDSRC_DOMAIN',
+          domain: 'vidsrc.example',
+          status: 'success',
+          httpStatus: 200,
         },
       ],
+    });
+  });
+
+  test('getEmbedDomains rejects invalid target', async () => {
+    const res = createRes();
+
+    await healthController.getEmbedDomains({ query: { target: 'unknown' } } as unknown as Request, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'error',
+      message: 'Invalid target',
+      domains: [],
+    });
+  });
+
+  test('getAppUrl returns 503 when app url is unhealthy', async () => {
+    mockedHttpClient.get.mockResolvedValue({ status: 500 } as any);
+    const res = createRes();
+
+    await healthController.getAppUrl({} as Request, res);
+
+    expect(res.status).toHaveBeenCalledWith(503);
+    expect(res.json).toHaveBeenCalledWith({
+      name: 'APP_URL',
+      domain: 'https://app.example',
+      status: 'error',
+      httpStatus: 500,
+      message: 'Received status code 500',
     });
   });
 });

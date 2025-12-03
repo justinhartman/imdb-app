@@ -18,13 +18,13 @@ export interface DomainHealthResult {
   message?: string;
 }
 
-const normalizeUrl = (domain: string): string => {
+const normaliseUrl = (domain: string): string => {
   return /^https?:\/\//i.test(domain) ? domain : `https://${domain}`;
 };
 
 export const checkDomainHealth = async (
   name: string,
-  domain?: string
+  domain: string | undefined
 ): Promise<DomainHealthResult> => {
   if (!domain) {
     return {
@@ -35,7 +35,7 @@ export const checkDomainHealth = async (
   }
 
   try {
-    const response = await httpClient.get(normalizeUrl(domain), {
+    const response = await httpClient.get(normaliseUrl(domain), {
       maxRedirects: 0,
       /* c8 ignore next */
       validateStatus: () => true,
@@ -72,6 +72,19 @@ export const checkDomainHealth = async (
   }
 };
 
+const isHealthy = (results: DomainHealthResult[]): boolean => {
+  return results.every((result) => result.status === 'success');
+};
+
+const setNoCacheHeaders = (res: Response): void => {
+  res.set({
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+    Pragma: 'no-cache',
+    Expires: '0',
+    'Surrogate-Control': 'no-store',
+  });
+};
+
 const healthController = {
   /**
    * Checks the configured embed domains and returns their reachability status.
@@ -79,13 +92,43 @@ const healthController = {
    * @param {Response} res - Express response object.
    * @returns {Promise<Response>} JSON response containing domain health information.
    */
-  async getEmbedDomains(_req: Request, res: Response): Promise<Response> {
-    const domains = await Promise.all([
-      checkDomainHealth('VIDSRC_DOMAIN', appConfig.VIDSRC_DOMAIN),
-      checkDomainHealth('MULTI_DOMAIN', appConfig.MULTI_DOMAIN),
-    ]);
+  async getEmbedDomains(req: Request, res: Response): Promise<Response> {
+    setNoCacheHeaders(res);
+    const target = typeof req.query.target === 'string' ? req.query.target.toLowerCase() : undefined;
 
-    return res.json({ domains });
+    // Return 400 if there is no `MULTI_DOMAIN` configured
+    if (target === 'multi' && !appConfig.MULTI_DOMAIN) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Target not configured',
+        domains: [],
+      });
+    }
+
+    const checks: Array<Promise<DomainHealthResult>> = [];
+
+    if (!target || target === 'vidsrc') {
+      checks.push(checkDomainHealth('VIDSRC_DOMAIN', appConfig.VIDSRC_DOMAIN));
+    }
+
+    if (!target || target === 'multi') {
+      // This makes sure we make this optional as there will be scenarios where MULTI_DOMAIN isn't configured
+      if (appConfig.MULTI_DOMAIN) {
+        checks.push(checkDomainHealth('MULTI_DOMAIN', appConfig.MULTI_DOMAIN));
+      }
+    }
+
+    if (checks.length === 0) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid target',
+        domains: [],
+      });
+    }
+
+    const domains = await Promise.all(checks);
+    const healthy = isHealthy(domains);
+    return res.status(healthy ? 200 : 503).json({ domains, status: healthy ? 'success' : 'error' });
   },
 
   /**
@@ -95,8 +138,10 @@ const healthController = {
    * @returns {Promise<Response>} JSON response containing APP_URL health information.
    */
   async getAppUrl(_req: Request, res: Response): Promise<Response> {
+    setNoCacheHeaders(res);
     const domain = await checkDomainHealth('APP_URL', appConfig.APP_URL);
-    return res.json(domain);
+    const healthy = domain.status === 'success';
+    return res.status(healthy ? 200 : 503).json(domain);
   },
 };
 
