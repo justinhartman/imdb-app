@@ -132,9 +132,9 @@ describe('healthController', () => {
     const res = createRes();
     await healthController.getEmbedDomains({ query: {} } as unknown as Request, res);
 
-    expect(res.status).toHaveBeenCalledWith(503);
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
-      status: 'error',
+      status: 'success',
       domains: [
         {
           name: 'VIDSRC_DOMAIN',
@@ -142,12 +142,21 @@ describe('healthController', () => {
           status: 'success',
           httpStatus: 200,
         },
-        {
-          name: 'MULTI_DOMAIN',
-          status: 'error',
-          message: 'Domain not configured',
-        },
       ],
+    });
+  });
+
+  test('getEmbedDomains rejects multi target when MULTI_DOMAIN is not configured', async () => {
+    (appConfig as any).MULTI_DOMAIN = undefined;
+    const res = createRes();
+
+    await healthController.getEmbedDomains({ query: { target: 'multi' } } as unknown as Request, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      status: 'error',
+      message: 'Target not configured',
+      domains: [],
     });
   });
 

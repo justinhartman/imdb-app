@@ -82,9 +82,18 @@ const healthController = {
    * @param {Request} _req - Express request object.
    * @param {Response} res - Express response object.
    * @returns {Promise<Response>} JSON response containing domain health information.
-   */
+  */
   async getEmbedDomains(req: Request, res: Response): Promise<Response> {
     const target = typeof req.query.target === 'string' ? req.query.target.toLowerCase() : undefined;
+
+    // Return 400 if there is no `MULTI_DOMAIN` configured
+    if (target === 'multi' && !appConfig.MULTI_DOMAIN) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Target not configured',
+        domains: [],
+      });
+    }
 
     const checks: Array<Promise<DomainHealthResult>> = [];
 
@@ -93,7 +102,10 @@ const healthController = {
     }
 
     if (!target || target === 'multi') {
-      checks.push(checkDomainHealth('MULTI_DOMAIN', appConfig.MULTI_DOMAIN));
+      // This makes sure we make this optional as there will be scenarios where MULTI_DOMAIN isn't configured
+      if (appConfig.MULTI_DOMAIN) {
+        checks.push(checkDomainHealth('MULTI_DOMAIN', appConfig.MULTI_DOMAIN));
+      }
     }
 
     if (checks.length === 0) {
