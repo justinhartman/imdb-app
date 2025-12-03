@@ -7,7 +7,7 @@
  * @license    MIT
  */
 
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import path from 'path';
 import { inject } from '@vercel/analytics';
 
@@ -16,6 +16,8 @@ import connectDB from '../config/db';
 import { useAuth } from '../helpers/appHelper';
 import appRouter from '../routes/app';
 import authRouter from '../routes/auth';
+import healthRouter from '../routes/health';
+import appLocals from '../middleware/appLocals';
 import watchlistRouter from '../routes/watchlist';
 
 /**
@@ -35,15 +37,7 @@ inject({
  * @param {Response} res - The response object containing the HTTP response details.
  * @param {NextFunction} next - The next middleware function in the chain.
  */
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.locals.APP_NAME = appConfig.APP_NAME;
-  res.locals.APP_SUBTITLE = appConfig.APP_SUBTITLE;
-  res.locals.APP_DESCRIPTION = appConfig.APP_DESCRIPTION;
-  res.locals.APP_URL = appConfig.APP_URL;
-  // We have different card types based on whether the app uses MongoDB or not.
-  res.locals.CARD_TYPE = useAuth ? 'card-add' : 'card';
-  next();
-});
+app.use(appLocals);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
@@ -58,6 +52,7 @@ app.use(express.static('public'));
  * Load standard routes and conditionally use additional routes based on the value of useAuth boolean.
  * The method checks if MONGO_DB_URI is true then connects to MongoDB and uses additional middleware.
  */
+app.use('/health', healthRouter);
 app.use('/', appRouter);
 // Test if MONGO_DB_URI is set.
 if (useAuth) {
@@ -75,6 +70,7 @@ if (useAuth) {
  * @returns {void} - No return value.
  */
 app.listen(appConfig.API_PORT, appConfig.API_HOST, () => {
+  /* c8 ignore next */
   console.log(`Server is running on http://${appConfig.API_HOST}:${appConfig.API_PORT}`);
 });
 
