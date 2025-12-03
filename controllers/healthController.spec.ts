@@ -72,6 +72,7 @@ describe('healthController', () => {
       res.statusCode = code;
       return res;
     });
+    res.set = jest.fn().mockReturnValue(res);
     res.json = jest.fn().mockReturnValue(res);
     return res as Response;
   };
@@ -90,7 +91,12 @@ describe('healthController', () => {
 
     const res = createRes();
     await healthController.getEmbedDomains({ query: {} } as unknown as Request, res);
-
+    expect(res.set).toHaveBeenCalledWith({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+      'Surrogate-Control': 'no-store',
+    });
     expect(res.status).toHaveBeenCalledWith(503);
     expect(res.json).toHaveBeenCalledWith({
       status: 'error',
@@ -116,6 +122,12 @@ describe('healthController', () => {
     mockedHttpClient.get.mockResolvedValue({ status: 301 } as any);
     const res = createRes();
     await healthController.getAppUrl({} as Request, res);
+    expect(res.set).toHaveBeenCalledWith({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+      'Surrogate-Control': 'no-store',
+    });
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       name: 'APP_URL',

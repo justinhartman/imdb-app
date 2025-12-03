@@ -18,7 +18,7 @@ export interface DomainHealthResult {
   message?: string;
 }
 
-const normalizeUrl = (domain: string): string => {
+const normaliseUrl = (domain: string): string => {
   return /^https?:\/\//i.test(domain) ? domain : `https://${domain}`;
 };
 
@@ -35,7 +35,7 @@ export const checkDomainHealth = async (
   }
 
   try {
-    const response = await httpClient.get(normalizeUrl(domain), {
+    const response = await httpClient.get(normaliseUrl(domain), {
       maxRedirects: 0,
       /* c8 ignore next */
       validateStatus: () => true,
@@ -76,14 +76,24 @@ const isHealthy = (results: DomainHealthResult[]): boolean => {
   return results.every((result) => result.status === 'success');
 };
 
+const setNoCacheHeaders = (res: Response): void => {
+  res.set({
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+    Pragma: 'no-cache',
+    Expires: '0',
+    'Surrogate-Control': 'no-store',
+  });
+};
+
 const healthController = {
   /**
    * Checks the configured embed domains and returns their reachability status.
    * @param {Request} _req - Express request object.
    * @param {Response} res - Express response object.
    * @returns {Promise<Response>} JSON response containing domain health information.
-  */
+   */
   async getEmbedDomains(req: Request, res: Response): Promise<Response> {
+    setNoCacheHeaders(res);
     const target = typeof req.query.target === 'string' ? req.query.target.toLowerCase() : undefined;
 
     // Return 400 if there is no `MULTI_DOMAIN` configured
@@ -117,7 +127,6 @@ const healthController = {
     }
 
     const domains = await Promise.all(checks);
-
     const healthy = isHealthy(domains);
     return res.status(healthy ? 200 : 503).json({ domains, status: healthy ? 'success' : 'error' });
   },
@@ -129,6 +138,7 @@ const healthController = {
    * @returns {Promise<Response>} JSON response containing APP_URL health information.
    */
   async getAppUrl(_req: Request, res: Response): Promise<Response> {
+    setNoCacheHeaders(res);
     const domain = await checkDomainHealth('APP_URL', appConfig.APP_URL);
     const healthy = domain.status === 'success';
     return res.status(healthy ? 200 : 503).json(domain);
