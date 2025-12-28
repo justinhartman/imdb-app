@@ -8,6 +8,9 @@
 <% if (data.Response === 'False') { -%>
     <title><%= APP_NAME %> <%= APP_SUBTITLE _%></title>
     <meta name="description" content="<%= APP_DESCRIPTION _%>">
+<% if (data.Type === 'series') { -%>
+    <title><%= data.Title %> | Season <%= Number(season) %> | Episode <%= Number(episode) %> – <%= APP_NAME %> <%= APP_SUBTITLE _%></title>
+    <meta name="description" content="<%= data.Plot %>">    
 <% } else { -%>
     <title><%= data.Title %> (<%= data.Year %>) - <%= APP_NAME %> <%= APP_SUBTITLE _%></title>
     <meta name="description" content="<%= data.Plot %>">
