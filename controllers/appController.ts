@@ -82,20 +82,35 @@ const appController = {
       });
     }
 
-    const [axiosMovieResponse, axiosSeriesResponse] = await Promise.all([
+    const [movieResult, seriesResult] = await Promise.allSettled([
       http.get(`https://${appConfig.VIDSRC_DOMAIN}/movies/latest/page-1.json`),
       http.get(`https://${appConfig.VIDSRC_DOMAIN}/tvshows/latest/page-1.json`),
     ]);
 
-    let newMovies = axiosMovieResponse.data.result || [];
-    let newSeries = axiosSeriesResponse.data.result || [];
+    let newMovies =
+      movieResult.status === 'fulfilled' ? movieResult.value.data.result || [] : [];
+    let newSeries =
+      seriesResult.status === 'fulfilled' ? seriesResult.value.data.result || [] : [];
+
+    if (movieResult.status === 'rejected') {
+      console.warn('Failed to fetch latest movies; continuing with empty dataset');
+    }
+
+    if (seriesResult.status === 'rejected') {
+      console.warn('Failed to fetch latest series; continuing with empty dataset');
+    }
 
     await Promise.all([
       fetchAndUpdatePosters(newMovies),
       fetchAndUpdatePosters(newSeries),
     ]);
 
-    setLatest({ movies: newMovies, series: newSeries });
+    const hasFeedFailure =
+      movieResult.status === 'rejected' || seriesResult.status === 'rejected';
+
+    if (!hasFeedFailure) {
+      setLatest({ movies: newMovies, series: newSeries });
+    }
 
     res.render('index', {
       newMovies,
@@ -132,7 +147,7 @@ const appController = {
    */
   getView: asyncHandler(async (req: AuthRequest, res: Response) => {
     const query = req.params.q || '';
-    const id = req.params.id;
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const type = req.params.type as 'movie' | 'series';
 
     const cookieHeader =
@@ -143,8 +158,12 @@ const appController = {
     const preferredServer = match ? (match[1] as '1' | '2') : undefined;
 
     if (type === 'series') {
-      let season = req.params.season;
-      let episode = req.params.episode;
+      let season = Array.isArray(req.params.season)
+        ? req.params.season[0]
+        : req.params.season;
+      let episode = Array.isArray(req.params.episode)
+        ? req.params.episode[0]
+        : req.params.episode;
 
       if ((!season || !episode) && req.user) {
         const redirectTo = await getResumeRedirect(req.user.id, id);
