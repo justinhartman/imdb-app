@@ -94,6 +94,28 @@ describe('controllers/appController', () => {
     }));
   });
 
+  test('getHome handles upstream failures without crashing', async () => {
+    (http.get as jest.Mock)
+      .mockRejectedValueOnce(new Error('403'))
+      .mockResolvedValueOnce({ data: { result: [{ imdb_id: '2' }] } });
+    (fetchAndUpdatePosters as jest.Mock).mockResolvedValue(undefined);
+    (getLatest as jest.Mock).mockReturnValue(undefined);
+
+    const req: any = { query: {}, user: {} };
+    const res: any = {
+      locals: { APP_URL: 'http://app', CARD_TYPE: 'card' },
+      render: jest.fn(),
+    };
+
+    await appController.getHome(req, res, jest.fn());
+
+    expect(setLatest).not.toHaveBeenCalled();
+    expect(res.render).toHaveBeenCalledWith('index', expect.objectContaining({
+      newMovies: [],
+      newSeries: [{ imdb_id: '2' }],
+    }));
+  });
+
   test('getHome returns cached results when available', async () => {
     (getLatest as jest.Mock).mockReturnValue({
       movies: [{ imdb_id: 'm1' }],
