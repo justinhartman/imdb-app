@@ -105,7 +105,12 @@ const appController = {
       fetchAndUpdatePosters(newSeries),
     ]);
 
-    setLatest({ movies: newMovies, series: newSeries });
+    const hasFeedFailure =
+      movieResult.status === 'rejected' || seriesResult.status === 'rejected';
+
+    if (!hasFeedFailure) {
+      setLatest({ movies: newMovies, series: newSeries });
+    }
 
     res.render('index', {
       newMovies,

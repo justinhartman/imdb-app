@@ -109,6 +109,7 @@ describe('controllers/appController', () => {
 
     await appController.getHome(req, res, jest.fn());
 
+    expect(setLatest).not.toHaveBeenCalled();
     expect(res.render).toHaveBeenCalledWith('index', expect.objectContaining({
       newMovies: [],
       newSeries: [{ imdb_id: '2' }],
